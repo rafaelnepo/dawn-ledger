@@ -1,0 +1,108 @@
+/* The entries laid out as slips (the Interface's modules, the factions, the changes, the vendors): each a sheet of lighter paper,
+   its stage or side as a ribbon of color along the top; Before and After in red and green ink. The contents page; the spec pages. */
+.mods { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: var(--s3); }
+.mods.chgs, .fmods { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); }
+.mod { position: relative; display: flex; flex-direction: column; gap: var(--s2); min-width: 0; padding: 14px var(--s4) var(--s3);
+  background-color: rgba(250, 238, 210, 0.62); border: 1px solid var(--ink-rule-2); border-radius: var(--radius); box-shadow: var(--shadow-slip); }
+.mod::before { content: ""; position: absolute; left: -1px; right: -1px; top: -1px; height: 3px; border-radius: var(--radius) var(--radius) 0 0; background: var(--ink-rule-2); }
+.mod.st-done::before { background: var(--st-changed); } .mod.st-game::before { background: var(--st-seen); } .mod.st-preview::before { background: var(--st-review); }
+.mod.st-plan::before { background: var(--st-decided); } .mod.st-web::before { background: var(--st-blizzard); }
+.mod.side-alliance::before { background: var(--alliance); } .mod.side-horde::before { background: var(--horde); } .mod.side-both::before { background: var(--both); }
+.mod.chg::before { background: linear-gradient(90deg, var(--after) 0 50%, var(--before) 50%); opacity: 0.7; }
+.mod header { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s2); }
+.mod h3 { margin: 0; font: 600 var(--fs-md)/1.3 var(--text); color: var(--ink); text-wrap: balance; }
+.mod .mt { margin: 0; font-size: var(--fs-sm); color: var(--ink-2); }
+.mod .mt.quote-user { color: var(--ink-2); }
+.mrow { display: grid; grid-template-columns: 78px 1fr; gap: var(--s2); align-items: baseline; font-size: var(--fs-xs); }
+.mrow .ml { font: 400 10.5px/1.5 var(--display); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+.mrow .mv { display: flex; flex-wrap: wrap; gap: 3px var(--s3); min-width: 0; color: var(--ink); }
+.mrow .mv a { color: var(--link); }
+.mrow .n, .ffacts .n { margin-left: 4px; font-size: 11px; color: var(--ink-3); font-variant-numeric: lining-nums; }
+.mf { color: var(--ink); } .ms { color: var(--ink-2); }
+.mlimit { margin: 2px 0 0; font-size: var(--fs-xs); color: var(--ink-2); }
+.mod footer { display: flex; flex-wrap: wrap; align-items: center; gap: 4px var(--s3); margin-top: auto; padding-top: var(--s2);
+  border-top: 1px solid var(--ink-rule); font-size: 11.5px; color: var(--ink-3); font-variant-numeric: lining-nums; }
+.mod footer a { margin-left: auto; }
+.mcatline { font: 400 10.5px/1.3 var(--display); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+
+.ba { display: grid; gap: 5px; margin-top: 2px; }
+.ba > div { padding: 7px 10px 8px; font-size: var(--fs-sm); line-height: 1.45; color: var(--ink); border-radius: 0 var(--radius) var(--radius) 0; text-wrap: pretty; }
+.ba .bl { display: block; margin-bottom: 2px; font: 400 10.5px/1.3 var(--display); letter-spacing: 0.14em; text-transform: uppercase; }
+.ba .af { background: var(--after-bg); box-shadow: inset 2px 0 0 var(--after); } .ba .af .bl { color: var(--after); }
+.ba .b4 { background: var(--before-bg); box-shadow: inset 2px 0 0 var(--before); } .ba .b4 .bl { color: var(--before); }
+.ba.wide { max-width: 820px; } .ba.wide > div { padding: 10px 14px 11px; font-size: var(--fs-md); }
+
+/* the factions: the crest beside the name (the local build's art; the public one a seal of the initial) */
+.fhead { display: flex; gap: var(--s3); align-items: center; color: inherit; text-decoration: none !important; }
+.fhead:hover h3 { color: var(--link-hi); }
+.fcrest { flex: none; width: 52px; height: 52px; object-fit: contain; border-radius: var(--radius); box-shadow: 0 0 0 1px var(--ink-rule-2), 0 2px 5px rgba(60, 34, 8, 0.35); }
+.fcrest.major { width: 60px; height: 60px; border-radius: 0; box-shadow: none; filter: drop-shadow(0 2px 3px rgba(60, 34, 8, 0.5)); }
+.fcrest.none, .fseal { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; font: 400 24px/1 var(--display); color: rgba(255, 236, 214, 0.92);
+  background: radial-gradient(circle at 35% 30%, #b3402b, var(--rubric) 55%, #5e170c); box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset, 0 2px 5px rgba(60, 20, 8, 0.45);
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35); }
+.flore { display: block; margin-top: 2px; font-size: var(--fs-xs); font-style: italic; color: var(--ink-2); }
+.ffacts { display: flex; flex-wrap: wrap; gap: 6px var(--s5); font-size: var(--fs-xs); }
+.ffacts > div { display: flex; flex-direction: column; }
+.ffacts .ml { font: 400 10.5px/1.5 var(--display); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
+
+/* a vendor's shop (local only: the window lives on :8777) */
+.shopbtn { display: flex; justify-content: space-between; align-items: baseline; margin-top: 2px; }
+.shopbtn .n { font-size: 11px; color: var(--frame-note); }
+.shopdlg { width: min(980px, calc(100vw - 32px)); height: min(860px, calc(100vh - 32px)); padding: 0; display: none; flex-direction: column;
+  color: var(--frame-text); background: var(--leather); border: 1px solid var(--rim); border-radius: var(--radius); }
+.shopdlg[open] { display: flex; } .shopdlg::backdrop { background: rgba(0, 0, 0, 0.7); }
+.shophead { display: flex; justify-content: space-between; align-items: center; gap: var(--s3); padding: var(--s2) var(--s3); border-bottom: 1px solid var(--rim); font-size: var(--fs-sm); }
+.shopdlg iframe { flex: 1; width: 100%; border: 0; background: var(--leather); }
+
+/* ---------- the contents: the home page as a book's table of contents, dotted leaders to the counts ---------- */
+.lhead { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s5); align-items: end; }
+.lhead .colophon { margin: 0 0 var(--s3); text-align: right; font: 400 var(--fs-xs)/1.6 var(--display); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+.lhead .colophon b { display: block; font: 400 var(--fs-2xl)/1 var(--display); letter-spacing: 0; color: var(--ink); text-transform: none; }
+.preface { max-width: 66ch; margin: 0 0 var(--s5); font-size: var(--fs-md); color: var(--ink); }
+.preface::first-letter { float: left; margin: 4px 8px 0 0; font: 400 58px/0.8 var(--display); color: var(--rubric); }
+.toc { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--s7); }
+.toc section { min-width: 0; }
+.toc ol { list-style: none; margin: 0; padding: 0; }
+.toc li { border-bottom: 1px solid var(--ink-rule); }
+.toc a.te { display: grid; grid-template-columns: auto minmax(var(--s4), 1fr) auto; align-items: baseline; gap: var(--s2); padding: 12px 0 2px;
+  text-decoration: none; color: var(--ink); }
+.toc .tt { font: 400 var(--fs-xl)/1.2 var(--display); }
+.toc .tl { border-bottom: 2px dotted var(--ink-rule-2); transform: translateY(-5px); }
+.toc .tn { font: 400 var(--fs-lg)/1 var(--text); font-variant-numeric: lining-nums tabular-nums; color: var(--ink); }
+.toc .tn small { margin-left: 4px; font-size: var(--fs-xs); color: var(--ink-3); }
+.toc a.te:hover .tt { color: var(--link-hi); } .toc a.te:hover .tl { border-color: var(--rubric-soft); }
+.toc .td { margin: 0; padding: 0 0 12px; font-size: var(--fs-sm); color: var(--ink-2); max-width: 54ch; }
+.toc .ts { display: flex; flex-wrap: wrap; gap: 4px 6px; padding: 0 0 12px; }
+.toc .ts .tc { margin: 0 8px 0 3px; font-size: var(--fs-xs); color: var(--ink-2); font-variant-numeric: lining-nums; }
+.keys { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s5) var(--s7); }
+.keys { margin-top: var(--s2); }
+.keys dl { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: 8px var(--s4); align-items: baseline; font-size: var(--fs-sm); }
+.keys dd { margin: 0; color: var(--ink-2); text-wrap: pretty; }
+.keys h3 { margin: 0 0 var(--s3); font: 400 var(--fs-lg)/1.2 var(--display); color: var(--ink); }
+@media (max-width: 980px) { .toc, .keys { grid-template-columns: minmax(0, 1fr); } .lhead { grid-template-columns: minmax(0, 1fr); } .lhead .colophon { text-align: left; } }
+
+/* the about page */
+.about { max-width: 70ch; }
+.about p { font-size: var(--fs-lg); line-height: 1.55; }
+.about h2.sec { margin-top: var(--s6); }
+.about ul { padding-left: 20px; } .about li { margin: 6px 0; }
+
+/* ---------- a spec page: the Markdown of docs, set as a book's page ---------- */
+.spec { max-width: 860px; padding: var(--s5) clamp(18px, 3vw, 40px) var(--s6); font-size: var(--fs-md); line-height: 1.6; color: var(--ink);
+  background-color: rgba(250, 238, 210, 0.55); border: 1px solid var(--ink-rule-2); border-radius: var(--radius); box-shadow: var(--shadow-slip); }
+.spec h2 { margin: 4px 0 var(--s3); padding-bottom: 8px; font: 400 var(--fs-2xl)/1.15 var(--display); color: var(--ink); border-bottom: 3px double var(--rubric); }
+.spec h3 { margin: var(--s5) 0 var(--s2); font: 400 var(--fs-xl)/1.25 var(--display); color: var(--rubric); }
+.spec h4, .spec h5 { margin: var(--s4) 0 6px; font: 600 var(--fs-md)/1.4 var(--text); color: var(--ink); }
+.spec p, .spec li { max-width: 72ch; }
+.spec ul, .spec ol { padding-left: 22px; } .spec li { margin: 3px 0; }
+.spec pre { padding: var(--s3) var(--s4); overflow-x: auto; background: rgba(90, 63, 34, 0.08); border: 1px solid var(--ink-rule); border-radius: var(--radius); }
+.spec pre code { border: 0; padding: 0; background: none; }
+.spec blockquote { margin: var(--s3) 0; padding: 4px var(--s4); color: var(--ink-2); font-style: italic; box-shadow: inset 2px 0 0 var(--rubric-soft); }
+.spec table.lt { display: block; margin: var(--s3) 0; overflow-x: auto; }
+.spec hr { margin: var(--s5) 0; border: 0; border-top: 1px solid var(--ink-rule-2); }
+@media (max-width: 720px) { .spec { padding: var(--s4); } }
+.scale { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: var(--s2); font-size: var(--fs-sm); }
+.scale div { padding: var(--s2) var(--s3); }
+.mrow .mv.sv { flex-direction: column; gap: 1px; }
+.mrow .mv.sv b { font-weight: 600; }
+h2.sec .n, .msub .n { margin-left: var(--s2); }

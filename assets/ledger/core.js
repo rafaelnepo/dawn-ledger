@@ -1,0 +1,41 @@
+
+export const base = { levers: null, changes: null, areas: null };
+export const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+export const json = (u) => fetch(u, { cache: "no-cache" }).then((r) => { if (!r.ok) throw new Error(u + " " + r.status); return r.json(); });
+export const cache = {};
+export const load = (n) => cache[n] || (cache[n] = json(`data/ledger/${n}.json`));
+export const page = document.getElementById("page");
+export const fmt = (n) => (n == null ? "" : Number(n).toLocaleString("en-US"));
+export const state = {};   // each page's filters, kept while you move about
+
+export const SECTIONS = [["changes", "Changes"], ["review", "Review"], null, ["items", "Items"], ["npcs", "NPCs"], ["quests", "Quests"],
+  ["zones", "Zones"], ["factions", "Factions"], ["chests", "Chests and boxes"], ["loot", "Loot"], ["professions", "Professions"],
+  ["pvp", "PvP and honor"], null, ["interface", "Interface"]];
+export const SOON = [];
+export const STATUS = { blizzard: "Blizzard’s", review: "To review", decided: "Decided", changed: "Changed", seen: "Seen in game" };
+export const STATUS_TIP = { blizzard: "As Blizzard made it: untouched", review: "Waiting for a look", decided: "Chosen, not applied yet",
+  changed: "Patched on this server", seen: "Patched and seen in game" };
+
+export const lever = (k) => { const s = (base.levers && base.levers.scale.find((x) => x[0] === k)) || [k, k, ""]; return `<span class="lv ${esc(k)}" title="${esc(s[2])}">${esc(s[1])}</span>`; };
+export const status = (k) => `<span class="st ${esc(k)}" title="${esc(STATUS_TIP[k] || "")}">${esc(STATUS[k] || k)}</span>`;
+
+// a change's short name: world 012 → 012, the server's and proxy's by their date
+
+export const short = (id) => {
+  const m = /^(world|character|realm) (\d+)$/.exec(id);
+  if (m) return (m[1] === "world" ? "" : m[1] + " ") + m[2];
+  const d = /(\d{4})-(\d\d)-(\d\d)$/.exec(id);
+  return (id.startsWith("hermesproxy") ? "proxy " : "server ") + (d ? `${d[2]}-${d[3]}` : id);
+};
+export const kindOf = (id) => (/^world /.test(id) ? "world" : /^(character|realm) /.test(id) ? "world" : id.startsWith("hermesproxy") ? "proxy" : /overrides/.test(id) ? "config" : "server");
+export const chg = (id) => {
+  const c = base.changes && base.changes.get(id);
+  return `<a class="badge k-${kindOf(id)}" href="#/change/${encodeURIComponent(id)}" title="${esc(c ? c.title : id)}">${esc(short(id))}</a>`;
+};
+export const chgs = (ids) => (ids || []).map(chg).join("");
+export const respawn = (t) => (!t || !t.length ? "" : t.map((s) => (s < 0 ? "scripted" : s >= 86400 ? Math.round(s / 3600) + " h" : s >= 3600 ? (s / 3600).toFixed(1).replace(".0", "") + " h" : s >= 60 ? Math.round(s / 60) + " min" : s + " s")).join(", "));
+export const money = (c) => { if (!c) return ""; const g = Math.floor(c / 10000), s = Math.floor(c / 100) % 100, k = c % 100; return [g && g + "g", s && s + "s", (k || !c) && k + "c"].filter(Boolean).join(" "); };
+export const qbar = (q) => (q || []).map((n, i) => (n ? `<span class="q q${i}" style="width:${Math.max(3, Math.min(60, n * 2))}px" title="${n} ${["gray", "white", "green", "blue", "purple", "orange"][i]}"></span>` : "")).join("");
+export const statusCounts = (rows) => { const c = {}; rows.forEach((r) => (c[r] = (c[r] || 0) + 1)); return c; };
+export const uniq = (xs) => [...new Set(xs.filter((x) => x !== "" && x != null))].sort();
+export const QUALITY = ["Poor", "Common", "Uncommon", "Rare", "Epic", "Legendary"];

@@ -1,0 +1,40 @@
+/* The Ledger's tokens (session 84): an account book bound in WoW Forever's frame. The frame is dark leather with a gold rim (Forever's
+   windows); the pages are golden parchment (Forever's quest paper, the loading screens' bands) written in sepia ink, with a rubric red
+   for the ledger's rules. Every color here is ours; the local build may lay Forever's own textures and Friz Quadrata over them
+   (data/art/art.css, never published). Contrast: ink 10.9:1, notes 6.4:1, counts 5.1:1 on the paper. */
+:root {
+  /* the frame: leather, rim, gold leaf */
+  --leather: #15100a; --leather-2: #1d1610; --leather-3: #2a2015; --rim: #5c4a24; --rim-hi: #a3843f;
+  --gold: #ffd100; --gold-soft: #f8d74a; --frame-text: #d9cdb3; --frame-note: #a69a82; --frame-faint: #8a7f6a;
+
+  /* the paper and its ink */
+  --paper: #e8cf9c; --paper-hi: #f1dcae; --paper-lo: #dcbd84; --paper-edge: #b98a4c; --paper-wash: rgba(122, 74, 22, 0.08);
+  --ink: #2b1b0b; --ink-2: #5a3f22; --ink-3: #6b4c2a; --ink-rule: rgba(90, 63, 34, 0.22); --ink-rule-2: rgba(90, 63, 34, 0.38);
+  --rubric: #8c2416; --rubric-soft: rgba(140, 36, 22, 0.55); --link: #7a2a12; --link-hi: #a3221a;
+
+  /* one color a status (as the Ledger has always had them: grey, amber, blue, gold, green), tuned for the paper */
+  --st-blizzard: #cbb48c; --st-blizzard-ink: #3e2f1c; --st-review: #e9a93a; --st-review-ink: #2b1a05;
+  --st-decided: #3d6db0; --st-decided-ink: #ffffff; --st-changed: #f2c40c; --st-changed-ink: #2b2000;
+  --st-seen: #3f7f37; --st-seen-ink: #ffffff;
+
+  /* one color a lever: how hard a change is */
+  --lv-data: #2f6e2a; --lv-hotfix: #7a5a00; --lv-code: #93461a; --lv-client: #a3221a; --lv-leave: #5f564c; --lv-free: #1f6a64;
+
+  /* before and after, sides, item quality, all legible on the paper */
+  --after: #2f6e2a; --after-bg: rgba(47, 110, 42, 0.1); --before: #a3221a; --before-bg: rgba(163, 34, 26, 0.08);
+  --alliance: #1f4fa8; --horde: #a3221a; --both: #6b4c2a;
+  --q0: #5f5850; --q1: #2b1b0b; --q2: #1d6410; --q3: #0d52a0; --q4: #6e2aa0; --q5: #8a4500;
+
+  /* type: Marcellus for titles and labels (a Friz Quadrata cousin), Alegreya for the words and the figures */
+  --display: "Marcellus", "Friz Quadrata", "Palatino Linotype", Palatino, Georgia, serif;
+  --text: "Alegreya", "Palatino Linotype", Palatino, Georgia, serif;
+  --fs-xs: 12px; --fs-sm: 13.5px; --fs-md: 15px; --fs-lg: 17px; --fs-xl: 21px; --fs-2xl: 28px; --fs-3xl: 40px;
+
+  /* space and shape */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px;
+  --radius: 3px; --rail: 248px; --sticky-top: 0px; --rule: var(--ink-rule);
+  --shadow-sheet: 0 2px 3px rgba(0, 0, 0, 0.55), 0 18px 48px rgba(0, 0, 0, 0.55);
+  --shadow-slip: 0 1px 1px rgba(60, 34, 8, 0.18), 0 3px 8px rgba(60, 34, 8, 0.12);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (max-width: 900px) { :root { --sticky-top: 52px; } }

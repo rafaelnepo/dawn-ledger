@@ -1,0 +1,32 @@
+/* The two materials, drawn in CSS and SVG so the public build carries them: the leather of the frame and the parchment of the pages.
+   The paper: a fine fibre noise, a slow mottling, the light pooled in the middle and the edges browned. The cord: the twisted gold
+   braid that edges the frame (after the knotwork bands of Forever's loading screens). */
+.leather {
+  background-color: var(--leather);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .4 0 0 0 0 .22 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 30% 0%, rgba(120, 86, 40, 0.18), transparent 60%),
+    linear-gradient(180deg, #1a140d, #110d08);
+}
+.paper {
+  background-color: var(--paper);
+  background-image:
+    radial-gradient(ellipse 120% 90% at 50% 45%, transparent 58%, rgba(120, 66, 16, 0.18) 88%, rgba(96, 50, 10, 0.34) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .26 0 0 0 0 .08 0 0 0 .16 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='900'%3E%3Cfilter id='m'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.004' numOctaves='4' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .34 0 0 0 0 .1 0 0 0 .5 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23m)'/%3E%3C/svg%3E"),
+    radial-gradient(ellipse at 50% 30%, var(--paper-hi), var(--paper) 55%, var(--paper-lo));
+  background-attachment: local, local, local, local;
+}
+/* a slip of paper laid on the page: lighter, a little raised */
+.slip {
+  background-color: rgba(246, 230, 196, 0.55);
+  border: 1px solid var(--ink-rule-2);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-slip), inset 0 1px 0 rgba(255, 248, 228, 0.6);
+}
+/* the gold cord: a twisted braid, repeated along an edge */
+.cord {
+  height: 8px;
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='8'%3E%3Cpath d='M0 6 C4 6 4 2 8 2 S12 6 16 6' fill='none' stroke='%23a3843f' stroke-width='1.6'/%3E%3Cpath d='M0 2 C4 2 4 6 8 6 S12 2 16 2' fill='none' stroke='%235c4a24' stroke-width='1.6'/%3E%3Cpath d='M6 2.6 C7 2.2 9 2.2 10 2.6' fill='none' stroke='%23f8d74a' stroke-width='.8' opacity='.7'/%3E%3C/svg%3E") repeat-x center / 16px 8px;
+}
