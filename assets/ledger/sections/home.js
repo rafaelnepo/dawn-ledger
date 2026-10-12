@@ -13,19 +13,18 @@ export async function home() {
   const newest = D.changes.changes[0];
   const line = (k, title, n, unit, about, ts) => `<li><a class="te" href="#/${k}"><span class="tt">${title}</span><span class="tl" aria-hidden="true"></span>
     <span class="tn">${n}<small>${unit}</small></span></a><p class="td">${about}</p>${ts ? `<div class="ts">${ts}</div>` : ""}</li>`;
-  page.innerHTML = `<div class="lhead"><div><h1>The Ledger</h1></div>
-      <p class="colophon">Changes so far<b>${fmt(D.changes.changes.length)}</b></p></div>
+  page.innerHTML = `<h1>The Ledger</h1>
     <p class="preface">${LOCAL
       ? "This server’s data as it stands, beside every change we made to it: what each patch touched and why, what is easy to change and what to leave alone, and what still waits for a look. For one player on this server, and for Claude, to turn to before changing anything."
       : "Dawn is a World of Warcraft Classic server for a single player. This ledger shows its data as it stands, read from the server itself, beside every change made to fit the game to one person: what each change touched and why, how hard a change is, and what still waits for a look."}</p>
     <div class="toc">
-      <section><h2 class="sec">Our work</h2><ol>
+      <section class="wide"><h2 class="sec">Our work</h2><ol class="c3">
         ${line("changes", "Changes", fmt(D.changes.changes.length), "patches", `${["world", "character", "realm", "server", "proxy", "config"].filter((k) => kinds[k]).map((k) => `${kinds[k]} ${k}`).join(", ")}. The newest: <a class="badge" href="#/change/${encodeURIComponent(newest.id)}">${esc(short(newest.id))}</a> ${esc((newest.copy && newest.copy.title) || newest.title)}.`)}
         ${line("review", "Review", fmt(D.review.items.length), "waiting", "Everything set to review or decided and not yet applied, the findings still open, and the open items’ headlines.", tallies(D.review.items.map((x) => x.status)))}
         ${line("interface", "Interface", esc(D.interface.version), "Forever UI", `${D.interface.files.length} files, ${D.interface.previews.length} previews and ${D.interface.specs.length} specs, as modules by what they serve.`)}
       </ol>
       </section>
-      <section><h2 class="sec">The game</h2><ol>
+      <section class="wide"><h2 class="sec">The game</h2><ol class="c2">
         ${line("items", "Items", fmt(D.items.items.length), "items", "Where each comes from, what it costs, and the ones the client shows from our own copy.", tallies(D.items.items.map((x) => x[12])))}
         ${line("npcs", "NPCs", fmt(D.npcs.npcs.length), "creatures", "Everyone standing in the world: what they do for you, where, and how many.", tallies(D.npcs.npcs.map((x) => x[12])))}
         ${line("quests", "Quests", fmt(D.quests.quests.length), "quests", `What each pays, reputation included; ${fmt(D.quests.quests.filter((q) => q[15]).length)} of them are ours.`, tallies(D.quests.quests.map((x) => x[14])))}

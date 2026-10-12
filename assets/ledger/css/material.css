@@ -26,7 +26,7 @@
 }
 /* the gold cord: a twisted braid, repeated along an edge */
 .cord {
-  height: 8px;
+  height: 12px;
   background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='8'%3E%3Cpath d='M0 6 C4 6 4 2 8 2 S12 6 16 6' fill='none' stroke='%23a3843f' stroke-width='1.6'/%3E%3Cpath d='M0 2 C4 2 4 6 8 6 S12 2 16 2' fill='none' stroke='%235c4a24' stroke-width='1.6'/%3E%3Cpath d='M6 2.6 C7 2.2 9 2.2 10 2.6' fill='none' stroke='%23f8d74a' stroke-width='.8' opacity='.7'/%3E%3C/svg%3E") repeat-x center / 16px 8px;
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='12'%3E%3Cg fill='none' stroke-linecap='round'%3E%3Cpath d='M-1 9 C3 9 4 3 7 3 S11 9 15 9' stroke='%232b2012' stroke-width='3.6'/%3E%3Cpath d='M-1 3 C3 3 4 9 7 9 S11 3 15 3' stroke='%232b2012' stroke-width='3.6'/%3E%3Cpath d='M-1 9 C3 9 4 3 7 3 S11 9 15 9' stroke='%23a3843f' stroke-width='2.2'/%3E%3Cpath d='M-1 3 C3 3 4 9 7 9' stroke='%23c9a24a' stroke-width='2.2'/%3E%3Cpath d='M2 3.4 C3 3.5 4 4.5 4.6 5.4' stroke='%23f8d74a' stroke-width='.8'/%3E%3Cpath d='M9 3.4 C10 3.2 11 3.4 12 4' stroke='%23f8d74a' stroke-width='.8'/%3E%3C/g%3E%3C/svg%3E") repeat-x center / 14px 12px;
 }

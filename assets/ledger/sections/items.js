@@ -25,7 +25,7 @@ export async function items() {
       ["changes", "Changes", "", (r) => r[10].length + (r[11] ? 1 : 0), (r) => chgs(r[10]) + (r[11] ? `<span class="badge" title="The client shows our hotfix row">hotfix</span>` : "")],
       ["status", "Status", "", (r) => Object.keys(STATUS).indexOf(r[12]), (r) => status(r[12])],
     ],
-    more: (r) => `<div class="facts"><span class="k">In the database</span><span>item ${r[0]}</span>
+    more: (r) => `<div class="facts"><span class="k">In the database</span><span>item ${r[0]} · <a href="#/item/${r[0]}">its own page</a></span>
       <span class="k">Sells for</span><span>${money(r[8]) || "nothing"}</span>
       ${r[13] ? `<span class="k">PvP rank</span><span>${r[13] - 4} (requiredhonorrank ${r[13]})</span>` : ""}
       <span class="k">Comes from</span><span>${r[9].map((n, i) => `${fmt(n)} ${SRC[i]}`).join(", ")}</span></div>`,

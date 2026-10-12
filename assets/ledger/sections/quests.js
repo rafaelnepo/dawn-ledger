@@ -25,7 +25,7 @@ export async function quests() {
       ["changes", "Changes", "", (r) => r[13].length, (r) => (r[15] ? `<span class="badge">ours</span>` : "") + chgs(r[13])],
       ["status", "Status", "", (r) => Object.keys(STATUS).indexOf(r[14]), (r) => status(r[14])],
     ],
-    more: (r) => `<div class="facts"><span class="k">In the database</span><span>quest ${r[0]}</span>
+    more: (r) => `<div class="facts"><span class="k">In the database</span><span>quest ${r[0]} · <a href="#/quest/${r[0]}">its own page</a></span>
       ${r[7] ? `<span class="k">Classes</span><span>${esc(r[7])}</span>` : ""}
       ${r[13].length ? `<span class="k">Changed by</span><span>${chgs(r[13])}</span>` : ""}</div>`,
   });

@@ -105,6 +105,6 @@ export async function specPage(name) {
   const file = (d.specs.find((x) => x.file.endsWith("/" + name)) || { file: `docs/specs/${name}` }).file;
   d.categories.forEach((c) => c.subs.forEach((s) => s.modules.forEach((m) => { if (m.specs.some((x) => x.file.endsWith("/" + name))) mod = [c.name, s.name, m]; })));
   page.innerHTML = `<p class="crumbs"><a href="#/interface">Interface</a>${mod ? ` · ${esc(mod[0])} · ${esc(mod[1])} · <span class="white">${esc(mod[2].title)}</span>` : ""}</p>
-    <article class="spec panel"><p class="note"><code>${esc(file)}</code></p>${mdRender(await r.text())}</article>`;
+    <article class="spec panel">${mdRender(await r.text()).replace("</h2>", `</h2><p class="srcline"><code>${esc(file)}</code></p>`)}</article>`;
   window.scrollTo(0, 0);
 }

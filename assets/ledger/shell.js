@@ -39,3 +39,31 @@ function seal(head) {
   s.textContent = h ? h.textContent.replace(/^(The|the)\s+/, "").trim().charAt(0) : "";
   return s;
 }
+
+// the line-break pass (session 84, the style guide: no runts or widows): a paragraph's last two words held together, so a line
+// never ends a block with one short word alone; and on a phone the filter columns fold behind one button naming what is chosen
+const TAILS = ".lead, .preface, .mt, .td, .sub, .mlimit, .ba > div, .rule p, .spec p, .spec li, .about p, .keys dd, .flore, .note";
+export function tails(root) {
+  root.querySelectorAll(TAILS).forEach((el) => {
+    if (el.dataset.t) return; el.dataset.t = "1";
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    let last = null; while (walker.nextNode()) if (walker.currentNode.nodeValue.trim()) last = walker.currentNode;
+    if (!last) return;
+    const v = last.nodeValue, m = /(\S+) +(\S{1,14}\s*)$/.exec(v);
+    if (m && v.trim().split(/\s+/).length > 1) last.nodeValue = v.slice(0, m.index) + m[1] + " " + m[2];
+  });
+}
+export function foldFilters(root) {
+  root.querySelectorAll(".fcols").forEach((fc) => {
+    if (fc.previousElementSibling && fc.previousElementSibling.classList.contains("ftoggle")) return;
+    const chosen = [...fc.querySelectorAll('.fo[aria-pressed="true"]')].filter((b) => b.dataset.v).map((b) => b.firstChild.textContent.trim());
+    const btn = document.createElement("button");
+    btn.type = "button"; btn.className = "ftoggle"; btn.setAttribute("aria-expanded", "false");
+    btn.innerHTML = `<span>Filters</span><span class="fsum">${chosen.length ? chosen.join(" · ") : "Everything shown"}</span>`;
+    fc.before(btn);
+    let open = false; try { open = sessionStorage.getItem("ledger:filters") === "1"; } catch (e) {}
+    fc.classList.toggle("folded", !open); btn.setAttribute("aria-expanded", String(open));
+    btn.addEventListener("click", () => { const now = fc.classList.toggle("folded"); btn.setAttribute("aria-expanded", String(!now));
+      try { sessionStorage.setItem("ledger:filters", now ? "0" : "1"); } catch (e) {} });
+  });
+}

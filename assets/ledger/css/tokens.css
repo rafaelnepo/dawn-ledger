@@ -13,9 +13,9 @@
   --rubric: #8c2416; --rubric-soft: rgba(140, 36, 22, 0.55); --link: #7a2a12; --link-hi: #a3221a;
 
   /* one color a status (as the Ledger has always had them: grey, amber, blue, gold, green), tuned for the paper */
-  --st-blizzard: #cbb48c; --st-blizzard-ink: #3e2f1c; --st-review: #e9a93a; --st-review-ink: #2b1a05;
-  --st-decided: #3d6db0; --st-decided-ink: #ffffff; --st-changed: #f2c40c; --st-changed-ink: #2b2000;
-  --st-seen: #3f7f37; --st-seen-ink: #ffffff;
+  --st-blizzard: #cdb994; --st-blizzard-ink: #3e2f1c; --st-review: #c98a3e; --st-review-ink: #2b1a05;
+  --st-decided: #44608a; --st-decided-ink: #fbf1dc; --st-changed: #c9a446; --st-changed-ink: #2b2000;
+  --st-seen: #4a7550; --st-seen-ink: #fbf1dc;
 
   /* one color a lever: how hard a change is */
   --lv-data: #2f6e2a; --lv-hotfix: #7a5a00; --lv-code: #93461a; --lv-client: #a3221a; --lv-leave: #5f564c; --lv-free: #1f6a64;

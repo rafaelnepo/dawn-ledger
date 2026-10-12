@@ -26,10 +26,10 @@
 .mcatline { font: 400 10.5px/1.3 var(--display); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
 
 .ba { display: grid; gap: 5px; margin-top: 2px; }
-.ba > div { padding: 7px 10px 8px; font-size: var(--fs-sm); line-height: 1.45; color: var(--ink); border-radius: 0 var(--radius) var(--radius) 0; text-wrap: pretty; }
+.ba > div { padding: 7px 10px 8px; font-size: var(--fs-sm); line-height: 1.45; color: var(--ink); border-radius: var(--radius); text-wrap: pretty; }
 .ba .bl { display: block; margin-bottom: 2px; font: 400 10.5px/1.3 var(--display); letter-spacing: 0.14em; text-transform: uppercase; }
-.ba .af { background: var(--after-bg); box-shadow: inset 2px 0 0 var(--after); } .ba .af .bl { color: var(--after); }
-.ba .b4 { background: var(--before-bg); box-shadow: inset 2px 0 0 var(--before); } .ba .b4 .bl { color: var(--before); }
+.ba .af { background: var(--after-bg); } .ba .af .bl { color: var(--after); }
+.ba .b4 { background: var(--before-bg); } .ba .b4 .bl { color: var(--before); }
 .ba.wide { max-width: 820px; } .ba.wide > div { padding: 10px 14px 11px; font-size: var(--fs-md); }
 
 /* the factions: the crest beside the name (the local build's art; the public one a seal of the initial) */
@@ -37,17 +37,18 @@
 .fhead:hover h3 { color: var(--link-hi); }
 .fcrest { flex: none; width: 52px; height: 52px; object-fit: contain; border-radius: var(--radius); box-shadow: 0 0 0 1px var(--ink-rule-2), 0 2px 5px rgba(60, 34, 8, 0.35); }
 .fcrest.major { width: 60px; height: 60px; border-radius: 0; box-shadow: none; filter: drop-shadow(0 2px 3px rgba(60, 34, 8, 0.5)); }
-.fcrest.none, .fseal { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; font: 400 24px/1 var(--display); color: rgba(255, 236, 214, 0.92);
-  background: radial-gradient(circle at 35% 30%, #b3402b, var(--rubric) 55%, #5e170c); box-shadow: 0 1px 0 rgba(255, 255, 255, 0.25) inset, 0 2px 5px rgba(60, 20, 8, 0.45);
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.35); }
+.fcrest.none, .fseal { flex: none; display: grid; place-items: center; width: 50px; height: 50px; border-radius: 50%; font: 400 23px/1 var(--display); color: var(--rubric);
+  border: 2px solid var(--rubric); box-shadow: inset 0 0 0 3px rgba(250, 238, 210, 0.7), inset 0 0 0 4px var(--rubric-soft); opacity: 0.88; transform: rotate(-4deg); }
 .flore { display: block; margin-top: 2px; font-size: var(--fs-xs); font-style: italic; color: var(--ink-2); }
 .ffacts { display: flex; flex-wrap: wrap; gap: 6px var(--s5); font-size: var(--fs-xs); }
 .ffacts > div { display: flex; flex-direction: column; }
 .ffacts .ml { font: 400 10.5px/1.5 var(--display); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-3); }
 
 /* a vendor's shop (local only: the window lives on :8777) */
-.shopbtn { display: flex; justify-content: space-between; align-items: baseline; margin-top: 2px; }
-.shopbtn .n { font-size: 11px; color: var(--frame-note); }
+.sheet .shopbtn { display: inline-flex; align-self: flex-start; gap: var(--s3); align-items: baseline; margin-top: 2px; padding: 4px 10px; font-size: var(--fs-xs);
+  color: var(--rubric); background: transparent; border: 1px solid var(--rubric-soft); box-shadow: none; text-shadow: none; }
+.sheet .shopbtn:hover { color: var(--paper-hi); background: var(--rubric); }
+.shopbtn .n { font-size: 11px; color: inherit; opacity: 0.75; }
 .shopdlg { width: min(980px, calc(100vw - 32px)); height: min(860px, calc(100vh - 32px)); padding: 0; display: none; flex-direction: column;
   color: var(--frame-text); background: var(--leather); border: 1px solid var(--rim); border-radius: var(--radius); }
 .shopdlg[open] { display: flex; } .shopdlg::backdrop { background: rgba(0, 0, 0, 0.7); }
@@ -97,7 +98,7 @@
 .spec ul, .spec ol { padding-left: 22px; } .spec li { margin: 3px 0; }
 .spec pre { padding: var(--s3) var(--s4); overflow-x: auto; background: rgba(90, 63, 34, 0.08); border: 1px solid var(--ink-rule); border-radius: var(--radius); }
 .spec pre code { border: 0; padding: 0; background: none; }
-.spec blockquote { margin: var(--s3) 0; padding: 4px var(--s4); color: var(--ink-2); font-style: italic; box-shadow: inset 2px 0 0 var(--rubric-soft); }
+.spec blockquote { margin: var(--s3) 0; padding: 6px var(--s4); color: var(--ink-2); font-style: italic; background: var(--paper-wash); border-radius: var(--radius); }
 .spec table.lt { display: block; margin: var(--s3) 0; overflow-x: auto; }
 .spec hr { margin: var(--s5) 0; border: 0; border-top: 1px solid var(--ink-rule-2); }
 @media (max-width: 720px) { .spec { padding: var(--s4); } }
@@ -106,3 +107,22 @@
 .mrow .mv.sv { flex-direction: column; gap: 1px; }
 .mrow .mv.sv b { font-weight: 600; }
 h2.sec .n, .msub .n { margin-left: var(--s2); }
+/* the contents, balanced (the review, session 84): Our work across in three, the game below in two even columns */
+.toc { grid-template-columns: minmax(0, 1fr); }
+.toc ol.c3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: var(--s6); }
+.toc ol.c2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--s7); }
+@media (max-width: 980px) { .toc ol.c3, .toc ol.c2 { grid-template-columns: minmax(0, 1fr); } }
+.spec > .note:first-child { order: 2; }
+.spec .srcline { margin: -4px 0 var(--s4); font-size: var(--fs-xs); color: var(--ink-3); }
+/* the filters fold on a phone behind one button that names what is chosen */
+.ftoggle { display: none; }
+@media (max-width: 720px) {
+  .ftoggle { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s3); width: 100%; margin: var(--s1) 0 var(--s4); padding: 10px var(--s4);
+    font: 400 var(--fs-md)/1.2 var(--display); color: var(--ink); text-align: left; cursor: pointer; background: rgba(250, 238, 210, 0.62);
+    border: 1px solid var(--ink-rule-2); border-radius: var(--radius); box-shadow: var(--shadow-slip); }
+  .ftoggle .fsum { font: 400 var(--fs-xs)/1.3 var(--text); color: var(--ink-3); text-align: right; }
+  .fcols.folded > .fcol { display: none; }
+  .fcols.folded { margin-top: 0; }
+}
+.mod header > * { min-width: 0; }
+.mod header .badge { flex: none; max-width: 48%; overflow: hidden; text-overflow: ellipsis; }

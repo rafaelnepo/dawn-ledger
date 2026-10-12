@@ -15,7 +15,8 @@ import { factions, factionPage } from "./sections/factions.js";
 import { chests } from "./sections/chests.js";
 import { loot } from "./sections/loot.js";
 import { about } from "./sections/about.js";
-import { wireShell, publicPass, turn } from "./shell.js";
+import { itemPage, npcPage, questPage } from "./sections/entry.js";
+import { wireShell, publicPass, turn, tails, foldFilters } from "./shell.js";
 import { wireFind } from "./find.js";
 import { counts, nav } from "./ui.js";
 
@@ -24,7 +25,7 @@ import { counts, nav } from "./ui.js";
 const ROUTES = {
   changes, change: changePage, review: reviewPage, interface: interfacePage, spec: async (a) => { await specPage(a); return "keep"; },
   items, npcs, quests, zones, factions, faction: factionPage, chests, loot, professions, plan: async (a) => { await planPage(a); return "keep"; },
-  pvp, about,
+  pvp, about, item: itemPage, npc: npcPage, quest: questPage,
 };
 async function route() {
   const h = decodeURIComponent(location.hash.replace(/^#\/?/, ""));
@@ -71,7 +72,7 @@ function applyTabs() {
   bar.addEventListener("click", (e) => { const a = e.target.closest("[data-tab]"); if (!a) return; e.preventDefault(); show(+a.dataset.tab); });
   show(cur);
 }
-new MutationObserver(() => { publicPass(page); applyTabs(); }).observe(page, { childList: true });
+new MutationObserver(() => { publicPass(page); applyTabs(); tails(page); foldFilters(page); }).observe(page, { childList: true });
 
 wireShell();
 wireFind();

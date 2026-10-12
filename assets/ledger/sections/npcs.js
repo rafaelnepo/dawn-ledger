@@ -28,7 +28,7 @@ export async function npcs() {
       ["status", "Status", "", (r) => Object.keys(STATUS).indexOf(r[12]), (r) => status(r[12])],
       ["lever", "Change it", "hide-sm", (r) => (r[13] ? 1 : 0), (r) => (r[13] ? `${lever("leave")}<span class="sub">${esc(r[13])}</span>` : lever("data"))],
     ],
-    more: (r) => `<div class="facts"><span class="k">In the database</span><span>creature ${r[0]}${r[13] ? `, scripted (${esc(r[13])})` : ""}</span>
+    more: (r) => `<div class="facts"><span class="k">In the database</span><span>creature ${r[0]}${r[13] ? `, scripted (${esc(r[13])})` : ""} · <a href="#/npc/${r[0]}">its own page</a></span>
       <span class="k">Type</span><span>${esc(r[6])}</span>
       ${r[11].length ? `<span class="k">Changed by</span><span>${chgs(r[11])}</span>` : ""}
       <span class="k">Its drops</span><span><a href="drops.html?c=${r[0]}">every drop and its chance</a></span></div>`,

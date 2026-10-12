@@ -11,9 +11,9 @@ async function build() {
   c.changes.forEach((x) => rows.push(["change", (x.copy && x.copy.title) || x.title, x.id, `#/change/${encodeURIComponent(x.id)}`]));
   f.groups.flatMap((g) => g.factions).forEach((x) => rows.push(["faction", x.name, x.cat || "", `#/faction/${x.id}`]));
   z.zones.forEach((x) => rows.push(["zone", x.name, x.kind, "#/zones", { sec: "zones", open: x.name }]));
-  it.items.forEach((r) => rows.push(["item", r[1], `${r[5]} · item ${r[0]}`, "#/items", { sec: "items", q: r[1], open: r[0], has: false }]));
-  n.npcs.forEach((r) => rows.push(["npc", r[1], [r[2], r[9]].filter(Boolean).join(" · "), "#/npcs", { sec: "npcs", q: r[1], open: r[0] }]));
-  q.quests.forEach((r) => rows.push(["quest", r[1], [r[4], `level ${r[2]}`].filter(Boolean).join(" · "), "#/quests", { sec: "quests", q: r[1], open: r[0] }]));
+  it.items.forEach((r) => rows.push(["item", r[1], `${r[5]} · item ${r[0]}`, `#/item/${r[0]}`]));
+  n.npcs.forEach((r) => rows.push(["npc", r[1], [r[2], r[9]].filter(Boolean).join(" · "), `#/npc/${r[0]}`]));
+  q.quests.forEach((r) => rows.push(["quest", r[1], [r[4], `level ${r[2]}`].filter(Boolean).join(" · "), `#/quest/${r[0]}`]));
   rows.forEach((r) => (r.lc = r[1].toLowerCase()));
   return rows;
 }

@@ -34,7 +34,7 @@ export async function planPage(name) {
   const r = await fetch(`data/ledger/plans/${encodeURIComponent(name)}`, { cache: "no-cache" });
   if (!r.ok) { page.innerHTML = `<p class="empty">No plan file called ${esc(name)}. Build it with <code>python3 dbsite/build/ledger.py</code>.</p>`; return; }
   page.innerHTML = `<p class="crumbs"><a href="#/professions">Professions</a> · <span class="white">The plan</span></p>
-    <article class="spec panel"><p class="note"><code>docs/research/professions/${esc(name)}</code></p>${mdRender(await r.text())}</article>`;
+    <article class="spec panel">${mdRender(await r.text()).replace("</h2>", `</h2><p class="srcline"><code>docs/research/professions/${esc(name)}</code></p>`)}</article>`;
   // the plan's links to its own files open them here (mdRender made them spec links, or left them as file names)
   const files = new Set(((await load("professions")).plans || []).map((p) => p.file));
   page.querySelectorAll("article a[href]").forEach((a) => {
