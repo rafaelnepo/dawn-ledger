@@ -1,5 +1,5 @@
-import { base, esc, fmt, lever, page, state } from "./core.js";
 import { LOCAL } from "./build.js";
+import { base, esc, fmt, lever, page, state } from "./core.js";
 
 export function table(id, cols, groups, opts) {
   const st = (state[id] = state[id] || { sort: opts.sort || null, dir: opts.dir || 1 });
@@ -100,24 +100,27 @@ export function listPage(o) {
 export const ptabs = (sec, list, cur) => `<nav class="ptabs" aria-label="Sections">${list.map(([k, t, n]) =>
   `<a href="#/${sec}/${k}"${k === cur ? ' aria-current="page"' : ""}>${esc(t)}${n != null ? `<span class="n">${n}</span>` : ""}</a>`).join("")}</nav>`;
 
-// ---------- the sections' links: our work, the game, and (on this Mac) the pages beside the Ledger ----------
+// ---------- the sections' links: the game (our work moved to the Watcher's Console, session 95) ----------
 export const NAV = [
-  ["Our work", [["changes", "Changes"], ["review", "Review"], ["interface", "Interface"]]],
   ["The game", [["items", "Items"], ["npcs", "NPCs"], ["quests", "Quests"], ["zones", "Zones"], ["factions", "Factions"],
     ["chests", "Chests and boxes"], ["loot", "Loot"], ["professions", "Professions"], ["pvp", "PvP and honor"]]],
 ];
-const BESIDE = LOCAL
-  ? [["journey.html", "The Journey", "The Traveler’s Companion"], ["http://127.0.0.1:8790/", "Tradeskill DB", "Every recipe, rank by rank"],
-    ["http://127.0.0.1:8777/", "The previews", "Forever UI’s windows on the web"]]
-  : [];
+// the Journey's books (session 95, the user: the Traveler's Companion part of the Archive, its first category): pages of their own
+// in the Archive's frame, on this Mac only (they read your characters). A zone's page belongs to the road.
+export const JOURNEY = [["journey.html", "The road"], ["crafts.html", "Crafts"], ["dungeons.html", "Dungeons"], ["festivals.html", "Festivals"],
+  ["journal.html", "Journals"], ["lockpicking.html", "Lockpicking"], ["drops.html", "Drops"]];
+const HERE = location.pathname.split("/").pop();
+export const SPA = !HERE || HERE === "index.html";   // the game's sections live in index.html's hash; the Journey's books are pages
+const JOURNEY_OF = { "zone.html": "journey.html" };
 export const counts = {};   // a section's number beside its name (the Review's waiting ones); main.js fills it once
 export function nav(cur) {
-  const link = ([k, t]) => `<a href="#/${k}"${cur === k ? ' aria-current="page"' : ""}><span>${t}</span>${counts[k] ? `<span class="nc${k === "review" ? " hot" : ""}">${counts[k]}</span>` : ""}</a>`;
+  const pre = SPA ? "" : "index.html";
+  const mine = JOURNEY_OF[HERE] || HERE;
+  const jlink = ([u, t]) => `<a href="${u}"${!SPA && mine === u ? ' aria-current="page"' : ""}><span>${t}</span></a>`;
+  const link = ([k, t]) => `<a href="${pre}#/${k}"${SPA && cur === k ? ' aria-current="page"' : ""}><span>${t}</span>${counts[k] ? `<span class="nc${k === "review" ? " hot" : ""}">${counts[k]}</span>` : ""}</a>`;
   document.getElementById("nav").innerHTML =
-    NAV.map(([h, xs]) => `<div class="ngroup"><div class="nh">${h}</div>${xs.map(link).join("")}</div>`).join("") +
-    `<div class="ngroup"><div class="nh">${LOCAL ? "Beside it" : "Dawn"}</div>` +
-    (LOCAL ? "" : `<a href="#/about"${cur === "about" ? ' aria-current="page"' : ""}><span>About this server</span></a>`) +
-    BESIDE.map(([u, t, tip]) => `<a class="out" href="${u}" title="${tip}"${u.startsWith("http") ? ' target="_blank" rel="noopener"' : ""}><span>${t}</span></a>`).join("") +
-    (LOCAL ? `<a href="#/about"${cur === "about" ? ' aria-current="page"' : ""}><span>About this server</span></a>` : "") + `</div>`;
+    (LOCAL ? `<div class="ngroup"><div class="nh">The Journey</div>${JOURNEY.map(jlink).join("")}</div>` : "") +
+    NAV.map(([h, xs]) => `<div class="ngroup"><div class="nh">${h}</div>${xs.map(link).join("")}</div>`).join("");
+  if (!SPA) return;   // a Journey page keeps the title its own script gives it
   document.title = (cur && document.querySelector(`#nav a[aria-current] span`) ? document.querySelector(`#nav a[aria-current] span`).textContent + " · " : "") + "The Archive of Norgannon · Dawn";
 }

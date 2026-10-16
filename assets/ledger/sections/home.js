@@ -1,29 +1,21 @@
-import { STATUS, STATUS_TIP, base, esc, fmt, lever, load, page, short, status, statusCounts } from "../core.js";
+import { STATUS, STATUS_TIP, base, esc, fmt, lever, load, page, status, statusCounts } from "../core.js";
 import { LOCAL } from "../build.js";
 import { nav } from "../ui.js";
 
 // ---------- home: the ledger's contents (session 84), each section a line with dotted leaders to its count, its status tallies under it ----------
 export async function home() {
   nav("");
-  const names = ["changes", "factions", "chests", "loot", "items", "npcs", "quests", "zones", "professions", "pvp", "interface", "review"];
+  const names = ["factions", "chests", "loot", "items", "npcs", "quests", "zones", "professions", "pvp"];
   const D = Object.fromEntries(await Promise.all(names.map((n) => load(n).then((d) => [n, d]))));
   const tallies = (xs) => { const n = statusCounts(xs); return Object.keys(STATUS).filter((k) => n[k]).map((k) => `${status(k)}<span class="tc">${fmt(n[k])}</span>`).join(""); };
-  const kinds = statusCounts(D.changes.changes.map((x) => x.kind));
   const facs = D.factions.groups.flatMap((g) => g.factions);
-  const newest = D.changes.changes[0];
   const line = (k, title, n, unit, about, ts) => `<li><a class="te" href="#/${k}"><span class="tt">${title}</span><span class="tl" aria-hidden="true"></span>
     <span class="tn">${n}<small>${unit}</small></span></a><p class="td">${about}</p>${ts ? `<div class="ts">${ts}</div>` : ""}</li>`;
   page.innerHTML = `<h1>The Archive of Norgannon</h1>
     <p class="preface">${LOCAL
-      ? "This server’s data as it stands, beside every change we made to it: what each patch touched and why, what is easy to change and what to leave alone, and what still waits for a look. For one player on this server, and for Claude, to turn to before changing anything."
-      : "Dawn is a World of Warcraft Classic server for a single player. This archive shows its data as it stands, read from the server itself, beside every change made to fit the game to one person: what each change touched and why, how hard a change is, and what still waits for a look."}</p>
+      ? "The game’s data as this server holds it, read from its own database: every item, creature, quest, place and reputation, what each drops and pays, and the marks of what we changed. Our work on it lives in the Watcher’s Console."
+      : "Dawn is a World of Warcraft Classic server for a single player. This archive is its game data as the server holds it, read from its own database: every item, creature, quest, place and reputation, what each drops and pays, and the marks of what was changed to fit the game to one person."}</p>
     <div class="toc">
-      <section class="wide"><h2 class="sec">Our work</h2><ol class="c3">
-        ${line("changes", "Changes", fmt(D.changes.changes.length), "patches", `${["world", "character", "realm", "server", "proxy", "config"].filter((k) => kinds[k]).map((k) => `${kinds[k]} ${k}`).join(", ")}. The newest: <a class="badge" href="#/change/${encodeURIComponent(newest.id)}">${esc(short(newest.id))}</a> ${esc((newest.copy && newest.copy.title) || newest.title)}.`)}
-        ${line("review", "Review", fmt(D.review.items.length), "waiting", "Everything set to review or decided and not yet applied, the findings still open, and the open items’ headlines.", tallies(D.review.items.map((x) => x.status)))}
-        ${line("interface", "Interface", esc(D.interface.version), "Forever UI", `${D.interface.files.length} files, ${D.interface.previews.length} previews and ${D.interface.specs.length} specs, as modules by what they serve.`)}
-      </ol>
-      </section>
       <section class="wide"><h2 class="sec">The game</h2><ol class="c2">
         ${line("items", "Items", fmt(D.items.items.length), "items", "Where each comes from, what it costs, and the ones the client shows from our own copy.", tallies(D.items.items.map((x) => x[12])))}
         ${line("npcs", "NPCs", fmt(D.npcs.npcs.length), "creatures", "Everyone standing in the world: what they do for you, where, and how many.", tallies(D.npcs.npcs.map((x) => x[12])))}

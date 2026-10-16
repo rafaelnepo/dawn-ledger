@@ -28,9 +28,12 @@ export const short = (id) => {
   return (id.startsWith("hermesproxy") ? "proxy " : "server ") + (d ? `${d[2]}-${d[3]}` : id);
 };
 export const kindOf = (id) => (/^world /.test(id) ? "world" : /^(character|realm) /.test(id) ? "world" : id.startsWith("hermesproxy") ? "proxy" : /overrides/.test(id) ? "config" : "server");
+// a change's badge opens its card in the Watcher's Console (session 95: our work lives there); the public copy keeps the badge as words
+const CONSOLE_KIND = { world: "world", character: "character", realm: "character", server: "server", proxy: "proxy", config: "config" };
 export const chg = (id) => {
   const c = base.changes && base.changes.get(id);
-  return `<a class="badge k-${kindOf(id)}" href="#/change/${encodeURIComponent(id)}" title="${esc(c ? c.title : id)}">${esc(short(id))}</a>`;
+  const tab = CONSOLE_KIND[(c && c.kind) || kindOf(id)] || "world";
+  return `<a class="badge k-${kindOf(id)}" href="http://localhost:8777/#changes/${tab}/${encodeURIComponent(id)}" target="_blank" rel="noopener" title="${esc(c ? (c.copy && c.copy.title) || c.title : id)}">${esc(short(id))}</a>`;
 };
 export const chgs = (ids) => (ids || []).map(chg).join("");
 export const respawn = (t) => (!t || !t.length ? "" : t.map((s) => (s < 0 ? "scripted" : s >= 86400 ? Math.round(s / 3600) + " h" : s >= 3600 ? (s / 3600).toFixed(1).replace(".0", "") + " h" : s >= 60 ? Math.round(s / 60) + " min" : s + " s")).join(", "));

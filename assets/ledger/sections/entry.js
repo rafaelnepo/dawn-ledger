@@ -1,13 +1,12 @@
-import { STATUS_TIP, base, esc, fmt, lever, load, money, page, short, status } from "../core.js";
+import { STATUS_TIP, chgs, esc, fmt, lever, load, money, page, status } from "../core.js";
 import { nav } from "../ui.js";
 
 // ---------- one entry's own page (session 84): #/item/<id>, #/npc/<id>, #/quest/<id>, a link to share and to land on from the search.
 // The same facts as the list's open row, then every change that touched it in plain words, its status and how hard it is to change.
+// what of ours touched it: a stamp a change, each opening its card in the Watcher's Console (session 95: our work lives there)
 const changeList = (ids) => (ids && ids.length
-  ? `<div class="mods chgs">${ids.map((id) => { const c = base.changes.get(id) || { id, title: id }; const cp = c.copy || {};
-    return `<article class="mod chg"><header><h3>${esc(cp.title || c.title)}</h3><a class="badge" href="#/change/${encodeURIComponent(id)}">${esc(short(id))}</a></header>
-      ${cp.what ? `<p class="mt">${esc(cp.what)}</p>` : ""}${cp.after ? `<div class="ba"><div class="af"><span class="bl">After</span>${esc(cp.after)}</div>${cp.before ? `<div class="b4"><span class="bl">Before</span>${esc(cp.before)}</div>` : ""}</div>` : ""}</article>`; }).join("")}</div>`
-  : `<p class="note">None: as Blizzard made it.</p>`);
+  ? `<p class="emarks"><span class="note">Changed by us:</span> ${chgs(ids)}</p>`
+  : `<p class="note">As Blizzard made it.</p>`);
 const facts = (rows) => `<div class="panel panel-body"><div class="facts">${rows.filter(([, v]) => v !== "" && v != null && v !== false)
   .map(([k, v]) => `<span class="k">${k}</span><span>${v}</span>`).join("")}</div></div>`;
 const head = (sec, title, name, cls, sub, st, lv) => `<p class="crumbs"><a href="#/${sec}">${title}</a> · <span class="white">${esc(name)}</span></p>
@@ -25,7 +24,7 @@ export async function itemPage(id) {
     `<h2 class="sec">On this server</h2>` + facts([["Item level", r[3]], ["Requires level", r[4] || ""], ["Buys for", money(r[7])], ["Sells for", money(r[8]) || "nothing"],
       ["PvP rank", r[13] ? `${r[13] - 4} (requiredhonorrank ${r[13]})` : ""], ["Comes from", src || "nowhere: no source on this server"],
       ["The client", r[11] ? "shows our hotfix row (HermesProxy), not its own copy" : "shows its own copy, which matches"], ["In the database", `item ${r[0]}`]]) +
-    `<h2 class="sec">Our changes</h2>${changeList(r[10])}`;
+    `${changeList(r[10])}`;
 }
 
 export async function npcPage(id) {
@@ -37,7 +36,7 @@ export async function npcPage(id) {
     `<h2 class="sec">In the world</h2>` + facts([["Level", r[3] === r[4] ? r[3] : `${r[3]}–${r[4]}`], ["Rank", esc(r[5])], ["Type", esc(r[6])],
       ["Side", `<span class="side ${esc(r[7])}">${esc(r[7])}</span>`], ["Does", esc(r[8].join(", "))], ["Stands in", esc(r[9])], ["Spawns", r[10] || ""],
       ["Scripted", r[13] ? `${esc(r[13])}: better left alone` : ""], ["Its drops", `<a href="drops.html?c=${r[0]}">every drop and its chance</a>`], ["In the database", `creature ${r[0]}`]]) +
-    `<h2 class="sec">Our changes</h2>${changeList(r[11])}`;
+    `${changeList(r[11])}`;
 }
 
 export async function questPage(id) {
@@ -50,5 +49,5 @@ export async function questPage(id) {
     `<h2 class="sec">The quest</h2>` + facts([["Level", `${r[2]}, from ${r[3]}`], ["Belongs to", esc(r[4])], ["Kind", esc(r[5])],
       ["For", `<span class="side ${esc(r[6])}">${esc(r[6])}</span>${r[7] ? ` · ${esc(r[7])}` : ""}`], ["Repeats", esc(r[8].join(", "))], ["Pays", pays || "nothing"],
       ["Ours", r[15] ? "yes: written for this server (from 60000)" : ""], ["In the database", `quest ${r[0]}`]]) +
-    `<h2 class="sec">Our changes</h2>${changeList(r[13])}`;
+    `${changeList(r[13])}`;
 }

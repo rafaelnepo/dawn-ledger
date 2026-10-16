@@ -8,31 +8,30 @@ import { quests } from "./sections/quests.js";
 import { zones } from "./sections/zones.js";
 import { professions, planPage } from "./sections/professions.js";
 import { pvp } from "./sections/pvp.js";
-import { interfacePage, specPage } from "./sections/interface.js";
-import { reviewPage } from "./sections/review.js";
-import { changes, changePage } from "./sections/changes.js";
 import { factions, factionPage } from "./sections/factions.js";
 import { chests } from "./sections/chests.js";
 import { loot } from "./sections/loot.js";
-import { about } from "./sections/about.js";
 import { itemPage, npcPage, questPage } from "./sections/entry.js";
 import { wireShell, publicPass, turn, tails, foldFilters } from "./shell.js";
 import { wireFind } from "./find.js";
-import { counts, nav } from "./ui.js";
+import { LOCAL } from "./build.js";
 
 // ---------- the router ----------
 // every page by its hash: #/section or #/section/arg; a page that keeps its scroll (Interface, back from a spec) returns "keep"
 const ROUTES = {
-  changes, change: changePage, review: reviewPage, interface: interfacePage, spec: async (a) => { await specPage(a); return "keep"; },
   items, npcs, quests, zones, factions, faction: factionPage, chests, loot, professions, plan: async (a) => { await planPage(a); return "keep"; },
-  pvp, about, item: itemPage, npc: npcPage, quest: questPage,
+  pvp, item: itemPage, npc: npcPage, quest: questPage,
 };
+// our work moved to the Watcher's Console (session 95, the user: the Archive is the game's database): an old link lands there on
+// this Mac, on the home page in the public copy
+const MOVED = { changes: "changes", change: "changes", review: "review", interface: "interface", spec: "interface", about: "about" };
 async function route() {
   const h = decodeURIComponent(location.hash.replace(/^#\/?/, ""));
   try {
     if (!base.levers) base.levers = await load("levers");
     if (!base.changes) { const cd = await load("changes"); base.changes = new Map(cd.changes.map((c) => [c.id, c])); base.areas = Object.fromEntries(cd.areas); }
     const [sec, arg] = [h.split("/")[0], h.split("/").slice(1).join("/")];
+    if (MOVED[sec] && LOCAL) { location.replace(`http://localhost:8777/#${MOVED[sec]}`); return; }
     const go = ROUTES[sec] || home;
     const r = await go(arg);
     turn(page);
@@ -45,7 +44,7 @@ async function route() {
 // Each time a page draws, its sections (an h2.sec and what follows, up to the next) become tabs: one shows, the others wait.
 // The page's own code is untouched (its filters still find their elements); the tab chosen is kept per page. The list a page is
 // about opens first; the rules and "What is easy to change" come after it. PvP and Interface have their own tabs or filters.
-const TABBED = { changes: 0, review: 0, items: 1, npcs: 1, quests: 1, zones: 1, factions: 2, chests: 1, loot: 2, professions: 1 };
+const TABBED = { items: 1, npcs: 1, quests: 1, zones: 1, factions: 2, chests: 1, loot: 2, professions: 1 };
 const TAB_FIRST = { factions: 2, loot: 2, items: 1, npcs: 1, quests: 1, zones: 1, chests: 1, professions: 1 };
 const shortTitle = (t) => t.replace(/^What is easy to change, and what to leave$/, "What can change").replace(/^The rules (we changed )?for all (reputation|creatures)$/, "Rules for all")
   .replace(/\s*\(docs\/open-items\.md\)$/, "").replace(/^The /, "").replace(/^./, (c) => c.toUpperCase());
@@ -76,6 +75,5 @@ new MutationObserver(() => { publicPass(page); applyTabs(); tails(page); foldFil
 
 wireShell();
 wireFind();
-load("review").then((d) => { counts.review = d.items.length; nav(document.querySelector("#nav a[aria-current]") ? decodeURIComponent(location.hash.replace(/^#\/?/, "").split("/")[0]) : ""); }).catch(() => {});
 window.addEventListener("hashchange", route);
 route();

@@ -40,6 +40,7 @@ export async function planPage(name) {
   page.querySelectorAll("article a[href]").forEach((a) => {
     const h = a.getAttribute("href"), f = decodeURIComponent(h.replace(/^#\/spec\//, "").replace(/#.*$/, ""));
     if (files.has(f)) a.setAttribute("href", "#/plan/" + encodeURIComponent(f));
+    else if (h.startsWith("#/spec/")) { const s = document.createElement("span"); s.className = "white"; s.title = f; s.innerHTML = a.innerHTML; a.replaceWith(s); }   // the specs left with Interface (session 95)
   });
   window.scrollTo(0, 0);
 }
