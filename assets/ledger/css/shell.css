@@ -96,3 +96,18 @@ input, button, select { font: inherit; color: inherit; caret-color: var(--rubric
 .found a:hover, .found a[aria-selected="true"] { background: rgba(140, 36, 22, 0.1); }
 .found .fnone { padding: var(--s3) var(--s4); color: var(--ink-2); }
 @media (max-width: 900px) { .found { left: 8px; right: 8px; top: 60px; width: auto; } }
+
+/* The Archive of Norgannon's logo (session 95, the user's; dbsite/build/logo.py makes assets/ledger/logo.png; public too): over the rail's name, as wide as the
+   cord; the words stay for screen readers. The top bar on narrow screens shows a 40 px copy. */
+.rail .brand:not(.console), .topbar .brand:not(.console) { position: relative; }
+.rail .brand:not(.console) { padding: 0; margin: -4px calc(var(--s2) * -1) 0; }
+.rail .brand:not(.console)::before, .topbar .brand:not(.console)::before {
+  content: ""; display: block; background: url("../logo.png") center / contain no-repeat;
+  filter: drop-shadow(0 2px 3px rgb(0 0 0 / 0.55));
+}
+.rail .brand:not(.console)::before { aspect-ratio: 600 / 206; width: 100%; }
+.topbar .brand:not(.console)::before { height: 40px; aspect-ratio: 600 / 206; }
+.rail .brand:not(.console) > span, .topbar .brand:not(.console) > span {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+.rail .brand:not(.console) + .cord { display: none; }   /* the logo needs no cord under it (the user, session 95) */
