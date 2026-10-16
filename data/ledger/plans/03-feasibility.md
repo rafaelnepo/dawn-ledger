@@ -3,7 +3,7 @@
 Research part C of the professions plan (2026-10-10, unattended). Read-only: the CMaNGOS source (`(the server's checkout)`), its DBCs
 (`(the server's checkout)`), the world database `classicmangos` (SELECT only), HermesProxy’s source (`(a file on the server's Mac)`)
 and installed CSVs, the 1.14.2 client’s tables (wago.tools, build 1.14.2.42597, cached in `(private files)`), the
-client’s own `Logs/Hotfix.log` and the proxy’s logs. It builds on [game-modding-research.md](../../specs/game-modding-research.md)
+client’s own `Logs/Hotfix.log` and the proxy’s logs. It builds on [game-modding-research.md](../game-modding-research.md)
 (session 43). Confidence: **verified** (seen working in game, in a log or a count), **source** (the code says so, not tried),
 **guess**.
 

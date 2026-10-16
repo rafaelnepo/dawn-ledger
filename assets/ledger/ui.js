@@ -119,5 +119,5 @@ export function nav(cur) {
     (LOCAL ? "" : `<a href="#/about"${cur === "about" ? ' aria-current="page"' : ""}><span>About this server</span></a>`) +
     BESIDE.map(([u, t, tip]) => `<a class="out" href="${u}" title="${tip}"${u.startsWith("http") ? ' target="_blank" rel="noopener"' : ""}><span>${t}</span></a>`).join("") +
     (LOCAL ? `<a href="#/about"${cur === "about" ? ' aria-current="page"' : ""}><span>About this server</span></a>` : "") + `</div>`;
-  document.title = (cur && document.querySelector(`#nav a[aria-current] span`) ? document.querySelector(`#nav a[aria-current] span`).textContent + " · " : "") + "The Ledger · Dawn";
+  document.title = (cur && document.querySelector(`#nav a[aria-current] span`) ? document.querySelector(`#nav a[aria-current] span`).textContent + " · " : "") + "The Archive of Norgannon · Dawn";
 }

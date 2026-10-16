@@ -17,7 +17,8 @@ we will show").
   Changes, Review, Interface (Forever UI's windows, mockups and specs). The Journey tab keeps the Companion.
 - **Built in session 75:** Changes, Factions, Chests and boxes, Loot first; then (the user: "Continue building all the other tabs based
   on server data and our changes") Review, Items, NPCs, Quests, Zones, Professions, PvP and honor, Interface: every tab.
-- **The look:** Forever's dark style (site.css), classicdb's density: tight sortable tables grouped under gold headers, filters on top.
+- **The look:** classicdb's density: tight sortable tables grouped under headers, filters on top; since session 84 an account book in
+  Forever's frame (below, “The look”).
 - **Every list:** the game's columns (the server's numbers) first, then ours: the **changes** (a badge per patch, linked) and the
   **status**: Blizzard's (untouched), To review, Decided (chosen, not applied), Changed, Seen in game. One color each.
 - **"Change it":** how hard a change is, and what to leave (the user: "things that are easy to fix and adjust, and things we probably
@@ -46,5 +47,31 @@ we will show").
   rewards, the level caps, battleground_template, the bots by bracket from the characters DB), Interface (Forever UI's files with
   their findings by `watch`, the previews on :8777, the specs, the other addons), Review (every status To review or Decided, the
   open findings, docs/open-items.md's headlines).
-- The pages: `dbsite/site/index.html`, `assets/ledger.js`, `assets/ledger.css`; the companion preview (http://localhost:8791).
+- The pages: `dbsite/site/index.html` and `assets/ledger/`, in modules (session 84): `main.js` the router (a table of routes,
+  `#/section/arg`), `core.js` the data and the marks, `ui.js` the components and the rail's sections, `shell.js` the frame (the
+  menu on narrow screens, the footers, the local art layer, the public build's pass), `find.js` the rail's search, `cards.js`,
+  `markdown.js`, `build.js` (local or public), one file a section in `sections/`; the styles in `assets/ledger/css/`
+  (`tokens`, `material`, `shell`, `page`, `entries`). A new section: a module in `sections/`, a line in `main.js`'s routes, one in
+  `ui.js`'s `NAV`. The companion preview (http://localhost:8791).
 - A status changes when the user says so ("mark X to review", "seen in game"): edit the content file, rebuild.
+
+## The look (session 84)
+
+An account book bound in WoW Forever's frame: a dark leather rail with a twisted gold cord (the name, Find anything, the sections
+by Our work, The game and Beside it), and golden parchment pages in sepia ink, titles over a double rubric rule, tables ruled like
+a ledger, statuses as ink-stamp pills (one color each, as before), the home page a book's contents with dotted leaders. Marcellus
+and Alegreya (Google Fonts); text-wrap balance on titles and pretty on paragraphs, against runts and widows. The tokens and the
+reasons: `assets/ledger/css/tokens.css`; the system: DESIGN.md at the project root.
+
+## Two builds: on this Mac and on the web
+
+- **Local** (http://localhost:8791): everything, plus the art layer `data/art/art.css` (Friz Quadrata and Forever's narration
+  parchment, in the private `(private files)`), the faction crests, and the links to the Companion, the
+  Tradeskill DB and the previews.
+- **Public** (https://rafaelnepo.github.io/dawn-ledger/, the public repository `rafaelnepo/dawn-ledger`): `python3
+  dbsite/build/publish.py` builds it into `../dawn-ledger` (build.js set to "public", the crests dropped for a wax seal, this
+  Mac's paths in the docs replaced) and audits it (no image or font files or links to them, no paths, emails or keys);
+  `--push` commits and pushes it, and Pages serves it a minute later. Names, ids and numbers are facts (the asset audit,
+  docs/server/asset-audit.md); Blizzard's art never goes out. The page itself never asks which build it is in: `shell.js`
+  turns the local-only links into plain words.
+- After a rebuild of the data (`ledger.py`), publish again when the web copy should follow.

@@ -4,7 +4,7 @@ import { nav } from "../ui.js";
 // ---------- about: what Dawn is, for a visitor of the public copy (and a reminder on this Mac) ----------
 export async function about() {
   nav("about");
-  page.innerHTML = `<p class="crumbs"><a href="#/">The Ledger</a> · <span class="white">About this server</span></p>
+  page.innerHTML = `<p class="crumbs"><a href="#/">The Archive of Norgannon</a> · <span class="white">About this server</span></p>
     <h1>About this server</h1>
     <div class="about">
       <p class="lead">Dawn is a World of Warcraft Classic server run for a single player on one Mac, with bots for company, changed

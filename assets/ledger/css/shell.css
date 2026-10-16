@@ -20,6 +20,7 @@ input, button, select { font: inherit; color: inherit; caret-color: var(--rubric
   color: var(--frame-text); scrollbar-width: thin; }
 .brand { display: block; text-decoration: none; color: var(--gold-soft); padding: 0 var(--s2); }
 .brand .bt { display: block; font: 400 30px/1 var(--display); letter-spacing: 0.02em; text-shadow: 0 1px 0 #000, 0 0 14px rgba(0, 0, 0, 0.8); }
+.brand .nw { white-space: nowrap; }   /* the name in two lines, "of Norgannon" kept together (session 95) */
 .brand .bs { display: block; margin-top: 6px; font: 400 11px/1.3 var(--display); letter-spacing: 0.1em; white-space: nowrap; text-transform: uppercase; color: var(--frame-note); }
 .brand:hover .bt { color: var(--gold); }
 .rail .cord { margin: 0 calc(var(--s2) * -1); opacity: 0.9; }
