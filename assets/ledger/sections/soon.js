@@ -10,8 +10,6 @@ const SOON = {
     "the world’s readable texts (worlddata.extra(); the book window's web copy, win_books.py)"],
   classes: ["Classes", "Each class: its talents, its spells by level and what it can wear.",
     "the spells and talents as the client holds them (dbsite/build/spelldata.py)"],
-  races: ["Races", "Each race: where it begins, its racial traits and its capital.",
-    "the races’ own data (gamedata.RACE_NAME and the start zones)"],
   mounts: ["Mounts", "Every mount and companion, and where each is bought or found.",
     "the mounts’ and companions’ web windows (win_mounts.py, win_companions.py)"],
 };

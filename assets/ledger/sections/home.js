@@ -6,7 +6,7 @@ import { nav, NAV } from "../ui.js";
 // key left for the Watcher's Console, session 95), by the rail's categories since session 98 ----------
 export async function home() {
   nav("");
-  const names = ["factions", "chests", "loot", "items", "npcs", "quests", "zones", "professions", "pvp", "flightpaths"];
+  const names = ["factions", "chests", "loot", "items", "npcs", "quests", "zones", "professions", "pvp", "flightpaths", "races"];
   const D = Object.fromEntries(await Promise.all(names.map((n) => load(n).then((d) => [n, d]))));
   const facs = D.factions.groups.flatMap((g) => g.factions);
   const line = (k, title, n, unit, about, ts) => `<li><a class="te" href="#/${k}"><span class="tt">${title}</span><span class="tl" aria-hidden="true"></span>
@@ -37,7 +37,7 @@ export async function home() {
     itemsets: () => soon("itemsets", "Item sets", "The sets of gear that belong together and their bonuses."),
     books: () => soon("books", "Books", "Every book, letter and plaque you can read in the world."),
     classes: () => soon("classes", "Classes", "Each class: its talents and its spells by level."),
-    races: () => soon("races", "Races", "Each race: where it begins, its traits and its capital."),
+    races: () => line("races", "Races", D.races.races.length, "races", "Each race: where it begins, its racial traits, its capital and its classes."),
     mounts: () => soon("mounts", "Mounts", "Every mount and companion, and where each is found."),
   };
   page.innerHTML = `<h1>The Archive of Norgannon</h1>

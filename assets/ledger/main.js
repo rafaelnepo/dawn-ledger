@@ -12,6 +12,7 @@ import { factions, factionPage } from "./sections/factions.js";
 import { chests } from "./sections/chests.js";
 import { loot } from "./sections/loot.js";
 import { flightpaths } from "./sections/flightpaths.js";
+import { races } from "./sections/races.js";
 import { soon, SOON_KEYS } from "./sections/soon.js";
 import { itemPage, npcPage, questPage } from "./sections/entry.js";
 import { wireShell, publicPass, turn, tails, foldFilters } from "./shell.js";
@@ -23,7 +24,7 @@ import { titleIcon } from "./ui.js";
 // every page by its hash: #/section or #/section/arg; a page that keeps its scroll (Interface, back from a spec) returns "keep"
 const ROUTES = {
   items, npcs, quests, zones, factions, faction: factionPage, chests, loot, professions,
-  pvp, flightpaths, item: itemPage, npc: npcPage, quest: questPage,
+  pvp, flightpaths, races, item: itemPage, npc: npcPage, quest: questPage,
   ...Object.fromEntries(SOON_KEYS.map((k) => [k, soon(k)])),   // the categories' new sections, still to be written (session 98)
 };
 // our work moved to the Watcher's Console (session 95, the user: the Archive is the game's database): an old link lands there on
@@ -47,8 +48,8 @@ async function route() {
 // Each time a page draws, its sections (an h2.sec and what follows, up to the next) become tabs: one shows, the others wait.
 // The page's own code is untouched (its filters still find their elements); the tab chosen is kept per page. The list a page is
 // about opens first; the rules and "What is easy to change" come after it. PvP and Interface have their own tabs or filters.
-const TABBED = { flightpaths: 1, items: 1, npcs: 1, quests: 1, zones: 1, factions: 2, chests: 1, loot: 2, professions: 1 };
-const TAB_FIRST = { flightpaths: 0, factions: 2, loot: 2, items: 1, npcs: 1, quests: 1, zones: 1, chests: 1, professions: 1 };
+const TABBED = { flightpaths: 1, races: 1, items: 1, npcs: 1, quests: 1, zones: 1, factions: 2, chests: 1, loot: 2, professions: 1 };
+const TAB_FIRST = { flightpaths: 0, races: 0, factions: 2, loot: 2, items: 1, npcs: 1, quests: 1, zones: 1, chests: 1, professions: 1 };
 const shortTitle = (t) => t.replace(/^What is easy to change, and what to leave$/, "What can change").replace(/^The rules (we changed )?for all (reputation|creatures)$/, "Rules for all")
   .replace(/\s*\(docs\/open-items\.md\)$/, "").replace(/^The /, "").replace(/^./, (c) => c.toUpperCase());
 function applyTabs() {
