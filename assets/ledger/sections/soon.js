@@ -8,8 +8,6 @@ const SOON = {
     "the item sets the Dressing Room already shows (its 172 sets)"],
   books: ["Books", "Every book, letter and plaque you can read in the world, and where it lies.",
     "the world’s readable texts (worlddata.extra(); the book window's web copy, win_books.py)"],
-  mounts: ["Mounts", "Every mount and companion, and where each is bought or found.",
-    "the mounts’ and companions’ web windows (win_mounts.py, win_companions.py)"],
 };
 export function soon(key) {
   return async () => {

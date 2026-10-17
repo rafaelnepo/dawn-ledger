@@ -6,7 +6,7 @@ import { nav, NAV } from "../ui.js";
 // key left for the Watcher's Console, session 95), by the rail's categories since session 98 ----------
 export async function home() {
   nav("");
-  const names = ["factions", "chests", "loot", "items", "npcs", "quests", "zones", "professions", "pvp", "flightpaths", "races", "classes"];
+  const names = ["factions", "chests", "loot", "items", "npcs", "quests", "zones", "professions", "pvp", "flightpaths", "races", "classes", "mounts"];
   const D = Object.fromEntries(await Promise.all(names.map((n) => load(n).then((d) => [n, d]))));
   const facs = D.factions.groups.flatMap((g) => g.factions);
   const line = (k, title, n, unit, about, ts) => `<li><a class="te" href="#/${k}"><span class="tt">${title}</span><span class="tl" aria-hidden="true"></span>
@@ -38,7 +38,7 @@ export async function home() {
     books: () => soon("books", "Books", "Every book, letter and plaque you can read in the world."),
     classes: () => line("classes", "Classes", D.classes.classes.length, "classes", "Each class: what it can wear, its spells by level and its talents."),
     races: () => line("races", "Races", D.races.races.length, "races", "Each race: where it begins, its racial traits, its capital and its classes."),
-    mounts: () => soon("mounts", "Mounts", "Every mount and companion, and where each is found."),
+    mounts: () => line("mounts", "Mounts", D.mounts.mounts.length, "mounts", `Every mount and ${D.mounts.companions.length} companions: where each is bought or found.`),
   };
   page.innerHTML = `<h1>The Archive of Norgannon</h1>
     <p class="preface">${LOCAL
