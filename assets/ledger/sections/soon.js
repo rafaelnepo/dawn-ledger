@@ -4,8 +4,6 @@ import { nav } from "../ui.js";
 // ---------- the sections still to be written (session 98, the Journal plan's Step 5): each a line and its source named, built one
 // at a time later ----------
 const SOON = {
-  flightpaths: ["Flight paths", "Every flight master and the routes between them, with what each flight costs.",
-    "the world’s taxi nodes and paths (worlddata.taxi(); the Flight Map window's web copy, win_taxi.py)"],
   itemsets: ["Item sets", "The sets of gear that belong together, their pieces and the bonuses they give.",
     "the item sets the Dressing Room already shows (its 172 sets)"],
   books: ["Books", "Every book, letter and plaque you can read in the world, and where it lies.",

@@ -6,7 +6,7 @@ import { nav, NAV } from "../ui.js";
 // key left for the Watcher's Console, session 95), by the rail's categories since session 98 ----------
 export async function home() {
   nav("");
-  const names = ["factions", "chests", "loot", "items", "npcs", "quests", "zones", "professions", "pvp"];
+  const names = ["factions", "chests", "loot", "items", "npcs", "quests", "zones", "professions", "pvp", "flightpaths"];
   const D = Object.fromEntries(await Promise.all(names.map((n) => load(n).then((d) => [n, d]))));
   const facs = D.factions.groups.flatMap((g) => g.factions);
   const line = (k, title, n, unit, about, ts) => `<li><a class="te" href="#/${k}"><span class="tt">${title}</span><span class="tl" aria-hidden="true"></span>
@@ -33,7 +33,7 @@ export async function home() {
     "@journal.html?j=herbs": () => book("journal.html?j=herbs", "Gathering", "Herbs, veins, hides and waters by the skill they ask and where they are."),
     "@tradeskill/index.html": () => book("tradeskill/index.html", "Tradeskill DB", "Each craft rank by rank, the classic game and Forever side by side."),
     "@lockpicking.html": () => book("lockpicking.html", "Lockpicking", "Every box and lock by skill, and where a rogue practices."),
-    flightpaths: () => soon("flightpaths", "Flight paths", "Every flight master and the routes between them."),
+    flightpaths: () => line("flightpaths", "Flight paths", fmt(D.flightpaths.points.length), "points", "Every flight master and the routes between them, with what each flight costs."),
     itemsets: () => soon("itemsets", "Item sets", "The sets of gear that belong together and their bonuses."),
     books: () => soon("books", "Books", "Every book, letter and plaque you can read in the world."),
     classes: () => soon("classes", "Classes", "Each class: its talents and its spells by level."),
