@@ -1,4 +1,4 @@
-import { QUALITY, STATUS, chgs, esc, fmt, load, money, status, uniq } from "../core.js";
+import { QUALITY, chgs, esc, fmt, load, money, uniq } from "../core.js";
 import { listPage, nav } from "../ui.js";
 
 // ---------- items ----------
@@ -23,7 +23,6 @@ export async function items() {
       ["src", "Comes from", "hide-sm", (r) => r[9].reduce((a, b) => a + b, 0), (r) => `<span class="note">${r[9].map((n, i) => (n ? `${fmt(n)} ${SRC[i]}` : "")).filter(Boolean).join(" · ")}</span>`],
       ["buy", "Price", "num hide-sm", (r) => r[7], (r) => money(r[7])],
       ["changes", "Changes", "", (r) => r[10].length + (r[11] ? 1 : 0), (r) => chgs(r[10]) + (r[11] ? `<span class="badge" title="The client shows our hotfix row">hotfix</span>` : "")],
-      ["status", "Status", "", (r) => Object.keys(STATUS).indexOf(r[12]), (r) => status(r[12])],
     ],
     more: (r) => `<div class="facts"><span class="k">In the database</span><span>item ${r[0]} · <a href="#/item/${r[0]}">its own page</a></span>
       <span class="k">Sells for</span><span>${money(r[8]) || "nothing"}</span>

@@ -1,5 +1,5 @@
 import { LOCAL } from "./build.js";
-import { base, esc, fmt, lever, page, state } from "./core.js";
+import { esc, fmt, page, state } from "./core.js";
 
 export function table(id, cols, groups, opts) {
   const st = (state[id] = state[id] || { sort: opts.sort || null, dir: opts.dir || 1 });
@@ -49,8 +49,6 @@ export function wireChips(root, name, set) {
   root.querySelectorAll(`[data-chips="${name}"] .chip, [data-chips="${name}"] .fo`).forEach((b) => b.addEventListener("click", () => set(b.dataset.v)));
 }
 // ---------- a long list, paged: search, filters, checks, sorting over the whole list, a row that opens ----------
-export const leversPanel = (area) => `<h2 class="sec">What is easy to change, and what to leave</h2>
-  <div class="panel panel-body"><ul class="levers">${(base.levers.areas[area] || []).map(([k, t]) => `<li>${lever(k)}<span>${esc(t)}</span></li>`).join("")}</ul></div>`;
 export function listPage(o) {
   // a link from another page may have set a filter already (a zone's "The NPCs here"): the defaults fill the rest
   const st = (state[o.sec] = Object.assign({ q: "", page: 0, open: null, sort: null, dir: 1 }, state[o.sec] ? {} : o.defaults || {}, state[o.sec] || {}));
@@ -72,7 +70,7 @@ export function listPage(o) {
     });
     if (!slice.length) h += `<tr><td colspan="${o.cols.length}" class="empty">Nothing matches.</td></tr>`;
     h += "</tbody></table>";
-    page.innerHTML = `<h1 class="display">${o.title}</h1><p class="lead">${o.lead}</p>${o.top || ""}${leversPanel(o.levers)}
+    page.innerHTML = `<h1 class="display">${o.title}</h1><p class="lead">${o.lead}</p>${o.top || ""}
       <h2 class="sec">${o.listTitle}</h2>
       <div class="filters"><input type="search" id="fq" placeholder="${o.placeholder}" value="${esc(st.q)}" aria-label="${o.placeholder}">
         ${o.filters.map((f) => `<select data-f="${f.k}" aria-label="${f.label}"><option value="">${f.label}</option>${f.values.map((v) => opt(v, st[f.k])).join("")}</select>`).join("")}
@@ -116,8 +114,10 @@ export const counts = {};   // a section's number beside its name (the Review's 
 export function nav(cur) {
   const pre = SPA ? "" : "index.html";
   const mine = JOURNEY_OF[HERE] || HERE;
-  const jlink = ([u, t]) => `<a href="${u}"${!SPA && mine === u ? ' aria-current="page"' : ""}><span>${t}</span></a>`;
-  const link = ([k, t]) => `<a href="${pre}#/${k}"${SPA && cur === k ? ' aria-current="page"' : ""}><span>${t}</span>${counts[k] ? `<span class="nc${k === "review" ? " hot" : ""}">${counts[k]}</span>` : ""}</a>`;
+  // each section's own icon (session 95: our ring icons, docs/specs/ring-icon-style.md; tools/asset-extract/ring_icons.py archive)
+  const icon = (k) => `<img class="nic" src="assets/ledger/icons/${k}.png" alt="" aria-hidden="true">`;
+  const jlink = ([u, t]) => `<a href="${u}"${!SPA && mine === u ? ' aria-current="page"' : ""}><span class="ni">${icon(u.replace(".html", ""))}<span>${t}</span></span></a>`;
+  const link = ([k, t]) => `<a href="${pre}#/${k}"${SPA && cur === k ? ' aria-current="page"' : ""}><span class="ni">${icon(k)}<span>${t}</span></span>${counts[k] ? `<span class="nc${k === "review" ? " hot" : ""}">${counts[k]}</span>` : ""}</a>`;
   document.getElementById("nav").innerHTML =
     (LOCAL ? `<div class="ngroup"><div class="nh">The Journey</div>${JOURNEY.map(jlink).join("")}</div>` : "") +
     NAV.map(([h, xs]) => `<div class="ngroup"><div class="nh">${h}</div>${xs.map(link).join("")}</div>`).join("");

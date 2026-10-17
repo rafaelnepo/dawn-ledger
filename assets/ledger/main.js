@@ -28,7 +28,6 @@ const MOVED = { changes: "changes", change: "changes", review: "review", interfa
 async function route() {
   const h = decodeURIComponent(location.hash.replace(/^#\/?/, ""));
   try {
-    if (!base.levers) base.levers = await load("levers");
     if (!base.changes) { const cd = await load("changes"); base.changes = new Map(cd.changes.map((c) => [c.id, c])); base.areas = Object.fromEntries(cd.areas); }
     const [sec, arg] = [h.split("/")[0], h.split("/").slice(1).join("/")];
     if (MOVED[sec] && LOCAL) { location.replace(`http://localhost:8777/#${MOVED[sec]}`); return; }

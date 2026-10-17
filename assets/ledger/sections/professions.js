@@ -1,6 +1,6 @@
-import { STATUS, cache, chgs, esc, fmt, load, page, status } from "../core.js";
+import { cache, chgs, esc, fmt, load, page } from "../core.js";
 import { mdRender } from "../markdown.js";
-import { leversPanel, table, wireTable, nav } from "../ui.js";
+import { table, wireTable, nav } from "../ui.js";
 
 // ---------- professions ----------
 export async function professions() {
@@ -14,12 +14,11 @@ export async function professions() {
     ["items", "Recipe items", "hide-sm", (p) => (p.recipe_items ? p.recipe_items.items : 0), (p) => rs(p.recipe_items)],
     ["nodes", "In the world", "num hide-sm", (p) => p.nodes || 0, (p) => (p.nodes ? `${fmt(p.nodes)}<span class="sub">${p.name === "Skinning" ? "skinnable kinds" : p.name === "Fishing" ? "schools" : "nodes"}</span>` : "")],
     ["changes", "Changes", "", (p) => p.changes.length, (p) => chgs(p.changes) + (p.tradeskill_db ? `<a class="badge" href="http://127.0.0.1:8790/" target="_blank" rel="noopener">Tradeskill DB</a>` : "")],
-    ["status", "Status", "", (p) => Object.keys(STATUS).indexOf(p.status), (p) => status(p.status)],
   ];
   page.innerHTML = `<h1 class="display">Professions</h1>
     <p class="lead">Every craft, the gathering skills and the rogue’s: how many recipes and trainers, where its recipe items come from,
     how many nodes stand in the world, and what we changed. ${esc(d.plan)}</p>
-    ${leversPanel("professions")}<h2 class="sec">The professions</h2>
+    <h2 class="sec">The professions</h2>
     <div class="panel">${table("tprof", cols, [["Crafts", d.professions.filter((p) => ["Alchemy", "Blacksmithing", "Enchanting", "Engineering", "Leatherworking", "Tailoring"].includes(p.name))],
       ["Gathering", d.professions.filter((p) => ["Herbalism", "Mining", "Skinning"].includes(p.name))],
       ["Secondary", d.professions.filter((p) => ["Cooking", "First Aid", "Fishing"].includes(p.name))],

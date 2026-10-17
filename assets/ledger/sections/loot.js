@@ -1,4 +1,4 @@
-import { STATUS, base, chg, chgs, esc, fmt, lever, load, page, state, status } from "../core.js";
+import { chg, chgs, esc, fmt, load, page, state } from "../core.js";
 import { table, nav } from "../ui.js";
 
 // ---------- loot ----------
@@ -23,7 +23,6 @@ export async function loot() {
       ["zone", "Zone", "hide-sm", (r) => r[4], (r) => esc(r[4])],
       ["lines", "Drops", "num", (r) => r[7], (r) => `${r[7]}<span class="sub">${r[8]} own, ${r[9]} lists</span>`],
       ["changes", "Changes", "", (r) => r[10].length, (r) => chgs(r[10])],
-      ["status", "Status", "", (r) => Object.keys(STATUS).indexOf(r[11]), (r) => status(r[11])],
     ];
     const ts = (state.tloot = state.tloot || { sort: null, dir: 1 });
     let sorted = rows;
@@ -38,8 +37,6 @@ export async function loot() {
       name opens every drop and its chance.</p>
       <h2 class="sec">The rules we changed for all creatures</h2>
       <div class="rules">${d.rules.map((id) => { const x = byId.get(id); return `<div class="rule panel"><h4>${esc(x ? x.title : id)}</h4>${x && x.quote && x.quote[0] ? `<p class="quote-user">“${esc(x.quote[0])}”</p>` : ""}<div class="meta">${chg(id)} ${x ? `<span class="note">${fmt((x.touches.cloot || []).length)} creature tables</span>` : ""}</div></div>`; }).join("")}</div>
-      <h2 class="sec">What is easy to change, and what to leave</h2>
-      <div class="panel panel-body"><ul class="levers">${(base.levers.areas.loot || []).map(([k, t]) => `<li>${lever(k)}<span>${esc(t)}</span></li>`).join("")}</ul></div>
       <h2 class="sec">The creatures</h2>
       <div class="filters"><input type="search" id="lq" placeholder="Search a creature…" value="${esc(st.q)}" aria-label="Search the creatures">
         <select id="lz" aria-label="Zone"><option value="">Every zone</option>${zones.map((z) => opt(z, st.zone)).join("")}</select>

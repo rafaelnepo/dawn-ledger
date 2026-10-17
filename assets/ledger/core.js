@@ -1,5 +1,5 @@
 
-export const base = { levers: null, changes: null, areas: null };
+export const base = { changes: null, areas: null };
 export const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 export const json = (u) => fetch(u, { cache: "no-cache" }).then((r) => { if (!r.ok) throw new Error(u + " " + r.status); return r.json(); });
 export const cache = {};
@@ -12,12 +12,7 @@ export const SECTIONS = [["changes", "Changes"], ["review", "Review"], null, ["i
   ["zones", "Zones"], ["factions", "Factions"], ["chests", "Chests and boxes"], ["loot", "Loot"], ["professions", "Professions"],
   ["pvp", "PvP and honor"], null, ["interface", "Interface"]];
 export const SOON = [];
-export const STATUS = { blizzard: "Blizzard’s", review: "To review", decided: "Decided", changed: "Changed", seen: "Seen in game" };
-export const STATUS_TIP = { blizzard: "As Blizzard made it: untouched", review: "Waiting for a look", decided: "Chosen, not applied yet",
-  changed: "Patched on this server", seen: "Patched and seen in game" };
 
-export const lever = (k) => { const s = (base.levers && base.levers.scale.find((x) => x[0] === k)) || [k, k, ""]; return `<span class="lv ${esc(k)}" title="${esc(s[2])}">${esc(s[1])}</span>`; };
-export const status = (k) => `<span class="st ${esc(k)}" title="${esc(STATUS_TIP[k] || "")}">${esc(STATUS[k] || k)}</span>`;
 
 // a change's short name: world 012 → 012, the server's and proxy's by their date
 

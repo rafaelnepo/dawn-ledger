@@ -111,3 +111,8 @@ input, button, select { font: inherit; color: inherit; caret-color: var(--rubric
   position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
 }
 .rail .brand:not(.console) + .cord { display: none; }   /* the logo needs no cord under it (the user, session 95) */
+
+/* each section's icon (session 95: our ring icons, unframed, their own proportions) */
+.nav .ni { display: inline-flex; align-items: center; gap: 10px; min-width: 0; }
+.nav .nic { flex: none; width: 24px; height: 24px; object-fit: contain; margin: -3px 0; }
+.nav a:has(.nic) { align-items: center; padding-left: 10px; }

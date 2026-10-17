@@ -1,4 +1,4 @@
-import { STATUS, chgs, esc, lever, load, status, uniq } from "../core.js";
+import { chgs, esc, load, uniq } from "../core.js";
 import { listPage, nav } from "../ui.js";
 
 // ---------- NPCs ----------
@@ -25,8 +25,6 @@ export async function npcs() {
       ["zone", "Zone", "hide-sm", (r) => r[9], (r) => esc(r[9])],
       ["spawns", "Spawns", "num", (r) => r[10], (r) => r[10] || ""],
       ["changes", "Changes", "", (r) => r[11].length, (r) => chgs(r[11])],
-      ["status", "Status", "", (r) => Object.keys(STATUS).indexOf(r[12]), (r) => status(r[12])],
-      ["lever", "Change it", "hide-sm", (r) => (r[13] ? 1 : 0), (r) => (r[13] ? `${lever("leave")}<span class="sub">${esc(r[13])}</span>` : lever("data"))],
     ],
     more: (r) => `<div class="facts"><span class="k">In the database</span><span>creature ${r[0]}${r[13] ? `, scripted (${esc(r[13])})` : ""} · <a href="#/npc/${r[0]}">its own page</a></span>
       <span class="k">Type</span><span>${esc(r[6])}</span>

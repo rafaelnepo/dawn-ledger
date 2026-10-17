@@ -1,13 +1,13 @@
-import { BG_REPS, changeCard, vendorCard } from "../cards.js";
-import { esc, kindOf, load, money, page, state, status, statusCounts } from "../core.js";
-import { fcol, leversPanel, ptabs, table, wireChips, wireTable, nav } from "../ui.js";
+import { BG_REPS, vendorCard } from "../cards.js";
+import { esc, load, money, page, state } from "../core.js";
+import { fcol, ptabs, table, wireChips, wireTable, nav } from "../ui.js";
 
 export async function pvp(tab) {
   nav("pvp");
   const [d, c] = await Promise.all([load("pvp"), load("changes")]);
   const byId = new Map(c.changes.map((x) => [x.id, x]));
   const TABS = [["ranks", "Ranks", d.ranks.length], ["battlegrounds", "Battlegrounds", d.battlegrounds.length], ["vendors", "Reward vendors", d.vendors.length],
-    ["classes", "Class restrictions", null], ["changes", "Our changes", d.changes.length], ["findings", "Findings", d.findings.length], ["levers", "What can change"]];
+    ["classes", "Class restrictions", null]];   // our changes, the findings and the levers: the Watcher's Console (session 95)
   let pc = null;
   try { pc = await load("pvp-classes"); } catch (e) { pc = { items: [] }; }
   TABS.find((t) => t[0] === "classes")[2] = pc.items.filter((z) => z.state === "restrict").length;
@@ -88,32 +88,10 @@ export async function pvp(tab) {
           ["classes", "Proposed classes", "", (z) => z.classes.join(), (z) => (z.state === "open" ? `<span class="note">Open to all</span>` : z.classes.map((c) => `<span class="badge">${CL(c)}</span>`).join(""))],
           ["why", "Why", "hide-sm", (z) => z.why, (z) => `<span class="note">${esc(z.why)}</span><span class="sub">can wear it: ${z.wear.map(CL).join(", ")}</span>`],
         ], [["", rows]], { sort: null })}</div>`;
-    } else if (tab === "changes") {
-      const xs = d.changes.map((k) => [k, byId.get(k)]);
-      const kc = statusCounts(xs.map(([k]) => kindOf(k)));
-      const rows = xs.filter(([k]) => !st.kind || kindOf(k) === st.kind);
-      const KEYS = { new: [([k, x]) => (x && x.date) || "", -1], old: [([k, x]) => (x && x.date) || "", 1], session: [([k, x]) => (x && x.session) || 0, -1], name: [([k, x]) => (x ? x.title : k).toLowerCase(), 1] };
-      const [key, dir] = KEYS[st.csort];
-      rows.sort((a, b) => { const x = key(a), y = key(b); return (x < y ? -1 : x > y ? 1 : 0) * dir; });
-      body = `<div class="fcols panel cols2">
-          ${fcol("ckind", "Kind", [["world", "World database"], ["server", "Server source"], ["proxy", "HermesProxy"], ["config", "Config"]].filter(([k]) => kc[k]).map(([k, t]) => [k, t, kc[k]]), st.kind, "Every kind", xs.length)}
-          ${fcol("csort", "Sort", [["new", "Newest first"], ["old", "Oldest first"], ["session", "By session"], ["name", "Name"]], st.csort)}
-        </div><div class="mods">${rows.map(([k, x]) => changeCard(x, k)).join("")}</div>`;
-    } else if (tab === "findings") {
-      const fc = statusCounts(d.findings.map((f) => f[2]));
-      const rows = d.findings.filter((f) => !st.fstatus || f[2] === st.fstatus);
-      body = `<div class="fcols panel cols2">${fcol("fstatus", "Status", Object.keys(fc).map((k) => [k, k[0].toUpperCase() + k.slice(1), fc[k]]), st.fstatus, "Every status", d.findings.length)}</div>
-        <div class="panel">${table("tpfind", [
-          ["id", "Finding", "nm", (f) => f[0], (f) => esc(f[0])],
-          ["t", "What", "", (f) => f[1], (f) => esc(f[1])],
-          ["s", "Status", "", (f) => f[2], (f) => (f[2] === "open" ? status("review") : status("seen"))],
-        ], [["", rows]], { sort: "id", dir: -1 })}</div>`;
-    } else {
-      body = leversPanel("pvp").replace(/^<h2 class="sec">[^<]*<\/h2>/, "");
     }
     page.innerHTML = `<h1 class="display">PvP and honor</h1>
       <p class="lead">The ranks and what each opens and sells, the level each rank waits for on this server, the battlegrounds and the bots that
-      fill them, who sells the rewards, and every change we made to honor. The rules: docs/server/pvp.md.</p>
+      fill them, and who sells the rewards. The rules: docs/server/pvp.md.</p>
       ${ptabs("pvp", TABS, tab)}<div class="ptab">${body}</div>`;
     ["tranks", "tbgs", "tbots", "tpfind", "tpcls"].forEach((id) => wireTable(id, render, [], {}));
     wireChips(page, "pstate", (v) => { st.pstate = v; render(); });

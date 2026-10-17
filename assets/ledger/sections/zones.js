@@ -1,5 +1,5 @@
-import { STATUS, chgs, esc, fmt, load, page, state, status } from "../core.js";
-import { leversPanel, table, wireTable, nav } from "../ui.js";
+import { chgs, esc, fmt, load, page, state } from "../core.js";
+import { table, wireTable, nav } from "../ui.js";
 
 // ---------- zones ----------
 export async function zones() {
@@ -19,7 +19,6 @@ export async function zones() {
       ["chests", "Chests", "num", (z) => z.chests, (z) => (z.chests ? fmt(z.chests) : "")],
       ["finds", "Finds", "num hide-sm", (z) => z.finds, (z) => (z.finds ? fmt(z.finds) : "")],
       ["changes", "Changes", "", (z) => z.changes.length, (z) => chgs(z.changes.slice(0, 5)) + (z.changes.length > 5 ? `<span class="note">+${z.changes.length - 5}</span>` : "")],
-      ["status", "Status", "", (z) => Object.keys(STATUS).indexOf(z.status), (z) => status(z.status)],
     ];
     const go = (sec, key, val) => `<a href="#/${sec}" data-go="${sec}|${key}|${esc(val)}">`;
     const more = (z) => `<p>${go("npcs", "zone", z.name)}The NPCs here →</a> &nbsp; ${go("quests", "zone", z.name)}The quests here →</a> &nbsp;
@@ -28,7 +27,7 @@ export async function zones() {
     page.innerHTML = `<h1 class="display">Zones</h1>
       <p class="lead">Every zone and dungeon: its levels and side, how many foes and people (and what the people do), its quests (ours
       marked), chests and finds, and every change that reached something in it. A zone opens to its NPCs, quests, chests and loot.</p>
-      ${leversPanel("zones")}<h2 class="sec">The zones and dungeons</h2>
+      <h2 class="sec">The zones and dungeons</h2>
       <div class="panel">${table("tzones", cols, [["Capitals", d.zones.filter((z) => z.kind === "capital")], ["Zones", d.zones.filter((z) => z.kind === "zone")], ["Dungeons", d.zones.filter((z) => z.kind === "dungeon")]], { more, open: (z) => st.open === z.name })}</div>`;
     wireTable("tzones", render, [], {});
     page.querySelectorAll("#tzones tr.row").forEach((tr) => tr.addEventListener("click", (e) => {

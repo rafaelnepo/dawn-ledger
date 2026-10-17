@@ -1,4 +1,4 @@
-import { STATUS, chgs, esc, fmt, load, money, status, uniq } from "../core.js";
+import { chgs, esc, fmt, load, money, uniq } from "../core.js";
 import { listPage, nav } from "../ui.js";
 
 // ---------- quests ----------
@@ -23,7 +23,6 @@ export async function quests() {
       ["type", "Kind", "hide-sm", (r) => r[5], (r) => `${esc(r[5])}${r[8].length ? `<span class="sub">${esc(r[8].join(", "))}</span>` : ""}`],
       ["reward", "Pays", "", (r) => r[10].reduce((a, x) => a + x[1], 0), (r) => `<span class="note">${[r[9] > 0 ? money(r[9]) : "", ...r[10].map(([f, v]) => `${esc(f)} ${v > 0 ? "+" : ""}${fmt(v)}`), r[11] ? "items" : ""].filter(Boolean).join(" · ")}</span>`],
       ["changes", "Changes", "", (r) => r[13].length, (r) => (r[15] ? `<span class="badge">ours</span>` : "") + chgs(r[13])],
-      ["status", "Status", "", (r) => Object.keys(STATUS).indexOf(r[14]), (r) => status(r[14])],
     ],
     more: (r) => `<div class="facts"><span class="k">In the database</span><span>quest ${r[0]} · <a href="#/quest/${r[0]}">its own page</a></span>
       ${r[7] ? `<span class="k">Classes</span><span>${esc(r[7])}</span>` : ""}
