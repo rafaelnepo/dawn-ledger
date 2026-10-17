@@ -13,6 +13,7 @@ import { chests } from "./sections/chests.js";
 import { loot } from "./sections/loot.js";
 import { flightpaths } from "./sections/flightpaths.js";
 import { races } from "./sections/races.js";
+import { classes } from "./sections/classes.js";
 import { soon, SOON_KEYS } from "./sections/soon.js";
 import { itemPage, npcPage, questPage } from "./sections/entry.js";
 import { wireShell, publicPass, turn, tails, foldFilters } from "./shell.js";
@@ -24,7 +25,7 @@ import { titleIcon } from "./ui.js";
 // every page by its hash: #/section or #/section/arg; a page that keeps its scroll (Interface, back from a spec) returns "keep"
 const ROUTES = {
   items, npcs, quests, zones, factions, faction: factionPage, chests, loot, professions,
-  pvp, flightpaths, races, item: itemPage, npc: npcPage, quest: questPage,
+  pvp, flightpaths, races, classes, item: itemPage, npc: npcPage, quest: questPage,
   ...Object.fromEntries(SOON_KEYS.map((k) => [k, soon(k)])),   // the categories' new sections, still to be written (session 98)
 };
 // our work moved to the Watcher's Console (session 95, the user: the Archive is the game's database): an old link lands there on
