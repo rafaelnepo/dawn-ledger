@@ -25,8 +25,7 @@ export async function zones() {
       ${go("chests", "q", z.name)}The chests here →</a> &nbsp; ${go("loot", "zone", z.name)}What its creatures drop →</a></p>
       ${z.changes.length ? `<p><span class="note">Every change here:</span> ${chgs(z.changes)}</p>` : ""}`;
     page.innerHTML = `<h1 class="display">Zones</h1>
-      <p class="lead">Every zone and dungeon: its levels and side, how many foes and people (and what the people do), its quests (ours
-      marked), chests and finds, and every change that reached something in it. A zone opens to its NPCs, quests, chests and loot.</p>
+      <p class="lead">Every zone and dungeon: its levels and side, its people and foes, its quests, chests and finds.</p>
       <h2 class="sec">The zones and dungeons</h2>
       <div class="panel">${table("tzones", cols, [["Capitals", d.zones.filter((z) => z.kind === "capital")], ["Zones", d.zones.filter((z) => z.kind === "zone")], ["Dungeons", d.zones.filter((z) => z.kind === "dungeon")]], { more, open: (z) => st.open === z.name })}</div>`;
     wireTable("tzones", render, [], {});

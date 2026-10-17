@@ -3,8 +3,13 @@
 // script (core.js and its page's) draws the sheet as before.
 import { wireShell } from "./shell.js";
 import { wireFind } from "./find.js";
-import { nav } from "./ui.js";
+import { nav, titleIcon } from "./ui.js";
 
 wireShell();
 wireFind();
 nav("");
+// the book's icon left of its title (a land's page takes the zones'); some titles are drawn later by the page's script
+const BOOK = { "journey.html": "journey", "zone.html": "zones" }[location.pathname.split("/").pop()] || location.pathname.split("/").pop().replace(".html", "");
+const sheet = document.getElementById("sheet");
+titleIcon(sheet, BOOK);
+new MutationObserver(() => titleIcon(sheet, BOOK)).observe(sheet, { childList: true, subtree: true });

@@ -8,8 +8,7 @@ export async function items() {
   const SRC = d.sources;
   listPage({
     sec: "items", title: "Items", unit: "items", listTitle: "The items", placeholder: "Search an item…", levers: "items",
-    lead: `Every item on this server: where it comes from (creatures, the shared lists they roll, vendors, quests, chests and boxes), what it costs,
-      and what we changed. An item the client shows from its own copy carries the <span class="badge">hotfix</span> mark when we sent it ours.`,
+    lead: `Every item on this server: where it comes from, what it costs, and which the client shows from our copy, marked <span class="badge">hotfix</span>.`,
     rows: d.items, key: (r) => r[0], text: (r) => r[1],
     defaults: { has: true },
     filters: [{ k: "quality", label: "Every quality", values: QUALITY, get: (r) => QUALITY[r[2]] },

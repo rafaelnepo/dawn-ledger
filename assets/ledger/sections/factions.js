@@ -45,8 +45,7 @@ export async function factions() {
         subs.map(([s, xs]) => `${s ? `<h3 class="msub">${esc(s)}</h3>` : ""}<div class="mods fmods">${xs.map(factionCard).join("")}</div>`).join("") + "</section>";
     }).join("");
     page.innerHTML = `<h1 class="display">Factions</h1>
-      <p class="lead">Every reputation the game lists, under the categories of Forever UI’s Reputation tab: its crest, its lore as the tab shows it,
-      where it starts, what raises it on this server, and what we changed. The rules for all reputation are under the cards.</p>
+      <p class="lead">Every reputation the game lists, as Forever UI’s Reputation tab groups them: where it starts and what raises it here.</p>
       <div class="fcols panel cols3">
         <div class="fsearch"><input type="search" id="fq" placeholder="Search the factions…" value="${esc(st.q)}" aria-label="Search the factions"></div>
         ${fcol("fcat", "Category", d.cats.map((c) => [c.name, c.name, count("cat", (e) => e.cat === c.name)]), st.cat, "Every category", count("cat", () => true), "wide")}

@@ -16,8 +16,7 @@ export async function professions() {
     ["changes", "Changes", "", (p) => p.changes.length, (p) => chgs(p.changes) + (p.tradeskill_db ? `<a class="badge" href="http://127.0.0.1:8790/" target="_blank" rel="noopener">Tradeskill DB</a>` : "")],
   ];
   page.innerHTML = `<h1 class="display">Professions</h1>
-    <p class="lead">Every craft, the gathering skills and the rogue’s: how many recipes and trainers, where its recipe items come from,
-    how many nodes stand in the world, and what we changed. ${esc(d.plan)}</p>
+    <p class="lead">Every craft, the gathering skills and the rogue’s: recipes, trainers, where recipes come from and the nodes in the world.</p>
     <h2 class="sec">The professions</h2>
     <div class="panel">${table("tprof", cols, [["Crafts", d.professions.filter((p) => ["Alchemy", "Blacksmithing", "Enchanting", "Engineering", "Leatherworking", "Tailoring"].includes(p.name))],
       ["Gathering", d.professions.filter((p) => ["Herbalism", "Mining", "Skinning"].includes(p.name))],

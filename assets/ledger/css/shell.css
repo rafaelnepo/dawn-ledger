@@ -116,3 +116,13 @@ input, button, select { font: inherit; color: inherit; caret-color: var(--rubric
 .nav .ni { display: inline-flex; align-items: center; gap: 10px; min-width: 0; }
 .nav .nic { flex: none; width: 24px; height: 24px; object-fit: contain; margin: -3px 0; }
 .nav a:has(.nic) { align-items: center; padding-left: 10px; }
+
+/* a section's icon left of its page's title and description (session 95, the user): as tall as the two together (ui.js sets its
+   height from them), unframed at its own proportions; the title and description flush left beside it */
+.titled { display: flex; align-items: center; gap: 22px; margin: 0 0 var(--s5); }
+.titled .hic { flex: none; width: auto; height: 120px; max-width: 180px; object-fit: contain; }
+.titled .tt { flex: 1; min-width: 0; }
+.titled .tt > :last-child { margin-bottom: 0; }
+.journey .hero .titled { margin-bottom: 0; }
+@media (max-width: 640px) { .titled { gap: 14px; } .titled .hic { max-height: 96px; } }
+.titled .tt p { max-width: 72ch; text-wrap: balance; }   /* two lines at most (the user, session 95): each written to fit */

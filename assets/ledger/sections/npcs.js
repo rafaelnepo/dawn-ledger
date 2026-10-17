@@ -7,8 +7,7 @@ export async function npcs() {
   const d = await load("npcs");
   listPage({
     sec: "npcs", title: "NPCs", unit: "creatures", listTitle: "The creatures in the world", placeholder: "Search a name or title…", levers: "npcs",
-    lead: `Every creature that stands in the world: its level, rank and side, what it does for you (quests, a shop, training, flights…),
-      where it stands and how many of it, and what we changed: its shop, its words, its place. A scripted one (bosses, events) is better left alone.`,
+    lead: `Every creature standing in the world: its level, rank and side, what it does for you, where it stands and how many.`,
     rows: d.npcs, key: (r) => r[0], text: (r) => r[1] + " " + r[2],
     filters: [{ k: "zone", label: "Every zone", values: uniq(d.npcs.map((r) => r[9])), get: (r) => r[9] },
       { k: "side", label: "Every side", values: ["Alliance", "Horde", "Both", "Neutral", "Hostile"], get: (r) => r[7] },

@@ -110,7 +110,27 @@ export const JOURNEY = [["journey.html", "The road"], ["crafts.html", "Crafts"],
 const HERE = location.pathname.split("/").pop();
 export const SPA = !HERE || HERE === "index.html";   // the game's sections live in index.html's hash; the Journey's books are pages
 const JOURNEY_OF = { "zone.html": "journey.html" };
-export const counts = {};   // a section's number beside its name (the Review's waiting ones); main.js fills it once
+export const counts = {};
+// a section's icon left of its page's title (session 95, the user: "add icons to the titles of the pages"): the first h1 of root,
+// once; a section without an icon (the home page, an entry's own page) keeps its title alone
+const TITLED = new Set(["journey", "crafts", "dungeons", "festivals", "journal", "lockpicking", "drops", "zones", "items", "npcs", "quests",
+  "factions", "chests", "loot", "professions", "pvp"]);
+export function titleIcon(root, key) {
+  const h = root && root.querySelector("h1");
+  if (!h || !TITLED.has(key) || h.closest(".titled")) return;
+  // the user: the icon as tall as the title and its description together, the two flush left beside it
+  const d = h.nextElementSibling && h.nextElementSibling.tagName === "P" ? h.nextElementSibling : null;
+  const box = document.createElement("div");
+  box.className = "titled";
+  h.before(box);
+  box.innerHTML = `<img class="hic" src="assets/ledger/icons/${key}.png" alt="" aria-hidden="true"><div class="tt"></div>`;
+  const tt = box.lastChild, img = box.firstChild;
+  tt.append(h);
+  if (d) tt.append(d);
+  const fit = () => { img.style.height = Math.min(180, tt.offsetHeight) + "px"; };
+  fit();
+  new ResizeObserver(fit).observe(tt);
+}   // a section's number beside its name (the Review's waiting ones); main.js fills it once
 export function nav(cur) {
   const pre = SPA ? "" : "index.html";
   const mine = JOURNEY_OF[HERE] || HERE;

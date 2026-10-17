@@ -31,8 +31,7 @@ export async function chests() {
       <span class="k">What it holds</span><span>Every item and its chance: <a href="http://127.0.0.1:8777/dbsite/mockups/boxdrops/" target="_blank" rel="noopener">Box Drops</a></span></div>`;
     const groups = d.groups.map(([g, t]) => [t, rows.filter((c) => c.group === g)]);
     page.innerHTML = `<h1 class="display">Chests and boxes</h1>
-      <p class="lead">Every chest in the world and the dungeons, every footlocker, and every box you carry and open: where it stands, how many are out
-      at once, how soon it returns, its lock, what it holds by quality, and the patches that made it what it is. Click a row for more.</p>
+      <p class="lead">Every chest, footlocker and box: where it stands, how many are out, how soon it returns, its lock and what it holds.</p>
       <h2 class="sec">The chests and boxes</h2>
       <div class="filters">${chips("group", d.groups.filter(([g]) => gc[g]).map(([g, t]) => [g, t, gc[g]]), st.group, "Every kind")}</div>
       <div class="filters"><input type="search" id="xq" placeholder="Search by name or place…" value="${esc(st.q)}" aria-label="Search the chests"></div>

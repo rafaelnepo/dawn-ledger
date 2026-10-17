@@ -7,8 +7,7 @@ export async function quests() {
   const d = await load("quests");
   listPage({
     sec: "quests", title: "Quests", unit: "quests", listTitle: "The quests", placeholder: "Search a quest or its giver…", levers: "quests",
-    lead: `Every quest: its level, where it belongs, who it is for, what it pays (money, reputation, items) and who gives it, with ours
-      (from 60000) and the ones we changed marked. The client never shows a quest’s reputation reward; it is here.`,
+    lead: `Every quest: its level, who gives it and what it pays, reputation included (the client never shows it); ours marked.`,
     rows: d.quests, key: (r) => r[0], text: (r) => r[1] + " " + r[12],
     filters: [{ k: "zone", label: "Every zone or kind", values: uniq(d.quests.map((r) => r[4])), get: (r) => r[4] },
       { k: "side", label: "Every side", values: uniq(d.quests.map((r) => r[6])), get: (r) => r[6] },

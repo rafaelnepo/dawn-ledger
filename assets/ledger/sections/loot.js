@@ -32,9 +32,7 @@ export async function loot() {
     const slice = sorted.slice(st.page * PER, st.page * PER + PER);
     const opt = (v, cur) => `<option value="${esc(v)}"${v === cur ? " selected" : ""}>${esc(v)}</option>`;
     page.innerHTML = `<h1 class="display">Loot</h1>
-      <p class="lead">What every creature drops on this server, from the server’s own tables, not from what an addon once counted. The rules we
-      changed for all creatures first; then each creature, with the patches that touched its own table or the lists it rolls. A creature’s
-      name opens every drop and its chance.</p>
+      <p class="lead">What every creature drops, from the server’s own tables: the rules for all creatures first, then each creature.</p>
       <h2 class="sec">The rules we changed for all creatures</h2>
       <div class="rules">${d.rules.map((id) => { const x = byId.get(id); return `<div class="rule panel"><h4>${esc(x ? x.title : id)}</h4>${x && x.quote && x.quote[0] ? `<p class="quote-user">“${esc(x.quote[0])}”</p>` : ""}<div class="meta">${chg(id)} ${x ? `<span class="note">${fmt((x.touches.cloot || []).length)} creature tables</span>` : ""}</div></div>`; }).join("")}</div>
       <h2 class="sec">The creatures</h2>

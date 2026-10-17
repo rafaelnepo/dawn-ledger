@@ -17,8 +17,7 @@ export function wireShell() {
     ? "World of Warcraft and its names belong to Blizzard Entertainment; the words on these pages are ours. This copy shows the game’s art from this Mac only."
     : "World of Warcraft and its names belong to Blizzard Entertainment. This is a fan project, not made or endorsed by Blizzard; the words on these pages are ours.";
 
-  // the local art layer: Forever's own parchment and Friz Quadrata over our CSS (data/ is the private folder, never published)
-  if (LOCAL) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "data/art/art.css"; document.head.append(l); }
+  // the local art layer (Forever's parchment, Friz Quadrata) is linked in each page's head since session 95, before the first paint
 }
 
 // each time a page draws (a filter redraws it too): the public build's pass; on a new page, the words settle onto the paper

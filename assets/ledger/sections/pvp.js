@@ -90,8 +90,7 @@ export async function pvp(tab) {
         ], [["", rows]], { sort: null })}</div>`;
     }
     page.innerHTML = `<h1 class="display">PvP and honor</h1>
-      <p class="lead">The ranks and what each opens and sells, the level each rank waits for on this server, the battlegrounds and the bots that
-      fill them, and who sells the rewards. The rules: docs/server/pvp.md.</p>
+      <p class="lead">The ranks, what each opens and sells and the level it waits for here, the battlegrounds and their bots, and the vendors.</p>
       ${ptabs("pvp", TABS, tab)}<div class="ptab">${body}</div>`;
     ["tranks", "tbgs", "tbots", "tpfind", "tpcls"].forEach((id) => wireTable(id, render, [], {}));
     wireChips(page, "pstate", (v) => { st.pstate = v; render(); });

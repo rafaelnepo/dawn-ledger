@@ -15,6 +15,7 @@ import { itemPage, npcPage, questPage } from "./sections/entry.js";
 import { wireShell, publicPass, turn, tails, foldFilters } from "./shell.js";
 import { wireFind } from "./find.js";
 import { LOCAL } from "./build.js";
+import { titleIcon } from "./ui.js";
 
 // ---------- the router ----------
 // every page by its hash: #/section or #/section/arg; a page that keeps its scroll (Interface, back from a spec) returns "keep"
@@ -70,7 +71,7 @@ function applyTabs() {
   bar.addEventListener("click", (e) => { const a = e.target.closest("[data-tab]"); if (!a) return; e.preventDefault(); show(+a.dataset.tab); });
   show(cur);
 }
-new MutationObserver(() => { publicPass(page); applyTabs(); tails(page); foldFilters(page); }).observe(page, { childList: true });
+new MutationObserver(() => { publicPass(page); applyTabs(); tails(page); foldFilters(page); titleIcon(page, decodeURIComponent(location.hash.replace(/^#\/?/, "")).split("/")[0]); }).observe(page, { childList: true });
 
 wireShell();
 wireFind();
