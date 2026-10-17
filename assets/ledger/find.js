@@ -1,12 +1,12 @@
 // Find anything (session 84): one box in the rail for every name the Archive holds: items, creatures, quests, factions and zones
 // (the changes moved to the Watcher's Console, session 95). The lists load the first time the box is used; a result opens its section with that entry found and open. "/" focuses it.
 import { LOCAL } from "./build.js";
-import { esc, load, state } from "./core.js";
+import { esc, load, state, ROOT } from "./core.js";
 import { SPA } from "./ui.js";
 
 let index = null;
 const KINDS = [["faction", "Factions"], ["zone", "Zones"], ["item", "Items"], ["npc", "Creatures"], ["quest", "Quests"],
-  ["j-zones", "Lands, in the Journey"], ["j-places", "Places"], ["j-people", "People"], ["j-quests", "Tasks"], ["j-beasts", "Beasts"], ["j-rares", "Rare sightings"],
+  ["j-zones", "Zone pages"], ["j-places", "Places"], ["j-people", "People"], ["j-quests", "Tasks"], ["j-beasts", "Beasts"], ["j-rares", "Rare sightings"],
   ["j-foes", "Foes"], ["j-gathering", "Gathering"], ["j-treasures", "Treasures and writings"], ["j-drops", "Drops"]];
 
 async function build() {
@@ -17,9 +17,9 @@ async function build() {
   it.items.forEach((r) => rows.push(["item", r[1], `${r[5]} · item ${r[0]}`, `#/item/${r[0]}`]));
   n.npcs.forEach((r) => rows.push(["npc", r[1], [r[2], r[9]].filter(Boolean).join(" · "), `#/npc/${r[0]}`]));
   q.quests.forEach((r) => rows.push(["quest", r[1], [r[4], `level ${r[2]}`].filter(Boolean).join(" · "), `#/quest/${r[0]}`]));
-  // the Journey's pages (this Mac only): every name its search knew, [name, kind, zone slug, more], each opening its zone's page there
+  // the books' pages (this Mac only): every name the zone pages and the drops know, [name, kind, zone slug, more], each opening its zone's page there
   if (LOCAL) {
-    const js = await fetch("data/search.json").then((r) => (r.ok ? r.json() : [])).catch(() => []);
+    const js = await fetch(ROOT + "data/search.json").then((r) => (r.ok ? r.json() : [])).catch(() => []);
     const zone = Object.fromEntries(js.filter((r) => r[1] === "zones").map((r) => [r[2], r[0]]));
     js.filter((r) => r[0]).forEach((r) => rows.push(["j-" + r[1], r[0], r[1] === "drops" ? r[3] || "" : [r[1] === "zones" ? "" : zone[r[2]], r[3]].filter(Boolean).join(" · "),
       r[1] === "drops" ? `drops.html?c=${r[2]}` : `zone.html?z=${r[2]}${r[1] === "zones" ? "" : "&open=" + encodeURIComponent(r[1] + ":" + r[0])}`]));
@@ -50,8 +50,8 @@ export function wireFind() {
     if (r[4]) { const { sec, ...st } = r[4]; state[sec] = Object.assign(state[sec] || {}, st, { page: 0 }); }
     close(); box.value = ""; box.blur();
     document.getElementById("rail").classList.remove("open");
-    if (!r[3].startsWith("#")) { location.href = r[3]; return; }   // a Journey page
-    if (!SPA) { location.href = "index.html" + r[3]; return; }     // from a Journey page to a game section
+    if (!r[3].startsWith("#")) { location.href = ROOT + r[3]; return; }   // a Journey page
+    if (!SPA) { location.href = ROOT + "index.html" + r[3]; return; }     // from a Journey page to a game section
     if (location.hash === r[3]) window.dispatchEvent(new HashChangeEvent("hashchange")); else location.hash = r[3];
   };
   const paint = () => {

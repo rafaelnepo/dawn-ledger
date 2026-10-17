@@ -1,16 +1,17 @@
 // The Ledger's entry (session 84: the one script split into modules). The router reads the hash (#/section/arg) and calls the
-// section's page; core.js holds the data and the shared marks, ui.js the components, cards.js and markdown.js their own parts.
+// section's page; core.js holds the data and the shared marks, ui.js the components, cards.js its own parts.
 import { base, esc, load, page, state } from "./core.js";
 import { home } from "./sections/home.js";
 import { items } from "./sections/items.js";
 import { npcs } from "./sections/npcs.js";
 import { quests } from "./sections/quests.js";
 import { zones } from "./sections/zones.js";
-import { professions, planPage } from "./sections/professions.js";
+import { professions } from "./sections/professions.js";
 import { pvp } from "./sections/pvp.js";
 import { factions, factionPage } from "./sections/factions.js";
 import { chests } from "./sections/chests.js";
 import { loot } from "./sections/loot.js";
+import { soon, SOON_KEYS } from "./sections/soon.js";
 import { itemPage, npcPage, questPage } from "./sections/entry.js";
 import { wireShell, publicPass, turn, tails, foldFilters } from "./shell.js";
 import { wireFind } from "./find.js";
@@ -20,12 +21,13 @@ import { titleIcon } from "./ui.js";
 // ---------- the router ----------
 // every page by its hash: #/section or #/section/arg; a page that keeps its scroll (Interface, back from a spec) returns "keep"
 const ROUTES = {
-  items, npcs, quests, zones, factions, faction: factionPage, chests, loot, professions, plan: async (a) => { await planPage(a); return "keep"; },
+  items, npcs, quests, zones, factions, faction: factionPage, chests, loot, professions,
   pvp, item: itemPage, npc: npcPage, quest: questPage,
+  ...Object.fromEntries(SOON_KEYS.map((k) => [k, soon(k)])),   // the categories' new sections, still to be written (session 98)
 };
 // our work moved to the Watcher's Console (session 95, the user: the Archive is the game's database): an old link lands there on
 // this Mac, on the home page in the public copy
-const MOVED = { changes: "changes", change: "changes", review: "review", interface: "interface", spec: "interface", about: "about" };
+const MOVED = { changes: "changes", change: "changes", review: "review", interface: "interface", spec: "interface", about: "about", plan: "plans" };   // the plan: session 96
 async function route() {
   const h = decodeURIComponent(location.hash.replace(/^#\/?/, ""));
   try {

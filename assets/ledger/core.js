@@ -3,7 +3,9 @@ export const base = { changes: null, areas: null };
 export const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 export const json = (u) => fetch(u, { cache: "no-cache" }).then((r) => { if (!r.ok) throw new Error(u + " " + r.status); return r.json(); });
 export const cache = {};
-export const load = (n) => cache[n] || (cache[n] = json(`data/ledger/${n}.json`));
+// a page one folder down (the Tradeskill DB's, session 96) says so: <meta name="archive-root" content="../">; every path below takes it
+export const ROOT = (document.querySelector('meta[name="archive-root"]') || {}).content || "";
+export const load = (n) => cache[n] || (cache[n] = json(`${ROOT}data/ledger/${n}.json`));
 export const page = document.getElementById("page");
 export const fmt = (n) => (n == null ? "" : Number(n).toLocaleString("en-US"));
 export const state = {};   // each page's filters, kept while you move about

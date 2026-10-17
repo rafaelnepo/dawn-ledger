@@ -21,7 +21,8 @@ export function wireShell() {
 }
 
 // each time a page draws (a filter redraws it too): the public build's pass; on a new page, the words settle onto the paper
-const LOCAL_ONLY = 'a[href^="drops.html"], a[href^="journey.html"], a[href*="127.0.0.1"], a[href*="localhost"]';
+const LOCAL_ONLY = ['drops', 'journey', 'zone', 'crafts', 'dungeons', 'festivals', 'journal', 'lockpicking'].map((p) => `a[href^="${p}.html"]`).join(", ") +
+  ', a[href*="tradeskill/"], a[href*="127.0.0.1"], a[href*="localhost"]';   // the books (this Mac only), every one since session 98
 export function publicPass(page) {
   if (!LOCAL) {
     page.querySelectorAll(LOCAL_ONLY).forEach((a) => { const s = document.createElement("span"); s.className = a.className; s.innerHTML = a.innerHTML; a.replaceWith(s); });
