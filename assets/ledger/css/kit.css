@@ -411,3 +411,10 @@ i.coin.g { background: var(--coin-g); } i.coin.s { background: var(--coin-s); } 
 .ttip .tbox { min-width: 0; } .ttip .ttneed { color: #ff2020; } .ttip .tttext { color: var(--gt-gold, #ffd100); white-space: normal; } .ttip .ttnext { margin-top: 6px; }
 .tlist { margin: var(--s3) 0; } .tlist summary { cursor: pointer; color: var(--rubric); font: 400 var(--fs-xs)/1.4 var(--display); letter-spacing: 0.08em; text-transform: uppercase; }
 @media (prefers-reduced-motion: reduce) { .tnode { transition: none; } }
+/* Races (session 100): a race's man and woman in 3D, its traits with their icons */
+.rwear { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 0 var(--s2); }
+.rwear .m3d { aspect-ratio: 3 / 4; }
+.rtraits li { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: var(--s2); align-items: start; }
+/* Books (session 100): a card a book, its icon large */
+.bgridk { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+.icard.bcardk { padding: var(--s3); }

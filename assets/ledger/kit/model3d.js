@@ -22,7 +22,7 @@ export const stage = (id, o = {}) => (LOCAL && id ? `<div class="m3d ${o.size ||
   `<button type="button" class="b3d" aria-pressed="false" aria-label="Turn ${esc(o.label || "it")} in 3D" hidden>3D</button></div>` : "");
 
 // a set worn: dress(items, { race: "nightelf", sex: "female", key, label }) -> a stage with a character in those items
-export const dress = (items, o = {}) => (LOCAL && items.length ? `<div class="m3d ${o.size || "set"}" data-dress="${items.join(",")}" data-race="${esc(o.race || "human")}" ` +
+export const dress = (items, o = {}) => (LOCAL && items ? `<div class="m3d ${o.size || "set"}" data-dress="${items.join(",")}" data-race="${esc(o.race || "human")}" ` +
   `data-sex="${o.sex === "female" ? "female" : "male"}" data-key="${esc(o.key || items.join("-"))}">` +
   `<span class="m3dmsg" aria-hidden="true"></span><button type="button" class="b3d" aria-pressed="false" aria-label="Turn ${esc(o.label || "it")} in 3D" hidden>3D</button></div>` : "");
 export const voices = (id) => (LOCAL && id ? `<div class="m3dsnd" data-cre="${id}" role="group" aria-label="Its sounds"></div>` : "");
@@ -77,14 +77,14 @@ async function showDress(el) {
   V.sections = R.sections;
   const race = R.races.find((q) => q.key === `${el.dataset.race}-${el.dataset.sex}`) || R.races[0];
   V.equipped = {};
-  for (const id of el.dataset.dress.split(",")) {
+  for (const id of el.dataset.dress.split(",").filter(Boolean)) {
     const it = G.items[id], look = it && it.d && G.looks[it.d], slot = it && VM.SLOT_OF[it.inv];
     if (look && slot) V.equipped[slot] = { look, c: it.c, sc: it.sc };
   }
   await V.setCharacter(race, {}, {});
   if (!V.meshes || !V.meshes.length) throw new Error("no meshes");
 }
-const subject = (el) => (el.dataset.dress ? () => showDress(el) : () => show(CBY.get(+el.dataset.cre)));
+const subject = (el) => (el.dataset.dress != null ? () => showDress(el) : () => show(CBY.get(+el.dataset.cre)));
 const timeout = (p, ms) => Promise.race([p, new Promise((_, no) => setTimeout(() => no(new Error("timed out")), ms))]);
 function covered() {   // how much of the picture the model fills (the background is clear): 0..1 on a 64 x 48 copy
   const c = document.createElement("canvas"); c.width = 64; c.height = 48;
@@ -110,7 +110,7 @@ async function picture(el) {
   const blob = await cached(el);
   if (blob) return put(el, blob);
   const my = gen;
-  if (!el.dataset.dress) {
+  if (el.dataset.dress == null) {
     await data();
     const c = CBY.get(+el.dataset.cre);
     if (!c || !c.d.some((d) => C.disp[d])) return fail(el, "No model");
@@ -155,7 +155,7 @@ async function goLive(el) {
   live = el;
   const b = el.querySelector(".b3d"); b.setAttribute("aria-pressed", "true"); b.textContent = "Close 3D";
   el.classList.add("live");
-  if (!el.dataset.dress) await data();
+  if (el.dataset.dress == null) await data();
   await viewer();
   await exclusive(async () => {
     if (live !== el) return;

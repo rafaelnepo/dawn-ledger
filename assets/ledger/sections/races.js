@@ -1,9 +1,12 @@
 import { esc, load, page } from "../core.js";
 import { table, wireTable, nav } from "../ui.js";
+import { icon } from "../kit/icon.js";
+import { dress } from "../kit/model3d.js";
 
 // ---------- races (session 99, the second of the categories' planned sections) ----------
 // The eight races as the server makes them (ledger.py's races(): playercreateinfo, its spells, player_levelstats) and the client
 // describes their traits: a card a race under its side, then the classes each may be and the attributes each starts with
+const KEY = { Human: "human", Dwarf: "dwarf", "Night Elf": "nightelf", Gnome: "gnome", Orc: "orc", Undead: "scourge", Tauren: "tauren", Troll: "troll" };   // the Dressing Room's models
 const CLASSES = ["Warrior", "Paladin", "Hunter", "Rogue", "Priest", "Shaman", "Mage", "Warlock", "Druid"];
 
 function card(r) {
@@ -13,12 +16,13 @@ function card(r) {
   const row = (l, v) => `<div class="mrow"><span class="ml">${l}</span><span class="mv">${v}</span></div>`;
   return `<article class="mod race side-${r.side.toLowerCase()}">
     <header><h3>${esc(r.name)}</h3><span class="side ${esc(r.side)}">${esc(r.side)}</span></header>
+    <div class="rwear">${["male", "female"].map((sx) => dress([], { race: KEY[r.name], sex: sx, key: `race-${KEY[r.name]}-${sx}`, label: `a ${sx} ${r.name}` })).join("")}</div>
     ${row("Begins", `<span>${esc(r.start[0])}<span class="n">${esc(r.start[1])}</span></span>`)}
     ${row("Capital", esc(r.capital))}
     ${row("Classes", r.classes.map(esc).join(", "))}
     ${row("Speaks", r.languages.map(esc).join(", "))}
     ${row("Starts", reps)}
-    <ul class="traits">${r.traits.map(([n, kind, text]) => `<li><b>${esc(n)}</b><span class="n">${kind}</span><span class="tt">${esc(text)}</span></li>`).join("")}</ul>
+    <ul class="traits rtraits">${r.traits.map(([n, kind, text, ic]) => `<li>${icon(ic, { size: "m" })}<span><b>${esc(n)}</b><span class="n">${kind}</span><span class="tt">${esc(text)}</span></span></li>`).join("")}</ul>
   </article>`;
 }
 
