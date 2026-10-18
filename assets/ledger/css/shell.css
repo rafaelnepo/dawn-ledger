@@ -88,14 +88,14 @@ input, button, select { font: inherit; color: inherit; caret-color: var(--rubric
 @media (prefers-reduced-motion: reduce) { .sheet.turn > * { animation: none; } .rail { transition: none; } }
 
 /* ---------- the search's results ---------- */
-.found { position: fixed; z-index: 50; left: calc(var(--rail) + 8px); top: 96px; width: min(560px, calc(100vw - var(--rail) - 32px)); max-height: min(70vh, 640px);
+.found { position: fixed; z-index: 50; left: calc(var(--rail) + var(--s6) + 8px); top: calc(var(--sticky-top) + 4px); width: min(560px, calc(100vw - var(--rail) - 64px)); max-height: min(70vh, 640px);
   overflow-y: auto; padding: var(--s2) 0; border-radius: var(--radius); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6), 0 0 0 1px var(--rim); }
 .found .fgh { padding: var(--s2) var(--s4) 2px; font: 400 11px/1 var(--display); letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubric); }
 .found a { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s3); padding: 6px var(--s4); color: var(--ink); text-decoration: none; }
 .found a .fs { color: var(--ink-3); font-size: var(--fs-xs); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 45%; }
 .found a:hover, .found a[aria-selected="true"] { background: rgba(140, 36, 22, 0.1); }
 .found .fnone { padding: var(--s3) var(--s4); color: var(--ink-2); }
-@media (max-width: 900px) { .found { left: 8px; right: 8px; top: 60px; width: auto; } }
+@media (max-width: 900px) { .found { left: 8px; right: 8px; width: auto; } }   /* under the page header (its top: --sticky-top) */
 
 /* The Archive of Norgannon's logo (session 95, the user's; dbsite/build/logo.py makes assets/ledger/logo.png; public too): over the rail's name, as wide as the
    cord; the words stay for screen readers. The top bar on narrow screens shows a 40 px copy. */
@@ -126,3 +126,33 @@ input, button, select { font: inherit; color: inherit; caret-color: var(--rubric
 .journey .hero .titled { margin-bottom: 0; }
 @media (max-width: 640px) { .titled { gap: 14px; } .titled .hic { width: 84px; height: 84px; } }
 .titled .ttl p { max-width: 52ch; min-height: 2lh; text-wrap: balance; }   /* two lines on every page (the user, sessions 95 and 100): a short one wraps, each written to fit */
+
+/* ---------- the page header (session 100, kit/pagebar.js): fixed over the page, the page-level settings only ---------- */
+.pagebar { position: sticky; top: var(--pagebar-top); z-index: 25; box-sizing: border-box; width: 100%; max-width: 1320px; height: var(--pagebar-h);
+  margin: calc(var(--s6) * -1) auto calc(var(--s2) * -1); padding: 0 clamp(14px, 2.2vw, 26px); display: flex; align-items: center; gap: var(--s4);
+  color: var(--frame-text); border: 1px solid #000; border-top: 0; border-radius: 0 0 var(--radius) var(--radius);
+  box-shadow: inset 0 -1px 0 var(--rim), 0 8px 18px rgba(0, 0, 0, 0.45); }
+.pagebar :focus-visible { outline-color: var(--gold); }
+.pagebar .find { flex: 1 1 240px; max-width: 420px; }
+.pbtools { display: flex; align-items: center; gap: 10px; margin-left: auto; flex: none; }
+.pbview:empty { display: none; }
+.pbseg { display: inline-flex; align-items: stretch; border: 1px solid var(--rim); border-radius: 999px; overflow: hidden; background: #0c0906; }
+.pbseg button { background: none; border: 0; padding: 7px 11px; color: var(--frame-note); font: 400 11.5px/1 var(--display); letter-spacing: 0.08em;
+  text-transform: uppercase; cursor: pointer; transition: background-color 140ms var(--ease), color 140ms var(--ease); }
+.pbseg button:hover:not(:disabled) { color: var(--frame-text); }
+.pbseg button[aria-pressed="true"] { background: var(--gold-soft); color: var(--leather); }
+.pbseg button:disabled { opacity: 0.4; cursor: default; }
+.pbsize { align-self: center; min-width: 40px; text-align: center; font: 400 11.5px/1 var(--text); color: var(--frame-note); font-variant-numeric: tabular-nums; }
+.pagebar .feel-mute { color: var(--frame-text); font-size: 12px; }
+.pagebar .feel-mute span { display: none; }   /* the speaker alone: its label is its tooltip */
+@media (max-width: 900px) {
+  .pagebar { margin: calc(var(--s3) * -1) 0 0; border-radius: 0; border-left: 0; border-right: 0; gap: var(--s2); padding: 0 var(--s3); }
+  .pbtools { gap: 6px; } .pbseg button { padding: 7px 8px; } .pbsize { display: none; }
+}
+@media (max-width: 600px) {   /* a phone: the search a row of its own, the settings under it */
+  :root { --pagebar-h: 92px; }
+  .pagebar { height: auto; min-height: var(--pagebar-h); flex-wrap: wrap; row-gap: 8px; padding: 8px var(--s3); }
+  .pagebar .find { flex: 1 1 100%; max-width: none; } .pagebar .find kbd { display: none; }
+  .pbtools { width: 100%; margin-left: 0; justify-content: space-between; }
+}
+@media (prefers-reduced-motion: reduce) { .pbseg button { transition: none; } }

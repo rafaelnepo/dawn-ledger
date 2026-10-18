@@ -148,7 +148,7 @@ i.coin.g { background: var(--coin-g); } i.coin.s { background: var(--coin-s); } 
 .bgrid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
 .journey .card .m3d.page { margin: 6px 0 var(--s3); }
 .journey .card .m3dsnd { margin: 0 0 var(--s3); }
-.journey .book .page { scroll-margin-top: 72px; }   /* clear of the fixed bar when a page is brought into view */
+.journey .book .page { scroll-margin-top: calc(var(--sticky-top) + 16px); }   /* clear of the fixed bars when a page is brought into view */
 
 /* ---------- the faceted filter bar (session 100, kit/filters.js): every value with what it would leave, the empty ones greyed ---------- */
 .fbar { margin: var(--s1) 0 var(--s4); font-size: var(--fs-sm); color: var(--ink-2); }

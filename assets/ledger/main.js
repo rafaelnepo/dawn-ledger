@@ -27,6 +27,7 @@ import { leftBook } from "./companion.js";
 import { wireTips } from "./kit/tip.js";
 import { wireLive } from "./live.js";
 import { wire3d, teardown } from "./kit/model3d.js";
+import { clearView, wirePagebar } from "./kit/pagebar.js";
 
 // ---------- the router ----------
 // every page by its hash: #/section or #/section/arg; a page that keeps its scroll (Interface, back from a spec) returns "keep"
@@ -50,6 +51,7 @@ const MOVED = { changes: "changes", change: "changes", review: "review", interfa
 async function route() {
   const h = hashPath();
   teardown();   // the last page's 3D: its viewer and WebGL context given back (session 100)
+  clearView();  // the header's Cards or Table: the next page asks for it again
   try {
     if (!base.changes) { const cd = await load("changes"); base.changes = new Map(cd.changes.map((c) => [c.id, c])); base.areas = Object.fromEntries(cd.areas); }
     const [sec, arg] = [h.split("/")[0], h.split("/").slice(1).join("/")];
@@ -97,6 +99,7 @@ function applyTabs() {
 new MutationObserver(() => { publicPass(page); applyTabs(); tails(page); foldFilters(page); titleIcon(page, hashPath().split("/")[0]); }).observe(page, { childList: true });
 
 wireShell();
+wirePagebar();   // the page header: the typeface, the text size, Cards or Table (session 100)
 wireFind();
 wireTips();      // the game's tooltips on anything with data-item (session 99)
 wireLive(route);   // the game's changes, offered as they are rebuilt (session 99)

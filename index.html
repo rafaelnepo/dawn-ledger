@@ -9,13 +9,14 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%2315100a'/%3E%3Crect x='2.5' y='2.5' width='27' height='27' rx='4' fill='none' stroke='%23a3843f'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Georgia,serif' font-size='19' fill='%23f8d74a'%3EA%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Marcellus&display=swap">
-<link rel="stylesheet" href="assets/ledger/css/tokens.css?v=45a42b7a">
-<link rel="stylesheet" href="assets/ledger/css/material.css?v=45a42b7a">
-<link rel="stylesheet" href="assets/ledger/css/shell.css?v=45a42b7a">
-<link rel="stylesheet" href="assets/ledger/css/page.css?v=45a42b7a">
-<link rel="stylesheet" href="assets/ledger/css/entries.css?v=45a42b7a">
-<link rel="stylesheet" href="assets/ledger/css/kit.css?v=45a42b7a">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alegreya:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Alegreya+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Marcellus&display=swap">
+<script>try { var d = document.documentElement, z = localStorage.getItem("archive:size"), f = localStorage.getItem("archive:font"); if (z) d.style.setProperty("--ts", z); if (f) d.dataset.font = f; } catch (e) {}</script>   <!-- the reader's text size and typeface before the first paint (kit/pagebar.js) -->
+<link rel="stylesheet" href="assets/ledger/css/tokens.css?v=56df8596">
+<link rel="stylesheet" href="assets/ledger/css/material.css?v=56df8596">
+<link rel="stylesheet" href="assets/ledger/css/shell.css?v=56df8596">
+<link rel="stylesheet" href="assets/ledger/css/page.css?v=56df8596">
+<link rel="stylesheet" href="assets/ledger/css/entries.css?v=56df8596">
+<link rel="stylesheet" href="assets/ledger/css/kit.css?v=56df8596">
 </head>
 <body>
 <!--
@@ -38,21 +39,29 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
   <aside class="rail leather" id="rail" aria-label="The Archive of Norgannon">
     <a class="brand" href="#/"><span class="bt">The Archive <span class="nw">of Norgannon</span></span><span class="bs">World of Warcraft – Dawn</span></a>
     <div class="cord" aria-hidden="true"></div>
-    <div class="find" role="search">
-      <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.4 10.4 14 14"/></svg>
-      <input type="search" id="find" placeholder="Find anything…" aria-label="Find an item, creature, quest, change…" autocomplete="off" aria-controls="found" aria-expanded="false">
-      <kbd>/</kbd>
-    </div>
     <nav class="nav" id="nav" aria-label="Sections"></nav>
     <p class="railfoot" id="railfoot"></p>
   </aside>
   <div class="scrim" aria-hidden="true"></div>
   <div class="desk">
+    <header class="pagebar leather" id="pagebar" aria-label="This page">
+      <div class="find" role="search">
+        <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5"/><path d="M10.4 10.4 14 14"/></svg>
+        <input type="search" id="find" placeholder="Find anything…" aria-label="Find an item, creature, quest, change…" autocomplete="off" aria-controls="found" aria-expanded="false">
+        <kbd>/</kbd>
+      </div>
+      <div class="pbtools">
+        <span class="pbview" id="pbview"></span>
+        <span class="pbseg" role="group" aria-label="Typeface"><button type="button" data-font="serif" aria-pressed="true">Serif</button><button type="button" data-font="sans" aria-pressed="false">Sans</button></span>
+        <span class="pbseg" role="group" aria-label="Text size"><button type="button" data-size="-1" aria-label="Smaller text">A−</button><span class="pbsize" id="pbsize">100%</span><button type="button" data-size="1" aria-label="Larger text">A+</button></span>
+        <span class="feel-slot"></span>
+      </div>
+    </header>
     <main class="sheet paper" id="page"><p class="empty">Opening the ledger…</p></main>
     <footer class="deskfoot" id="deskfoot"></footer>
   </div>
 </div>
 <div class="found paper" id="found" role="listbox" hidden></div>
-<script type="module" src="assets/ledger/main.js?v=45a42b7a"></script>
+<script type="module" src="assets/ledger/main.js?v=56df8596"></script>
 </body>
 </html>

@@ -34,7 +34,8 @@ code { font: 0.86em/1.3 ui-monospace, "SF Mono", Menlo, monospace; color: var(--
 
 /* a panel on the paper is a slip; a table's panel scrolls sideways when the page is narrow */
 .panel { background-color: rgba(246, 230, 196, 0.5); border: 1px solid var(--ink-rule-2); border-radius: var(--radius); box-shadow: var(--shadow-slip); }
-.panel:has(> table.lt) { overflow-x: auto; background: rgba(246, 230, 196, 0.32); }
+.panel:has(> table.lt) { background: rgba(246, 230, 196, 0.32); }
+@media (max-width: 900px) { .panel:has(> table.lt) { overflow-x: auto; } }   /* a phone scrolls a wide table sideways; wider, its heads stay under the page header (session 100) */
 .panel-body { padding: var(--s3) var(--s4); }
 .panel-body + .panel-body { border-top: 1px solid var(--ink-rule); }
 .panel > .panel-body[style] { border-bottom-color: var(--ink-rule) !important; }

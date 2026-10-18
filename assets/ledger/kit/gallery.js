@@ -1,20 +1,13 @@
 import { state } from "../core.js";
+import { setView } from "./pagebar.js";
 
 // ---------- the visual view and the table (session 99, the Archive's kit) ----------
 // A list opens as cards (the user: "a visual documentation style where we see the actual content"); one click turns it to the
 // table for sorting. The choice is kept per section while you move about.
 export const viewOf = (sec) => (state["view:" + sec] = state["view:" + sec] || "cards");
-export const viewToggle = (sec) => {
-  const v = viewOf(sec);
-  return `<span class="viewtog" role="group" aria-label="View">${[["cards", "Cards"], ["table", "Table"]].map(([k, t]) =>
-    `<button type="button" data-view="${k}" aria-pressed="${v === k}">${t}</button>`).join("")}</span>`;
-};
-export function wireView(root, sec, rerender) {
-  root.querySelectorAll(".viewtog [data-view]").forEach((b) => b.addEventListener("click", () => {
-    if (state["view:" + sec] === b.dataset.view) return;
-    state["view:" + sec] = b.dataset.view; rerender();
-  }));
-}
+// the switch itself sits in the page header since session 100 (kit/pagebar.js): viewToggle draws nothing in the page, wireView puts it there
+export const viewToggle = () => "";
+export const wireView = (root, sec, rerender) => setView(sec, rerender);
 
 // a grid of cards drawn a batch at a time: the first batch at once, the next whenever the end of the grid comes into view
 export function grid(id, rows, card, o = {}) {

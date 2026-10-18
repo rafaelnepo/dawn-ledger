@@ -1,4 +1,4 @@
-// Find anything (session 84): one box in the rail for every name the Archive holds: items, creatures, quests, factions and zones
+// Find anything (session 84): one box (in the page header since session 100) for every name the Archive holds: items, creatures, quests, factions and zones
 // (the changes moved to the Watcher's Console, session 95). The lists load the first time the box is used; a result opens its section with that entry found and open. "/" focuses it.
 import { LOCAL } from "./build.js";
 import { esc, load, state, ROOT } from "./core.js";
@@ -79,6 +79,6 @@ export function wireFind() {
   out.addEventListener("click", (e) => { const a = e.target.closest("a[data-i]"); if (a) { e.preventDefault(); open(hits[+a.dataset.i]); } });
   document.addEventListener("click", (e) => { if (!out.hidden && !e.target.closest("#found, .find")) close(); });
   document.addEventListener("keydown", (e) => {
-    if (e.key === "/" && !e.target.closest("input, textarea, select")) { e.preventDefault(); document.getElementById("rail").classList.add("open"); box.focus(); }
+    if (e.key === "/" && !e.target.closest("input, textarea, select")) { e.preventDefault(); box.focus(); }
   });
 }

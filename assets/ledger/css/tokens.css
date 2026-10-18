@@ -28,13 +28,17 @@
   /* type: Marcellus for titles and labels (a Friz Quadrata cousin), Alegreya for the words and the figures */
   --display: "Marcellus", "Friz Quadrata", "Palatino Linotype", Palatino, Georgia, serif;
   --text: "Alegreya", "Palatino Linotype", Palatino, Georgia, serif;
-  --fs-xs: 12px; --fs-sm: 13.5px; --fs-md: 15px; --fs-lg: 17px; --fs-xl: 21px; --fs-2xl: 28px; --fs-3xl: 40px;
+  --ts: 1;   /* the reader's text size (kit/pagebar.js: 90% to 135%) */
+  --fs-xs: calc(12px * var(--ts)); --fs-sm: calc(13.5px * var(--ts)); --fs-md: calc(15px * var(--ts)); --fs-lg: calc(17px * var(--ts));
+  --fs-xl: calc(21px * var(--ts)); --fs-2xl: calc(28px * var(--ts)); --fs-3xl: calc(40px * var(--ts));
 
   /* space and shape */
   --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px; --s7: 48px;
-  --radius: 3px; --rail: 248px; --sticky-top: 0px; --rule: var(--ink-rule);
+  --radius: 3px; --rail: 248px; --pagebar-top: 0px; --pagebar-h: 56px; --sticky-top: calc(var(--pagebar-top) + var(--pagebar-h)); --rule: var(--ink-rule);
   --shadow-sheet: 0 2px 3px rgba(0, 0, 0, 0.55), 0 18px 48px rgba(0, 0, 0, 0.55);
   --shadow-slip: 0 1px 1px rgba(60, 34, 8, 0.18), 0 3px 8px rgba(60, 34, 8, 0.12);
   --ease: cubic-bezier(0.16, 1, 0.3, 1);
 }
-@media (max-width: 900px) { :root { --sticky-top: 52px; } }
+@media (max-width: 900px) { :root { --pagebar-top: 52px; --pagebar-h: 50px; } }
+/* Sans (kit/pagebar.js): the words in Alegreya Sans, the titles keep Marcellus */
+:root[data-font="sans"] { --text: "Alegreya Sans", "Helvetica Neue", Arial, sans-serif; }
