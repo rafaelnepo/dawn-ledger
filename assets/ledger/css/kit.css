@@ -243,3 +243,34 @@ i.coin.g { background: var(--coin-g); } i.coin.s { background: var(--coin-s); } 
 .setsrc a { font-weight: 600; overflow-wrap: anywhere; }
 .setsrc .ss { color: var(--ink-2); }
 .setsrc .pct { color: var(--rubric); font-variant-numeric: tabular-nums; }
+
+/* ---------- a quest's own page (session 100): who starts and ends it and where, what it asks and pays, its chain, its story ---------- */
+.qwhos { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: var(--s3); margin-bottom: var(--s4); }
+.qwho { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: var(--s3); padding: var(--s3); background: var(--paper-hi);
+  border: 1px solid var(--ink-rule); border-radius: var(--radius); align-items: start; }
+.qwho.qobj { grid-template-columns: 1fr; }
+.qwhopic .m3d { aspect-ratio: 3 / 4; }
+.qwhotx { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.qwhotx .eh, .qobj .eh { display: inline-flex; align-items: center; gap: 6px; }
+.qwhotx .eh img, .qobj .eh img { width: 18px; height: 18px; object-fit: contain; }
+.qwhon { font: 400 var(--fs-lg)/1.2 var(--display); }
+.qmap { margin-top: var(--s2); }
+.qobjtext { font-size: var(--fs-md); max-width: 70ch; }
+.qasks { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--s3) var(--s5); margin-bottom: var(--s3); }
+.qask { display: flex; flex-direction: column; gap: 2px; }
+.egood.inline { display: inline-grid; padding: 2px 6px; }
+.qchain { list-style: none; margin: 0 0 var(--s3); padding: 0; display: flex; flex-wrap: wrap; gap: 6px 4px; counter-reset: q; }
+.qchain li { display: flex; align-items: center; counter-increment: q; }
+.qchain li + li::before { content: "›"; margin: 0 6px 0 2px; color: var(--ink-3); }
+.qchain a { display: flex; flex-direction: column; padding: 6px 10px; border: 1px solid var(--ink-rule-2); border-radius: var(--radius); background: var(--paper-hi);
+  text-decoration: none; color: var(--ink); max-width: 220px; }
+.sheet .qchain a { text-decoration: none; }
+.qchain a::before { content: counter(q); font: 400 10px/1 var(--display); color: var(--ink-3); letter-spacing: 0.08em; }
+.qchain .qcn { font-size: var(--fs-sm); font-weight: 600; line-height: 1.25; }
+.qchain li[aria-current="step"] a { border-color: var(--rubric); background: color-mix(in srgb, var(--rubric) 12%, var(--paper-hi)); }
+.qchain a:hover, .qchain a:focus-visible { border-color: var(--rubric); }
+.qstory { max-width: 70ch; font-size: var(--fs-md); line-height: 1.7; }
+.qstory p { margin: 0 0 var(--s3); text-wrap: pretty; }
+.qstory details { margin: var(--s2) 0; } .qstory summary { cursor: pointer; color: var(--rubric); font: 400 var(--fs-xs)/1.4 var(--display); letter-spacing: 0.08em; text-transform: uppercase; }
+.qstory details p { margin-top: var(--s2); }
+.ph { font-variant: small-caps; letter-spacing: 0.03em; color: var(--rubric); }

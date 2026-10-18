@@ -100,15 +100,73 @@ export async function npcPage(id) {
     `${changeList(r[11])}`;
 }
 
+// a quest's own page (session 100, the player's review): who starts and ends it and where (their pictures and maps), what it asks, what
+// it pays, and the chain it belongs to; its own words on this Mac (the public copy keeps the objectives). ledger.py's questinfo part.
+const questShard = {};
+const questInfo = (id) => (questShard[id >> 8] = questShard[id >> 8] || json(`${ROOT}data/ledger/quest/${id >> 8}.json`).catch(() => ({}))).then((d) => d[id] || {});
+export const clearQuestInfo = () => { for (const k in questShard) delete questShard[k]; };
+// the game's placeholders in the reader's terms: the name, the class, the race, a line break, "lad or lass"
+const qtext = (t) => esc(t).replace(/\$[Bb]/g, "\n").replace(/\$[Nn]/g, '<span class="ph">your name</span>').replace(/\$[Cc]/g, '<span class="ph">your class</span>')
+  .replace(/\$[Rr]/g, '<span class="ph">your race</span>').replace(/\$[Gg]\s*([^:;]+):([^;]+);/g, "$1 or $2").replace(/ {2,}/g, " ")
+  .split(/\n{2,}/).map((p) => p.trim()).filter(Boolean).map((p) => `<p>${p.replace(/\n/g, "<br>")}</p>`).join("");
+async function itemRows(list, cls) {
+  const es = await Promise.all(list.map(([i]) => itemData(i)));
+  return list.map(([i, n], k) => { const e = es[k]; return e ? `<a class="egood ${cls || ""}" href="#/item/${i}" data-item="${i}">${icon(e.i, { q: e.q, size: "s" })}` +
+    `<span class="qn${e.q || 0}">${esc(e.n)}</span>${n > 1 ? `<span class="note">× ${n}</span>` : ""}</a>` : ""; }).join("");
+}
 export async function questPage(id) {
   nav("quests");
-  const d = await load("quests");
+  const [d, nd] = await Promise.all([load("quests"), load("npcs")]);
   const r = d.quests.find((x) => String(x[0]) === id);
   if (!r) return missing("quest", id);
-  const pays = [r[9] > 0 ? money(r[9]) : "", ...r[10].map(([f, v]) => `${esc(f)} ${v > 0 ? "+" : ""}${fmt(v)}`), r[11] ? "items" : ""].filter(Boolean).join(" · ");
-  page.innerHTML = head("quests", "Quests", r[1], "", r[12] ? `Given by ${esc(r[12])}` : "") +
-    `<h2 class="sec">The quest</h2>` + facts([["Level", `${r[2]}, from ${r[3]}`], ["Belongs to", esc(r[4])], ["Kind", esc(r[5])],
-      ["For", `<span class="side ${esc(r[6])}">${esc(r[6])}</span>${r[7] ? ` · ${esc(r[7])}` : ""}`], ["Repeats", esc(r[8].join(", "))], ["Pays", pays || "nothing"],
-      ["Ours", r[15] ? "yes: written for this server (from 60000)" : ""], ["In the database", `quest ${r[0]}`]]) +
+  const [info, idx] = await Promise.all([questInfo(r[0]), LOCAL ? json(`${ROOT}data/index.json`).catch(() => null) : null]);
+  const npcs = new Map(nd.npcs.map((x) => [x[0], x])), qById = new Map(d.quests.map((q) => [q[0], q]));
+  const zones = idx ? new Map(idx.zones.map((z) => [z.id, z])) : new Map();
+  // who starts it and who ends it: a creature with its picture and its map, an object or an item by name
+  const person = async (cid, pic, both) => {
+    const n = npcs.get(cid); if (!n) return "";
+    const ni = await npcInfo(cid), w = (ni.m || []).find(([z]) => zones.has(z));
+    const z = w && zones.get(w[0]);
+    return `<div class="qwho"><div class="qwhopic">${stage(cid, { label: n[1] })}</div><div class="qwhotx"><span class="eh">${uiIcon(pic)}${both ? "Starts and ends with" : pic === "role-quests" ? "Starts with" : "Ends with"}</span>` +
+      `<a class="qwhon" href="#/npc/${cid}">${esc(n[1])}</a>${n[2] ? `<span class="note">&lt;${esc(n[2])}&gt;</span>` : ""}<span class="note">${esc(n[9] || "")}</span>` +
+      (z ? `<div class="emapart qmap" role="img" aria-label="Where ${esc(n[1])} stands" style="background-image:url('${ROOT}data/${esc(z.map)}')">${w[1].slice(0, 12).map(([x, y]) =>
+        `<i class="pin" style="left:${x}%;top:${y}%"></i>`).join("")}</div>` : "") + `</div></div>`;
+  };
+  const objs = (list, pic, word) => (list || []).map(([oid, name]) => `<div class="qwho qobj"><span class="eh">${uiIcon(pic)}${word}</span><span class="qwhon">${esc(name)}</span></div>`).join("");
+  const same = info.cs && info.ce && info.cs.length === 1 && info.ce.length === 1 && info.cs[0] === info.ce[0];   // one card: "Starts and ends with"
+  const starts = (await Promise.all((info.cs || []).slice(0, 2).map((c) => person(c, "role-quests", same)))).join("") + objs(info.os, "role-quests", "Starts at");
+  const ends = same ? "" : (await Promise.all((info.ce || []).slice(0, 2).map((c) => person(c, "quest-turnin")))).join("") + objs(info.oe, "quest-turnin", "Ends at");
+  const byItem = info.is ? `<p class="note">It also starts from an item: ${await itemRows(info.is.map((i) => [i, 1]), "inline")}</p>` : "";
+  // what it asks
+  const ask = [];
+  if (info.b) ask.push(`<div class="qask"><h3 class="eh">Bring</h3>${await itemRows(info.b)}</div>`);
+  if (info.k) ask.push(`<div class="qask"><h3 class="eh">${info.k.some(([t]) => t > 0) ? "Slay" : "Use"}</h3>${info.k.map(([t, n, name, words]) => t > 0
+    ? `<a class="equest" href="#/npc/${t}"><span>${esc(words || name)}</span><span class="note">${n > 1 ? `× ${n}` : ""}</span></a>`
+    : `<div class="equest"><span>${esc(words || name)}</span><span class="note">${n > 1 ? `× ${n}` : ""}</span></div>`).join("")}</div>`);
+  if (info.src) ask.push(`<div class="qask"><h3 class="eh">You are given</h3>${await itemRows([info.src])}</div>`);
+  // what it pays
+  const pay = [];
+  if (info.g) pay.push(`<div class="qask"><h3 class="eh">You will receive</h3>${await itemRows(info.g)}</div>`);
+  if (info.ch) pay.push(`<div class="qask"><h3 class="eh">Choose one of</h3>${await itemRows(info.ch)}</div>`);
+  const coin = r[9] > 0 ? money(r[9]) : "";
+  if (coin || r[10].length || info.sp) pay.push(`<div class="qask"><h3 class="eh">${info.g || info.ch ? "Also" : "You will gain"}</h3>${coin ? `<div class="equest"><span>${coin}</span></div>` : ""}` +
+    r[10].map(([f, v]) => `<div class="equest"><span>${esc(f)}</span><span class="note">${v > 0 ? "+" : ""}${fmt(v)} reputation</span></div>`).join("") +
+    (info.sp ? `<div class="equest">${icon(info.sp[3], { size: "s" })}<span>${esc(info.sp[1])}${info.sp[2] ? ` <span class="note">${esc(info.sp[2])}</span>` : ""}</span><span class="note">taught</span></div>` : "") + `</div>`);
+  // the chain, in order: this quest lit
+  const chain = info.chain ? `<h2 class="sec">The chain</h2><ol class="qchain">${info.chain.map((q) => { const x = qById.get(q); if (!x) return "";
+    return `<li${q === r[0] ? ' aria-current="step"' : ""}><a href="#/quest/${q}"><span class="qcn">${esc(x[1])}</span><span class="note">level ${x[2]}</span></a></li>`; }).join("")}</ol>` : "";
+  const story = info.d ? `<h2 class="sec">The story</h2><div class="qstory">${qtext(info.d)}` +
+    (info.p ? `<details><summary>When you come back</summary>${qtext(info.p)}</details>` : "") +
+    (info.c ? `<details><summary>When it is done</summary>${qtext(info.c)}</details>` : "") + `</div>` : "";
+  const badges = [r[5] ? badge(r[5] === "Elite" ? "rank-elite" : r[5] === "Raid" ? "rank-boss" : r[5] === "PvP" ? "side-hostile" : "", r[5], `#/quests?type=${encodeURIComponent(r[5])}`) : "",
+    ["Alliance", "Horde"].includes(r[6]) ? badge("side-" + slug(r[6]), r[6], `#/quests?side=${r[6]}`) : r[6] === "Both" ? badge("side-both", "Either side", "#/quests?side=Both") : badge("", r[6], "#/quests"),
+    ...(r[7] ? r[7].split(", ").map((c) => badge("class-" + slug(c), c, `#/quests?cls=${c}`)) : []),
+    ...r[8].map((f) => badge("", f === "daily" ? "Daily" : "Repeatable", "#/quests"))].join("");
+  page.innerHTML = head("quests", "Quests", r[1], "", `Level ${r[2]}, from level ${r[3]} · ${esc(r[4])}`) + `<div class="ebadges">${badges}</div>` +
+    (starts || ends ? `<div class="qwhos">${starts}${ends}</div>` : "") + byItem +
+    (info.o ? `<h2 class="sec">Objectives</h2><p class="qobjtext">${qtext(info.o).replace(/^<p>|<\/p>$/g, "")}</p>` : "") +
+    (ask.length ? `<div class="qasks">${ask.join("")}</div>` : "") +
+    (pay.length ? `<h2 class="sec">Rewards</h2><div class="qasks">${pay.join("")}</div>` : "") + chain + story +
+    `<h2 class="sec">In the database</h2>` + facts([["Belongs to", esc(r[4])], ["Kind", esc(r[5] || "Normal")], ["Ours", r[15] ? "yes: written for this server (from 60000)" : ""], ["In the database", `quest ${r[0]}`]]) +
     `${changeList(r[13])}`;
 }

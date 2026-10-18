@@ -2,7 +2,7 @@ import { LOCAL } from "./build.js";
 import { cache, esc, ROOT } from "./core.js";
 import { NAV } from "./ui.js";
 import { clearTips } from "./kit/tip.js";
-import { clearNpcInfo } from "./sections/entry.js";
+import { clearNpcInfo, clearQuestInfo } from "./sections/entry.js";
 
 // ---------- the Archive follows the game (session 99, the plan's Milestone B) ----------
 // dbsite/build/refresh.py rebuilds what a change to the world feeds (the local pages' watcher, a patch, the end of a game, the button
@@ -48,6 +48,7 @@ export function wireLive(route) {
       changed.forEach((k) => { delete cache[k]; });
       if (changed.includes("items") || changed.includes("itemsets")) clearTips();
       if (changed.includes("npcs")) clearNpcInfo();
+      if (changed.includes("quests")) clearQuestInfo();
       seen = r.sections;
       bar.hidden = true;
       route();
