@@ -1,5 +1,6 @@
 import { LOCAL } from "./build.js";
 import { esc, fmt, page, state, ROOT } from "./core.js";
+import { grid, viewOf, viewToggle, wireGrid, wireView } from "./kit/gallery.js";
 
 export function table(id, cols, groups, opts) {
   const st = (state[id] = state[id] || { sort: opts.sort || null, dir: opts.dir || 1 });
@@ -60,7 +61,9 @@ export function listPage(o) {
       o.filters.every((f) => !st[f.k] || String(f.get(r)) === String(st[f.k]) || (Array.isArray(f.get(r)) && f.get(r).includes(st[f.k]))) &&
       o.checks.every((c) => !st[c.k] || c.test(r)));
     if (st.sort) { const c = o.cols.find((x) => x[0] === st.sort); rows = rows.slice().sort((a, b) => { const x = c[3](a), y = c[3](b); return (x < y ? -1 : x > y ? 1 : 0) * st.dir; }); }
-    const pages = Math.max(1, Math.ceil(rows.length / PER));
+    // the visual view (session 99): every match as a card, drawn a batch at a time as you scroll; the table keeps its pages
+    const cards = o.card && viewOf(o.sec) === "cards";
+    const pages = cards ? 1 : Math.max(1, Math.ceil(rows.length / PER));
     st.page = Math.min(st.page, pages - 1);
     const slice = rows.slice(st.page * PER, st.page * PER + PER);
     let h = `<table class="lt" id="t${o.sec}"><thead><tr>` + o.cols.map((c) => `<th class="${c[2] || ""}" data-sort="${c[0]}">${c[1]}${st.sort === c[0] ? (st.dir > 0 ? " ▴" : " ▾") : ""}</th>`).join("") + "</tr></thead><tbody>";
@@ -75,9 +78,11 @@ export function listPage(o) {
       <div class="filters"><input type="search" id="fq" placeholder="${o.placeholder}" value="${esc(st.q)}" aria-label="${o.placeholder}">
         ${o.filters.map((f) => `<select data-f="${f.k}" aria-label="${f.label}"><option value="">${f.label}</option>${f.values.map((v) => opt(v, st[f.k])).join("")}</select>`).join("")}
         ${o.checks.map((c) => `<label><input type="checkbox" data-c="${c.k}"${st[c.k] ? " checked" : ""}> ${c.label}</label>`).join("")}
-        <span>${fmt(rows.length)} ${o.unit}</span></div>
-      <div class="panel">${h}</div>
-      <div class="pager"><button id="pp"${st.page ? "" : " disabled"}>Back</button><span>Page ${st.page + 1} of ${pages}</span><button id="pn"${st.page < pages - 1 ? "" : " disabled"}>Next</button></div>`;
+        <span>${fmt(rows.length)} ${o.unit}</span>${o.card ? viewToggle(o.sec) : ""}</div>
+      ${cards ? grid("g" + o.sec, rows, o.card, { cls: o.gridCls }) : `<div class="panel">${h}</div>
+      <div class="pager"><button id="pp"${st.page ? "" : " disabled"}>Back</button><span>Page ${st.page + 1} of ${pages}</span><button id="pn"${st.page < pages - 1 ? "" : " disabled"}>Next</button></div>`}`;
+    if (o.card) wireView(page, o.sec, render);
+    if (cards) wireGrid("g" + o.sec, rows, o.card);
     page.querySelectorAll(`#t${o.sec} th[data-sort]`).forEach((th) => th.addEventListener("click", () => {
       const k = th.dataset.sort; if (st.sort === k) st.dir = -st.dir; else { st.sort = k; st.dir = 1; } st.page = 0; render();
     }));
@@ -88,6 +93,7 @@ export function listPage(o) {
     qi.addEventListener("input", () => { st.q = qi.value; st.page = 0; render(); const i = page.querySelector("#fq"); i.focus(); i.setSelectionRange(i.value.length, i.value.length); });
     page.querySelectorAll("select[data-f]").forEach((sel) => sel.addEventListener("change", () => { st[sel.dataset.f] = sel.value; st.page = 0; render(); }));
     page.querySelectorAll("input[data-c]").forEach((cb) => cb.addEventListener("change", () => { st[cb.dataset.c] = cb.checked; st.page = 0; render(); }));
+    if (cards) return;
     page.querySelector("#pp").addEventListener("click", () => { st.page--; render(); window.scrollTo(0, page.querySelector(".filters").offsetTop - 60); });
     page.querySelector("#pn").addEventListener("click", () => { st.page++; render(); window.scrollTo(0, page.querySelector(".filters").offsetTop - 60); });
   };
@@ -102,13 +108,15 @@ export const ptabs = (sec, list, cur) => `<nav class="ptabs" aria-label="Section
 // the rail by category (session 98, the Journal plan's Step 5; the user: two words at most, short and simple): the Archive is the
 // game's database only, the records of your adventure moved to the Adventurer's Journal (:8793). A section is [key, name] (its
 // page in index.html's hash) or ["@page.html", name, icon] (a book of its own, on this Mac only: it reads the local art and data).
+// the books brought into the one page (session 99): their data is this Mac's, so the public copy neither lists nor opens them
+export const LOCAL_ONLY = new Set(["trainers", "festivals", "dungeons", "lockpicking", "beasts", "gathering", "drops", "zone", "tradeskill"]);
 export const NAV = [
-  ["World", [["zones", "Zones"], ["@dungeons.html", "Dungeons", "dungeons"], ["@festivals.html", "Festivals", "festivals"], ["flightpaths", "Flight paths"]]],
-  ["Creatures", [["npcs", "NPCs"], ["@journal.html?j=beasts", "Beasts", "beasts"], ["loot", "Loot"], ["@drops.html", "Drops", "drops"]]],
+  ["World", [["zones", "Zones"], ["dungeons", "Dungeons"], ["festivals", "Festivals"], ["flightpaths", "Flight paths"]]],
+  ["Creatures", [["npcs", "NPCs"], ["beasts", "Beasts"], ["loot", "Loot"], ["drops", "Drops"]]],
   ["Items", [["items", "Items"], ["itemsets", "Item sets"], ["chests", "Chests and boxes"]]],
   ["Quests", [["quests", "Quests"], ["books", "Books"]]],
-  ["Crafts", [["professions", "Professions"], ["@crafts.html", "Trainers", "trainers"], ["@journal.html?j=herbs", "Gathering", "gathering"],
-    ["@tradeskill/index.html", "Tradeskill DB", "tradeskill"], ["@lockpicking.html", "Lockpicking", "lockpicking"]]],
+  ["Crafts", [["professions", "Professions"], ["trainers", "Trainers"], ["gathering", "Gathering"],
+    ["lockpicking", "Lockpicking"]]],   // the Tradeskill DB: inside Professions since session 99
   ["Heroes", [["classes", "Classes"], ["races", "Races"], ["mounts", "Mounts"]]],
   ["Factions", [["factions", "Factions"], ["pvp", "PvP and honor"]]],
 ];
@@ -148,7 +156,7 @@ export function nav(cur) {
     ? `<a href="${ROOT}${k.slice(1)}"${!SPA && mine === k.slice(1) ? ' aria-current="page"' : ""}><span class="ni">${icon(ic)}<span>${t}</span></span></a>`
     : `<a href="${pre}#/${k}"${here === k && (SPA || HERE === "zone.html") ? ' aria-current="page"' : ""}><span class="ni">${icon(k)}<span>${t}</span></span>${counts[k] ? `<span class="nc${k === "review" ? " hot" : ""}">${counts[k]}</span>` : ""}</a>`;
   document.getElementById("nav").innerHTML = NAV.map(([h, xs]) => {
-    const shown = xs.filter(([k]) => LOCAL || k[0] !== "@");   // the books stay on this Mac: the public copy lists the sections only
+    const shown = xs.filter(([k]) => LOCAL || (k[0] !== "@" && !LOCAL_ONLY.has(k)));   // the books stay on this Mac: the public copy lists the sections only
     return shown.length ? `<div class="ngroup"><div class="nh">${h}</div>${shown.map(link).join("")}</div>` : "";
   }).join("");
   if (!SPA) return;   // a book keeps the title its own script gives it

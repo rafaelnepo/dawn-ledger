@@ -16,7 +16,7 @@ export async function loot() {
     const rows = d.creatures.filter((r) => (!q || r[1].toLowerCase().includes(q)) && (!st.zone || r[4] === st.zone) && (!st.type || r[6] === st.type) &&
       (!st.rank || r[5] === st.rank) && (!st.changed || r[10].length));
     const cols = [
-      ["name", "Creature", "nm", (r) => r[1], (r) => `<a href="drops.html?c=${r[0]}" title="Every drop and its chance">${esc(r[1])}</a>`],
+      ["name", "Creature", "nm", (r) => r[1], (r) => `<a href="#/drops/c/${r[0]}" title="Every drop and its chance">${esc(r[1])}</a>`],
       ["level", "Level", "num", (r) => r[2], (r) => (r[2] === r[3] ? r[2] : `${r[2]}–${r[3]}`)],
       ["rank", "Rank", "", (r) => r[5], (r) => esc(r[5])],
       ["type", "Type", "hide-sm", (r) => r[6], (r) => esc(r[6])],

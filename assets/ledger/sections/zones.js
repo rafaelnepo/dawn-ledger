@@ -1,10 +1,13 @@
-import { chgs, esc, fmt, load, page, state } from "../core.js";
+import { chgs, esc, fmt, json, load, page, state, ROOT } from "../core.js";
+import { LOCAL } from "../build.js";
 import { table, wireTable, nav } from "../ui.js";
 
 // ---------- zones ----------
 export async function zones() {
   nav("zones");
   const d = await load("zones");
+  // a land's own pages (#/zone/<slug>, this Mac only, session 99): the lands the zone builder writes
+  const slugs = LOCAL ? await json(ROOT + "data/index.json").then((x) => Object.fromEntries(x.zones.map((z) => [z.name, z.slug]))).catch(() => ({})) : {};
   const st = (state.zones = state.zones || { open: null });
   const render = () => {
     const roles = (z) => [["quests", "quest givers"], ["vendor", "vendors"], ["trainer", "trainers"], ["flight master", "flight masters"], ["innkeeper", "inns"]]
@@ -21,7 +24,7 @@ export async function zones() {
       ["changes", "Changes", "", (z) => z.changes.length, (z) => chgs(z.changes.slice(0, 5)) + (z.changes.length > 5 ? `<span class="note">+${z.changes.length - 5}</span>` : "")],
     ];
     const go = (sec, key, val) => `<a href="#/${sec}" data-go="${sec}|${key}|${esc(val)}">`;
-    const more = (z) => `<p>${go("npcs", "zone", z.name)}The NPCs here →</a> &nbsp; ${go("quests", "zone", z.name)}The quests here →</a> &nbsp;
+    const more = (z) => `<p>${slugs[z.name] ? `<a href="#/zone/${slugs[z.name]}">Its pages: the land’s journal →</a> &nbsp; ` : ""}${go("npcs", "zone", z.name)}The NPCs here →</a> &nbsp; ${go("quests", "zone", z.name)}The quests here →</a> &nbsp;
       ${go("chests", "q", z.name)}The chests here →</a> &nbsp; ${go("loot", "zone", z.name)}What its creatures drop →</a></p>
       ${z.changes.length ? `<p><span class="note">Every change here:</span> ${chgs(z.changes)}</p>` : ""}`;
     page.innerHTML = `<h1 class="display">Zones</h1>

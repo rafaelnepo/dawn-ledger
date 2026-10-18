@@ -16,19 +16,32 @@ import { races } from "./sections/races.js";
 import { classes } from "./sections/classes.js";
 import { mounts } from "./sections/mounts.js";
 import { itemsets } from "./sections/itemsets.js";
+import { books } from "./sections/books.js";
 import { soon, SOON_KEYS } from "./sections/soon.js";
 import { itemPage, npcPage, questPage } from "./sections/entry.js";
 import { wireShell, publicPass, turn, tails, foldFilters } from "./shell.js";
 import { wireFind } from "./find.js";
 import { LOCAL } from "./build.js";
-import { titleIcon } from "./ui.js";
+import { titleIcon, LOCAL_ONLY } from "./ui.js";
+import { leftBook } from "./companion.js";
+import { wireTips } from "./kit/tip.js";
+import { wireLive } from "./live.js";
 
 // ---------- the router ----------
 // every page by its hash: #/section or #/section/arg; a page that keeps its scroll (Interface, back from a spec) returns "keep"
 const ROUTES = {
   items, npcs, quests, zones, factions, faction: factionPage, chests, loot, professions,
-  pvp, flightpaths, races, classes, mounts, itemsets, item: itemPage, npc: npcPage, quest: questPage,
+  pvp, flightpaths, races, classes, mounts, itemsets, books, item: itemPage, npc: npcPage, quest: questPage,
   ...Object.fromEntries(SOON_KEYS.map((k) => [k, soon(k)])),   // the categories' new sections, still to be written (session 98)
+  // the books, sections since session 99 (the plan's Milestone C): loaded the first time they're opened, this Mac only (LOCAL_ONLY)
+  trainers: (a) => import("./sections/trainers.js").then((m) => m.trainers(a)),
+  festivals: (a) => import("./sections/festivals.js").then((m) => m.festivals(a)),
+  dungeons: (a) => import("./sections/dungeons.js").then((m) => m.dungeons(a)),
+  lockpicking: (a) => import("./sections/lockpicking.js").then((m) => m.lockpicking(a)),
+  beasts: (a) => import("./sections/journal.js").then((m) => m.beasts(a)),
+  gathering: (a) => import("./sections/journal.js").then((m) => m.gathering(a)),
+  zone: (a) => import("./sections/zone.js").then((m) => m.zone(a)),
+  drops: (a) => import("./sections/drops.js").then((m) => m.drops(a)),
 };
 // our work moved to the Watcher's Console (session 95, the user: the Archive is the game's database): an old link lands there on
 // this Mac, on the home page in the public copy
@@ -39,7 +52,8 @@ async function route() {
     if (!base.changes) { const cd = await load("changes"); base.changes = new Map(cd.changes.map((c) => [c.id, c])); base.areas = Object.fromEntries(cd.areas); }
     const [sec, arg] = [h.split("/")[0], h.split("/").slice(1).join("/")];
     if (MOVED[sec] && LOCAL) { location.replace(`http://localhost:8777/#${MOVED[sec]}`); return; }
-    const go = ROUTES[sec] || home;
+    const go = (LOCAL || !LOCAL_ONLY.has(sec)) && ROUTES[sec] || home;
+    if (!LOCAL_ONLY.has(sec)) leftBook();
     const r = await go(arg);
     turn(page);
     if (r !== "keep") window.scrollTo(0, 0);
@@ -82,5 +96,7 @@ new MutationObserver(() => { publicPass(page); applyTabs(); tails(page); foldFil
 
 wireShell();
 wireFind();
+wireTips();      // the game's tooltips on anything with data-item (session 99)
+wireLive(route);   // the game's changes, offered as they are rebuilt (session 99)
 window.addEventListener("hashchange", route);
 route();

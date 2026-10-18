@@ -1,0 +1,97 @@
+/* The Archive's kit (session 99): the game's icons, its tooltips, cards and the cards/table switch.
+   The game's own colors for things drawn as the game draws them (a tooltip's dark box, an item's quality): the client's values, not
+   the parchment's darker ink (tokens.css --q0..5), so a tooltip here reads like the one in game. */
+:root {
+  --gq0: #9d9d9d; --gq1: #ffffff; --gq2: #1eff00; --gq3: #0070dd; --gq4: #a335ee; --gq5: #ff8000;
+  --gt-gold: #ffd100; --gt-green: #1eff00; --gt-grey: #9d9d9d; --gt-off: #808080; --gt-worn: #ffff98;
+  --gt-box: rgba(9, 9, 20, 0.95); --gt-edge: #8c8c8c;
+  --coin-g: #ffd100; --coin-s: #c7c7cf; --coin-c: #eda55f;
+}
+.gq0 { color: var(--gq0); } .gq1 { color: var(--gq1); } .gq2 { color: var(--gq2); } .gq3 { color: var(--gq3); } .gq4 { color: var(--gq4); } .gq5 { color: var(--gq5); }
+
+/* ---------- an icon: the picture in a dark frame, its quality's color round it ---------- */
+.gi { position: relative; display: inline-block; flex: none; vertical-align: middle; background: #0d0b08; border: 1px solid #000;
+  border-radius: 4px; box-shadow: 0 0 0 1px var(--gi-ring, #5e5545); overflow: hidden; }
+.gi img { display: block; width: 100%; height: 100%; object-fit: cover; transform: scale(1.08); }
+.gi.s { width: 20px; height: 20px; border-radius: 3px; } .gi.m { width: 36px; height: 36px; } .gi.l { width: 56px; height: 56px; border-radius: 6px; }
+.gi.xl { width: 80px; height: 80px; border-radius: 8px; }
+.gi.q0 { --gi-ring: #6d675f; } .gi.q1 { --gi-ring: #cfc6b2; } .gi.q2 { --gi-ring: var(--gq2); } .gi.q3 { --gi-ring: var(--gq3); }
+.gi.q4 { --gi-ring: var(--gq4); } .gi.q5 { --gi-ring: var(--gq5); }
+.gi[data-item] { cursor: help; }
+
+/* ---------- the tooltip: the icon beside the game's dark box ---------- */
+.gtip { position: fixed; left: 0; top: 0; z-index: 60; display: none; align-items: flex-start; gap: 4px; pointer-events: none; max-width: 360px; }
+.gtip.show { display: flex; }
+.gtip .ticon { flex: none; width: 40px; height: 40px; border: 1px solid #000; border-radius: 4px; box-shadow: 0 0 0 1px var(--gi-ring, var(--gt-edge)); overflow: hidden; }
+.gtip .ticon img { width: 100%; height: 100%; display: block; }
+.gtip .ticon.q2 { --gi-ring: var(--gq2); } .gtip .ticon.q3 { --gi-ring: var(--gq3); } .gtip .ticon.q4 { --gi-ring: var(--gq4); } .gtip .ticon.q5 { --gi-ring: var(--gq5); }
+.tbox { background: var(--gt-box); border: 1px solid var(--gt-edge); border-radius: var(--radius); padding: 7px 10px 8px; color: #fff; min-width: 200px;
+  font: 13px/1.45 var(--text); box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6); text-wrap: pretty; }
+.tbox .tn { font-size: 14.5px; line-height: 1.35; margin-bottom: 1px; }
+.tbox .tl { display: flex; justify-content: space-between; gap: 18px; }
+.tbox .tl .tr { flex: none; }
+.tbox .tl.tsell { justify-content: flex-start; gap: 5px; }
+.tbox .k-g, .tbox .tbonus.on { color: var(--gt-green); } .tbox .k-gold, .tbox .k-q { color: var(--gt-gold); } .tbox .k-gr { color: var(--gt-grey); }
+.tbox .tset { margin-top: 10px; }
+.tbox .tpiece { padding-left: 10px; } .tbox .tpiece.on { color: var(--gt-worn); } .tbox .tpiece.off, .tbox .tbonus.off { color: var(--gt-off); }
+.tbox .tgap { height: 9px; }
+.tbox .tsrc { margin-top: 8px; padding-top: 6px; border-top: 1px solid rgba(255, 255, 255, 0.14); color: var(--gt-gold); font-size: 12px; line-height: 1.4; }
+.cash { white-space: nowrap; font-variant-numeric: tabular-nums; }
+/* a coin after its amount: a dot in the game's metal here and in the public copy; Forever UI's own coin on this Mac (feel.css) */
+i.coin { display: inline-block; width: 0.72em; height: 0.72em; margin: 0 1px 0 2px; border-radius: 50%; vertical-align: -0.04em;
+  box-shadow: inset 0 -1px 1px rgba(0, 0, 0, 0.45); font-style: normal; }
+i.coin.g { background: var(--coin-g); } i.coin.s { background: var(--coin-s); } i.coin.c { background: var(--coin-c); }
+
+/* ---------- cards and the cards/table switch ---------- */
+.viewtog { display: inline-flex; border: 1px solid var(--ink-rule-2); border-radius: 999px; overflow: hidden; background: var(--paper-hi); }
+.viewtog button { font: 400 var(--fs-xs)/1 var(--display); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); background: none;
+  border: 0; padding: 7px 14px; cursor: pointer; }
+.viewtog button[aria-pressed="true"] { background: var(--rubric); color: var(--paper-hi); }
+.viewtog button:focus-visible { outline: 2px solid var(--rubric); outline-offset: -2px; }
+.ggrid { display: grid; gap: var(--s2); grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+.gmore { height: 1px; }
+.sheet a.icard, .icard { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 4px var(--s3); align-items: center; padding: var(--s2) var(--s3);
+  background: var(--paper-hi); border: 1px solid var(--ink-rule); border-radius: var(--radius); color: var(--ink); text-decoration: none;
+  transition: background-color 160ms var(--ease), border-color 160ms var(--ease), transform 160ms var(--ease); }
+.sheet a.icard:hover, .sheet a.icard:focus-visible { background: var(--paper); border-color: var(--ink-rule-2); transform: translateY(-1px); }
+.icard .gi { grid-row: span 2; }
+.icard .in { font-weight: 600; font-size: var(--fs-sm); line-height: 1.25; min-width: 0; overflow-wrap: anywhere; }
+.icard .is { font-size: var(--fs-xs); color: var(--ink-3); line-height: 1.3; }
+@media (prefers-reduced-motion: reduce) { .icard { transition: none; } a.icard:hover { transform: none; } }
+
+/* ---------- an item set as the game lists it: a dark box with its pieces and bonuses, beside its pieces' icons ---------- */
+.setcards { display: grid; gap: var(--s4); grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); align-items: start; }
+.setcard { display: flex; flex-direction: column; gap: var(--s2); }
+.setcard .seticons { display: flex; flex-wrap: wrap; gap: 4px; }
+.setcard .tbox { min-width: 0; }
+.setcard .tbox .tn { font-family: var(--display); letter-spacing: 0.02em; }
+.setcard .tbox .tpiece { cursor: help; }
+.setcard .meta { font-size: var(--fs-xs); color: var(--ink-3); }
+.iname { display: flex; align-items: flex-start; gap: var(--s2); } .iname .gi { margin-top: 2px; }
+
+/* an item's own page: its tooltip drawn in place, the way the game shows it */
+.tipstatic { display: flex; align-items: flex-start; gap: 6px; margin: 0 0 var(--s4); max-width: 420px; }
+.tipstatic .ticon { flex: none; width: 56px; height: 56px; border: 1px solid #000; border-radius: 6px; box-shadow: 0 0 0 1px var(--gi-ring, var(--gt-edge)); overflow: hidden; }
+.tipstatic .ticon img { width: 100%; height: 100%; display: block; }
+.tipstatic .ticon.q2 { --gi-ring: var(--gq2); } .tipstatic .ticon.q3 { --gi-ring: var(--gq3); } .tipstatic .ticon.q4 { --gi-ring: var(--gq4); } .tipstatic .ticon.q5 { --gi-ring: var(--gq5); }
+.tipstatic .tbox { flex: 1; }
+
+/* ---------- the game changed (live.js): a quiet bar at the foot of the page; the rail's "Read the game again" ---------- */
+.livebar { position: fixed; right: 20px; bottom: 18px; z-index: 65; display: flex; align-items: center; gap: var(--s3); max-width: min(520px, calc(100vw - 40px));
+  padding: 10px 12px 10px 16px; background: var(--leather-2); color: var(--frame-text); border: 1px solid var(--rim); border-radius: var(--radius);
+  box-shadow: var(--shadow-sheet); font-size: var(--fs-sm); animation: livein 220ms var(--ease); }
+.livebar[hidden] { display: none; }
+.livebar button { flex: none; font: 400 var(--fs-xs)/1 var(--display); letter-spacing: 0.08em; text-transform: uppercase; color: var(--leather);
+  background: var(--gold-soft); border: 0; border-radius: 999px; padding: 7px 12px; }
+.livebar button:hover, .livebar button:focus-visible { background: var(--gold); }
+@keyframes livein { from { opacity: 0; transform: translateY(6px); } }
+@media (prefers-reduced-motion: reduce) { .livebar { animation: none; } }
+.livebtn { display: block; margin: 0 0 6px; padding: 0; background: none; border: 0; color: var(--gold-soft); font: inherit; font-size: 12px;
+  letter-spacing: 0.04em; text-decoration: underline; text-decoration-color: rgba(248, 215, 74, 0.35); text-underline-offset: 3px; }
+.livebtn:hover, .livebtn:focus-visible { color: var(--gold); }
+.livebtn:disabled { text-decoration: none; opacity: 0.75; }
+
+/* Professions (session 99): a card a profession, its trade icon large */
+.pgrid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
+.icard.pcard { padding: var(--s3); }
+.icard.pcard .in { font: 400 var(--fs-lg)/1.2 var(--display); }

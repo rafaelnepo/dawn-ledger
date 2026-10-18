@@ -22,7 +22,7 @@ async function build() {
     const js = await fetch(ROOT + "data/search.json").then((r) => (r.ok ? r.json() : [])).catch(() => []);
     const zone = Object.fromEntries(js.filter((r) => r[1] === "zones").map((r) => [r[2], r[0]]));
     js.filter((r) => r[0]).forEach((r) => rows.push(["j-" + r[1], r[0], r[1] === "drops" ? r[3] || "" : [r[1] === "zones" ? "" : zone[r[2]], r[3]].filter(Boolean).join(" · "),
-      r[1] === "drops" ? `drops.html?c=${r[2]}` : `zone.html?z=${r[2]}${r[1] === "zones" ? "" : "&open=" + encodeURIComponent(r[1] + ":" + r[0])}`]));
+      r[1] === "drops" ? `#/drops/c/${r[2]}` : `#/zone/${r[2]}${r[1] === "zones" ? "" : "/" + encodeURIComponent(r[1] + ":" + r[0])}`]));
   }
   rows.forEach((r) => (r.lc = r[1].toLowerCase()));
   return rows;

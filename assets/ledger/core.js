@@ -34,7 +34,10 @@ export const chg = (id) => {
 };
 export const chgs = (ids) => (ids || []).map(chg).join("");
 export const respawn = (t) => (!t || !t.length ? "" : t.map((s) => (s < 0 ? "scripted" : s >= 86400 ? Math.round(s / 3600) + " h" : s >= 3600 ? (s / 3600).toFixed(1).replace(".0", "") + " h" : s >= 60 ? Math.round(s / 60) + " min" : s + " s")).join(", "));
-export const money = (c) => { if (!c) return ""; const g = Math.floor(c / 10000), s = Math.floor(c / 100) % 100, k = c % 100; return [g && g + "g", s && s + "s", (k || !c) && k + "c"].filter(Boolean).join(" "); };
+// money as the game writes it: each amount then its coin (session 99: one form everywhere, <i class="coin g">; on this Mac feel.css draws
+// Forever UI's own coins, the public copy colored dots, kit.css)
+export const money = (c) => { if (!c) return ""; const g = Math.floor(c / 10000), s = Math.floor(c / 100) % 100, k = c % 100;
+  return [[g, "g"], [s, "s"], [k, "c"]].filter(([n]) => n).map(([n, u]) => `<span class="cash">${n}<i class="coin ${u}" aria-label="${{ g: "gold", s: "silver", c: "copper" }[u]}"></i></span>`).join(" "); };
 export const qbar = (q) => (q || []).map((n, i) => (n ? `<span class="q q${i}" style="width:${Math.max(3, Math.min(60, n * 2))}px" title="${n} ${["gray", "white", "green", "blue", "purple", "orange"][i]}"></span>` : "")).join("");
 export const statusCounts = (rows) => { const c = {}; rows.forEach((r) => (c[r] = (c[r] || 0) + 1)); return c; };
 export const uniq = (xs) => [...new Set(xs.filter((x) => x !== "" && x != null))].sort();
