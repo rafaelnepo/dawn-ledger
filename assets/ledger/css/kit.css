@@ -331,3 +331,25 @@ i.coin.g { background: var(--coin-g); } i.coin.s { background: var(--coin-s); } 
 .zs { display: flex; align-items: center; gap: 5px; font-size: var(--fs-xs); color: var(--ink-2); } .zs img { width: 18px; height: 18px; }
 .zr { font-size: var(--fs-xs); color: var(--ink-3); }
 @media (prefers-reduced-motion: reduce) { .zcard { transition: none; } a.zcard:hover { transform: none; } }
+
+/* ---------- Home (session 100): the "I want to…" buttons, what changed in the game, the sections as cards ---------- */
+.hwant { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+.hwant .bigbtn img { width: 52px; height: 52px; }
+.hwant .bigbtn .bt { font-size: var(--fs-lg); }
+.hcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--s3); margin-bottom: var(--s4); }
+.sheet a.hcard, .hcard { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto auto; column-gap: var(--s3); row-gap: 1px;
+  align-items: start; padding: var(--s3); background: var(--paper-hi); border: 1px solid var(--ink-rule); border-radius: var(--radius); color: var(--ink);
+  text-decoration: none; transition: border-color 140ms var(--ease), transform 140ms var(--ease); }
+.hcard img { grid-row: span 3; width: 48px; height: 48px; object-fit: contain; }
+.hcard .ht { font: 400 var(--fs-lg)/1.2 var(--display); }
+.hcard .hn { font-size: var(--fs-sm); color: var(--rubric); } .hcard .hn small { color: var(--ink-3); font-size: var(--fs-xs); }
+.hcard .hd { font-size: var(--fs-xs); color: var(--ink-2); line-height: 1.35; }
+.sheet a.hcard:hover, .sheet a.hcard:focus-visible { border-color: var(--rubric); transform: translateY(-1px); }
+.hlive { display: flex; flex-wrap: wrap; align-items: center; gap: 6px var(--s2); margin: 0 0 var(--s4); padding: var(--s2) var(--s3);
+  border: 1px solid var(--ink-rule-2); border-radius: var(--radius); background: color-mix(in srgb, var(--rubric) 6%, var(--paper-hi)); }
+.hlt { font: 400 var(--fs-xs)/1 var(--display); letter-spacing: 0.1em; text-transform: uppercase; color: var(--rubric); margin-right: 4px; }
+.sheet a.hlc, .hlc { display: inline-flex; align-items: center; gap: 6px; padding: 2px 10px 2px 3px; border-radius: 999px; background: var(--paper-hi);
+  border: 1px solid var(--ink-rule); color: var(--ink); font-size: var(--fs-xs); text-decoration: none; }
+.hlc img { width: 22px; height: 22px; }
+.sheet a.hlc:hover { border-color: var(--rubric); }
+@media (prefers-reduced-motion: reduce) { .hcard { transition: none; } a.hcard:hover { transform: none; } }
