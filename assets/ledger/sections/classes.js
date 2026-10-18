@@ -1,5 +1,6 @@
 import { esc, fmt, load, money, page, state, uniq } from "../core.js";
 import { chips, ptabs, table, wireChips, wireTable, nav } from "../ui.js";
+import { calcHtml, decode, encode, wireCalc } from "../kit/talents.js";
 
 // ---------- classes (session 99, the third of the categories' planned sections) ----------
 // A page a class (#/classes/<Name>): its races, power, base health and mana, what it may wear and wield (ledger.py's classes():
@@ -13,6 +14,9 @@ export async function classes(arg) {
   const st = (state.classes = Object.assign({ q: "", line: "", open: null }, state.classes || {}));
   const c = d.classes.find((x) => x.name.toLowerCase() === String(arg || "").toLowerCase()) || d.classes[0];
   if (st.cls !== c.name) Object.assign(st, { cls: c.name, q: "", line: "", open: null });
+  // the talent build: the address's (a shared link), else the one being made (session 100)
+  const tq = new URLSearchParams(location.hash.split("?")[1] || "").get("t");
+  let build = decode(c.trees, tq != null ? tq : st.build && st.build[c.name]);
   const render = () => {
     const q = st.q.toLowerCase();
     const rows = c.spells.filter((s) => (!st.line || s[5] === st.line) && (!q || (s[1] + " " + s[8]).toLowerCase().includes(q)));
@@ -45,10 +49,18 @@ export async function classes(arg) {
       <div class="filters"><input type="search" id="xq" placeholder="Search the spells…" value="${esc(st.q)}" aria-label="Search the spells"></div>
       <div class="panel">${table("tcspells", cols, groups, { more, open: (s) => st.open === key(s) })}</div>
       <h2 class="sec">Talents</h2>
-      <p class="note">The three trees, a talent a line by its row; its text is its last rank’s.</p>
+      <p class="note">Click a talent to spend a point, right-click to take it back. The link keeps the build.</p>
+      ${calcHtml(c.trees, build)}
+      <details class="tlist"><summary>Every talent, by row</summary>
       <div class="mods trees">${c.trees.map((t) => `<article class="mod tree"><header><h3>${esc(t.name)}</h3><span class="n">${t.talents.length} talents</span></header>
-        <ol class="traits">${t.talents.map(([n, row, ranks, text]) => `<li><b>${esc(n)}</b><span class="n">row ${row} · ${ranks} ${ranks === 1 ? "rank" : "ranks"}</span><span class="tt">${esc(text)}</span></li>`).join("")}</ol></article>`).join("")}</div>`;
+        <ol class="traits">${t.talents.map(([n, row, ranks, text]) => `<li><b>${esc(n)}</b><span class="n">row ${row} · ${ranks} ${ranks === 1 ? "rank" : "ranks"}</span><span class="tt">${esc(text)}</span></li>`).join("")}</ol></article>`).join("")}</div></details>`;
     wireChips(page, "cline", (v) => { st.line = v; render(); });
+    wireCalc(page, c.trees, build, (all) => {
+      build = all; st.build = Object.assign(st.build || {}, { [c.name]: encode(all) });
+      const t = encode(all).replace(/-+$/, "");
+      history.replaceState(history.state, "", `#/classes/${c.name}${t ? "?t=" + t : ""}`);
+      const y = scrollY; render(); scrollTo(0, y);
+    });
     const qi = page.querySelector("#xq");
     qi.addEventListener("input", () => { st.q = qi.value; render(); const i = page.querySelector("#xq"); i.focus(); i.setSelectionRange(i.value.length, i.value.length); });
     const ordered = [];

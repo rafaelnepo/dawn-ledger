@@ -382,3 +382,32 @@ i.coin.g { background: var(--coin-g); } i.coin.s { background: var(--coin-s); } 
 .frt { margin: 0 0 var(--s3); font-size: var(--fs-sm); }
 .fmap .fl.route { opacity: 1; stroke: var(--gold, #ffd100); stroke-width: 3.4; filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.7)); }
 .fmap .fp.stop { stroke: #000; stroke-width: 1.4; r: 6px; }
+
+/* ---------- the talent calculator (session 100, kit/talents.js) ---------- */
+.tcalc { margin: var(--s2) 0 var(--s4); }
+.tsum { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s2); margin-bottom: var(--s3); font-size: var(--fs-sm); }
+.tsum b { font-size: var(--fs-lg); color: var(--rubric); } .tact { margin-left: auto; display: flex; gap: 6px; }
+.ttrees { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--s3); }
+.ttree { background: radial-gradient(ellipse at 50% 30%, #2c241a, #120e09 80%); border: 1px solid #000; border-radius: var(--radius); padding: var(--s2) var(--s3) var(--s3);
+  box-shadow: 0 0 0 1px var(--rim), var(--shadow-slip); color: #e8dcc0; }
+.ttree header { display: flex; align-items: center; gap: 8px; margin-bottom: var(--s2); }
+.ttree header img { width: 26px; height: 26px; border-radius: 4px; box-shadow: 0 0 0 1px #000; }
+.ttree h3 { margin: 0; font: 400 var(--fs-lg)/1 var(--display); color: var(--gold-soft, #f8d74a); flex: 1; }
+.ttree header .num { font-size: var(--fs-sm); color: #fff; }
+.treset { background: none; border: 0; color: #a69a82; font-size: 11px; cursor: pointer; text-decoration: underline; } .treset:disabled { opacity: 0.35; cursor: default; }
+.tgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px 8px; justify-items: center; }
+.tnode { position: relative; width: 44px; height: 44px; padding: 0; border: 2px solid #4a4a4a; border-radius: 6px; background: #000; cursor: pointer;
+  transition: transform 100ms var(--ease), border-color 120ms var(--ease); }
+.tnode img { width: 100%; height: 100%; border-radius: 3px; display: block; }
+.tnode .tr { position: absolute; right: -8px; bottom: -8px; min-width: 26px; padding: 1px 4px; border-radius: 6px; background: #000; color: #9d9d9d;
+  font-size: 10.5px; line-height: 1.3; border: 1px solid #333; }
+.tnode.open { border-color: #1eff00; } .tnode.open .tr { color: #1eff00; }
+.tnode.some { border-color: #1eff00; } .tnode.some .tr { color: #1eff00; }
+.tnode.full { border-color: #ffd100; } .tnode.full .tr { color: #ffd100; }
+.tnode.shut img { filter: grayscale(1) brightness(0.55); } .tnode.shut { cursor: default; }
+.tnode:hover:not(.shut) { transform: scale(1.06); }
+.tnode:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.ttip { position: fixed; z-index: 60; pointer-events: none; }
+.ttip .tbox { min-width: 0; } .ttip .ttneed { color: #ff2020; } .ttip .tttext { color: var(--gt-gold, #ffd100); white-space: normal; } .ttip .ttnext { margin-top: 6px; }
+.tlist { margin: var(--s3) 0; } .tlist summary { cursor: pointer; color: var(--rubric); font: 400 var(--fs-xs)/1.4 var(--display); letter-spacing: 0.08em; text-transform: uppercase; }
+@media (prefers-reduced-motion: reduce) { .tnode { transition: none; } }
