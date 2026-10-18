@@ -121,7 +121,7 @@ export async function npcPage(id) {
     `<div class="etop"><div class="ecol">${stage(r[0], { size: "page", label: r[1] }) + voices(r[0])}</div>${map ? `<div class="ecol">${map}</div>` : ""}</div>` +
     sells + teaches + quests + works +
     `<h2 class="sec">In the world</h2>` + facts([["Level", lvl(r[3], r[4])], ["Stands in", esc(r[9])], ["Spawns", r[10] || ""],
-      ["Scripted", r[13] ? `${esc(r[13])}: better left alone` : ""], ["Its drops", `<a href="#/drops/c/${r[0]}">every drop and its chance</a>`], ["In the database", `creature ${r[0]}`]]) +
+      ["Scripted", r[13] ? `${esc(r[13])}: better left alone` : ""], ["Its drops", `<a href="#/loot/c/${r[0]}">every drop and its chance</a>`], ["In the database", `creature ${r[0]}`]]) +
     `${changeList(r[11])}`;
 }
 

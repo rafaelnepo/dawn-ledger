@@ -110,7 +110,7 @@ export const ptabs = (sec, list, cur) => `<nav class="ptabs" aria-label="Section
 export const LOCAL_ONLY = new Set(["trainers", "festivals", "dungeons", "lockpicking", "beasts", "gathering", "drops", "zone", "tradeskill"]);
 export const NAV = [
   ["World", [["zones", "Zones"], ["dungeons", "Dungeons"], ["festivals", "Festivals"], ["flightpaths", "Flight paths"]]],
-  ["Creatures", [["npcs", "NPCs"], ["beasts", "Beasts"], ["loot", "Loot"], ["drops", "Drops"]]],
+  ["Creatures", [["npcs", "NPCs"], ["beasts", "Beasts"], ["loot", "Loot"]]],   // the Drops inside Loot since session 100
   ["Items", [["items", "Items"], ["itemsets", "Item sets"], ["chests", "Chests and boxes"]]],
   ["Quests", [["quests", "Quests"], ["books", "Books"]]],
   ["Crafts", [["professions", "Professions"], ["trainers", "Trainers"], ["gathering", "Gathering"],
