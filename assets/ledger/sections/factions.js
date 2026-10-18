@@ -1,5 +1,21 @@
 import { chgs, esc, fmt, load, page, state } from "../core.js";
 import { fcol, wireChips, nav } from "../ui.js";
+import { itemData } from "../kit/tip.js";
+import { icon } from "../kit/icon.js";
+import { stage } from "../kit/model3d.js";
+import { slug, uiIcon } from "../kit/filters.js";
+
+// the standings in the game's own colors (Reputation's bars), and where each begins and ends
+const STAND = [["Hated", -42000, "#cc2222"], ["Hostile", -6000, "#ff0000"], ["Unfriendly", -3000, "#ee6622"], ["Neutral", 0, "#ffff00"],
+  ["Friendly", 3000, "#00ff00"], ["Honored", 9000, "#00ff88"], ["Revered", 21000, "#00ffcc"], ["Exalted", 42000, "#00ffff"]];
+const END = 43000;
+// the bar: eight equal segments, each start marked where it falls within its standing
+function standingBar(starts) {
+  const at = (v) => { const i = Math.max(0, STAND.findIndex((s, k) => v >= s[1] && v < (STAND[k + 1] ? STAND[k + 1][1] : END)));
+    const lo = STAND[i][1], hi = STAND[i + 1] ? STAND[i + 1][1] : END; return ((i + (v - lo) / (hi - lo)) / STAND.length) * 100; };
+  return `<div class="sbar" role="img" aria-label="Where each people begins">${STAND.map(([n, , c]) => `<span style="--c:${c}"><b>${n}</b></span>`).join("")}` +
+    starts.map(([w, st, v], k) => `<i class="smark" style="left:${at(v)}%" title="${esc(w)}: ${esc(st)} (${fmt(v)})"><em style="margin-top:${6 + (k % 3) * 15}px">${esc(w)}</em></i>`).join("") + `</div>`;
+}
 
 // ---------- factions ----------
 // (session 77, the user: "modules with each faction's crest, grouped as reputation-groups.json, the horizontal filter columns on
@@ -68,9 +84,23 @@ export async function factionPage(id) {
   if (!e) { page.innerHTML = `<p class="empty">No reputation ${esc(id)}.</p>`; return; }
   const byId = new Map(c.changes.map((x) => [x.id, x]));
   const ranks = ["Hated", "Hostile", "Unfriendly", "Neutral", "Friendly", "Honored", "Revered", "Exalted"];
+  // its rewards by the standing each asks (the tooltip shards' icons), its quartermasters in 3D (session 100)
+  const nd = await load("npcs"), npcs = new Map(nd.npcs.map((r) => [r[0], r]));
+  const tips = await Promise.all((e.rewards || []).map(([i]) => itemData(i)));
+  const byStand = {};
+  (e.rewards || []).forEach(([i, st], k) => tips[k] && (byStand[st] = byStand[st] || []).push([i, tips[k]]));
+  const rewards = Object.keys(byStand).length ? `<h2 class="sec">Its rewards</h2>${STAND.filter(([n]) => byStand[n]).map(([n, , c]) => `<h3 class="grp-h"><span class="sdot" style="--c:${c}"></span>${n} <span class="n">${byStand[n].length}</span></h3>
+    <div class="egoods">${byStand[n].map(([i, t]) => `<a class="egood" href="#/item/${i}" data-item="${i}">${icon(t.i, { q: t.q, size: "s" })}<span class="qn${t.q || 0}">${esc(t.n)}</span></a>`).join("")}</div>`).join("")}` : "";
+  const qms = (e.qm || []).map((id) => npcs.get(id)).filter(Boolean);
+  const qmh = qms.length ? `<h2 class="sec">Who sells them</h2><div class="ggrid ngrid emates">${qms.map((m) => `<div class="ncard">${stage(m[0], { label: m[1] })}<a class="nb" href="#/npc/${m[0]}">` +
+    `<span class="in">${esc(m[1])}</span>${m[2] ? `<span class="it">&lt;${esc(m[2])}&gt;</span>` : ""}<span class="is">${esc(m[9] || "")}</span></a></div>`).join("")}</div>` : "";
   page.innerHTML = `<p class="note"><a href="#/factions">Factions</a> › ${esc(e.parent || "Other")}</p>
-    <h1 class="display" style="font-size:40px">${esc(e.name)}</h1>
-    ${e.solo ? `<p class="lead">${esc(e.solo)}</p>` : ""}${e.note ? `<p class="note">${esc(e.note)}</p>` : ""}
+    <div class="fhero">${e.crest ? `<img class="fcrest big" src="${esc(e.crest[0])}" alt="" loading="lazy">` : ""}<div><h1 class="display" style="font-size:40px">${esc(e.name)}</h1>
+    ${e.lore ? `<p class="flore">${esc(e.lore.lore)}</p>` : ""}${e.side ? `<p class="ebadges">${`<span class="ebadge">${uiIcon("side-" + slug(e.side))}<span>${esc(e.side)}</span></span>`}</p>` : ""}</div></div>
+    ${e.lore ? `<p class="lead">${esc(e.lore.intro)}</p>` : ""}${e.solo ? `<p class="note">${esc(e.solo)}</p>` : ""}${e.note ? `<p class="note">${esc(e.note)}</p>` : ""}
+    <h2 class="sec">Where you begin</h2>${standingBar(e.start)}
+    ${rewards}${qmh}
+    <h2 class="sec">On this server</h2>
     <div class="panel panel-body"><div class="facts">
       <span class="k">Starts at</span><span>${e.start.map(([w, s, v]) => `${esc(s)} (${fmt(v)}) for ${esc(w)}`).join("; ")}</span>
       <span class="k">Quests</span><span>${e.quests ? `${fmt(e.quests.n)} quests give it (levels ${e.quests.levels[0]} to ${e.quests.levels[1]}): ${fmt(e.quests.total)} in all once, ${e.quests.repeat} repeatable${e.quests.neg ? `; ${e.quests.neg} take it away` : ""}` : "none"}</span>

@@ -418,3 +418,16 @@ i.coin.g { background: var(--coin-g); } i.coin.s { background: var(--coin-s); } 
 /* Books (session 100): a card a book, its icon large */
 .bgridk { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
 .icard.bcardk { padding: var(--s3); }
+
+/* ---------- a faction's page (session 100): its crest, the standing bar in the game's colors, its rewards and quartermasters ---------- */
+.fhero { display: flex; align-items: center; gap: var(--s4); } .fcrest.big { width: 112px; height: 112px; object-fit: contain; }
+.fhero .flore { margin: 0; color: var(--ink-2); font-style: italic; }
+.sbar { position: relative; display: grid; grid-template-columns: repeat(8, 1fr); height: 28px; margin: var(--s2) 0 64px; border: 1px solid #000;
+  border-radius: 4px; background: #111; box-shadow: 0 0 0 1px var(--rim); }
+.sbar > span { position: relative; background: linear-gradient(180deg, color-mix(in srgb, var(--c) 85%, #fff), color-mix(in srgb, var(--c) 70%, #000)); opacity: 0.85; }
+.sbar > span + span { border-left: 1px solid rgba(0, 0, 0, 0.6); }
+.sbar b { position: absolute; inset: 0; display: grid; place-items: center; font: 400 10.5px/1 var(--display); letter-spacing: 0.06em; color: #000; text-transform: uppercase; }
+.smark { position: absolute; top: -4px; bottom: -4px; width: 3px; margin-left: -1px; background: #fff; box-shadow: 0 0 0 1px #000; }
+.smark em { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 6px; white-space: nowrap; font-style: normal; font-size: 11px; color: var(--ink-2); }
+.sdot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5); margin-right: 6px; vertical-align: 1px; }
+@media (max-width: 640px) { .sbar b { font-size: 8px; } }
