@@ -19,6 +19,30 @@ const head = (sec, title, name, cls, sub) => `<p class="crumbs"><a href="#/${sec
   <h1 class="${cls || ""}">${esc(name)}</h1>${sub ? `<p class="lead">${sub}</p>` : ""}`;
 const missing = (what, id) => { page.innerHTML = `<p class="empty">No ${what} ${esc(id)} on this server.</p>`; };
 
+// where an item comes from and what asks for it (session 100, the player's review): ledger.py's iteminfo part (item/<id >> 8>.json)
+const itemShard = {};
+const itemInfo = (id) => (itemShard[id >> 8] = itemShard[id >> 8] || json(`${ROOT}data/ledger/item/${id >> 8}.json`).catch(() => ({}))).then((d) => d[id] || {});
+export const clearItemInfo = () => { for (const k in itemShard) delete itemShard[k]; };
+async function itemWhere(id) {
+  const info = await itemInfo(id);
+  if (!Object.keys(info).length) return "";
+  const [nd, qd] = await Promise.all([load("npcs"), load("quests")]);
+  const npcs = new Map(nd.npcs.map((x) => [x[0], x])), qs = new Map(qd.quests.map((q) => [q[0], q]));
+  const who = (c) => { const n = npcs.get(c); return n ? `<a href="#/npc/${c}">${esc(n[1])}</a><span class="note">${esc([`level ${lvl(n[3], n[4])}`, n[5], n[9]].filter(Boolean).join(" · "))}</span>` : ""; };
+  const quest = (q, extra) => { const x = qs.get(q); return x ? `<a class="equest" href="#/quest/${q}">${uiIcon("role-quests")}<span>${esc(x[1])}</span><span class="note num">${extra || x[2]}</span></a>` : ""; };
+  let h = "";
+  if (info.d) h += `<h2 class="sec">Drops from</h2><div class="idrops">${info.d.map(([c, p]) => npcs.get(c) ? `<div class="idrop"><span class="iw">${who(c)}</span>` +
+    `<span class="ibar" aria-hidden="true"><i style="width:${Math.max(2, Math.min(100, p))}%"></i></span><span class="ip">${p}%</span></div>` : "").join("")}</div>` +
+    (info.dn ? `<p class="note">The ${info.d.length} likeliest of ${fmt(info.dn)} creatures, by their chance per kill.</p>` : "");
+  if (info.v) h += `<h2 class="sec">Sold by</h2><div class="idrops">${info.v.map(([c, n]) => npcs.get(c) ? `<div class="idrop"><span class="iw">${who(c)}</span><span class="note">${n ? `${n} at a time` : ""}</span></div>` : "").join("")}</div>`;
+  const qp = [];
+  if (info.sq) qp.push(`<div class="qask"><h3 class="eh">Starts a quest</h3>${quest(info.sq)}</div>`);
+  if (info.g) qp.push(`<div class="qask"><h3 class="eh">A reward of</h3>${info.g.map((q) => quest(q)).join("")}</div>`);
+  if (info.ch) qp.push(`<div class="qask"><h3 class="eh">A choice in</h3>${info.ch.map((q) => quest(q)).join("")}</div>`);
+  if (info.a) qp.push(`<div class="qask"><h3 class="eh">Asked for by</h3>${info.a.map(([q, n]) => quest(q, n > 1 ? `× ${n}` : "")).join("")}</div>`);
+  if (qp.length) h += `<h2 class="sec">Quests</h2><div class="qasks">${qp.join("")}</div>`;
+  return h;
+}
 export async function itemPage(id) {
   nav("items");
   const d = await load("items");
@@ -30,6 +54,7 @@ export async function itemPage(id) {
   page.innerHTML = head("items", "Items", r[1], `qn${r[2] || 0}`, `${esc(r[5])}${r[6] && r[6] !== r[5] ? " · " + esc(r[6]) : ""}`) +
     (e ? `<div class="tipstatic">${tipHtml(e, set)}</div>` : "") +
     (set ? `<p class="note">Part of <a href="#/itemsets">${esc(set.name)}</a>, ${set.pieces.length} pieces.</p>` : "") +
+    (await itemWhere(r[0])) +
     `<h2 class="sec">On this server</h2>` + facts([["Item level", r[3]], ["Requires level", r[4] || ""], ["Buys for", money(r[7])], ["Sells for", money(r[8]) || "nothing"],
       ["PvP rank", r[13] ? `${r[13] - 4} (requiredhonorrank ${r[13]})` : ""], ["Comes from", src || "nowhere: no source on this server"],
       ["The client", r[11] ? "shows our hotfix row (HermesProxy), not its own copy" : "shows its own copy, which matches"], ["In the database", `item ${r[0]}`]]) +

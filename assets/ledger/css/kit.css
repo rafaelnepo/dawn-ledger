@@ -274,3 +274,12 @@ i.coin.g { background: var(--coin-g); } i.coin.s { background: var(--coin-s); } 
 .qstory details { margin: var(--s2) 0; } .qstory summary { cursor: pointer; color: var(--rubric); font: 400 var(--fs-xs)/1.4 var(--display); letter-spacing: 0.08em; text-transform: uppercase; }
 .qstory details p { margin-top: var(--s2); }
 .ph { font-variant: small-caps; letter-spacing: 0.03em; color: var(--rubric); }
+/* an item's own page (session 100): who drops it with a chance bar, who sells it, the quests */
+.idrops { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 2px var(--s5); margin-bottom: var(--s2); }
+.idrop { display: grid; grid-template-columns: minmax(0, 1fr) 90px 52px; align-items: center; gap: var(--s2); padding: 5px 4px; border-bottom: 1px solid var(--ink-rule);
+  font-size: var(--fs-sm); }
+.idrop .iw { display: flex; flex-direction: column; min-width: 0; } .idrop .iw .note { font-size: var(--fs-xs); }
+.ibar { height: 6px; border-radius: 3px; background: color-mix(in srgb, var(--ink) 10%, transparent); overflow: hidden; }
+.ibar i { display: block; height: 100%; background: var(--rubric); border-radius: 3px; }
+.ip { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.idrop:has(> .note:last-child) { grid-template-columns: minmax(0, 1fr) auto; }
