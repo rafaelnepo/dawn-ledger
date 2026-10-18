@@ -120,9 +120,9 @@ input, button, select { font: inherit; color: inherit; caret-color: var(--rubric
 /* a section's icon left of its page's title and description (session 95, the user): as tall as the two together (ui.js sets its
    height from them), unframed at its own proportions; the title and description flush left beside it */
 .titled { display: flex; align-items: center; gap: 22px; margin: 0 0 var(--s5); }
-.titled .hic { flex: none; width: auto; height: 120px; max-width: 180px; object-fit: contain; }
+.titled .hic { flex: none; width: 112px; height: 112px; object-fit: contain; }   /* one size on every page (session 100, the user) */
 .titled .ttl { flex: 1; min-width: 0; }
 .titled .ttl > :last-child { margin-bottom: 0; }
 .journey .hero .titled { margin-bottom: 0; }
-@media (max-width: 640px) { .titled { gap: 14px; } .titled .hic { max-height: 96px; } }
-.titled .ttl p { max-width: 72ch; text-wrap: balance; }   /* two lines at most (the user, session 95): each written to fit */
+@media (max-width: 640px) { .titled { gap: 14px; } .titled .hic { width: 84px; height: 84px; } }
+.titled .ttl p { max-width: 52ch; min-height: 2lh; text-wrap: balance; }   /* two lines on every page (the user, sessions 95 and 100): a short one wraps, each written to fit */

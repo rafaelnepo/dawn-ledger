@@ -1,4 +1,4 @@
-/* The page's writing: titles in Marcellus with the ledger's double rubric rule under them, words in Alegreya, balanced lines
+/* The page's writing: titles in Marcellus (no rule under them since session 100), words in Alegreya, balanced lines
    (no runts or widows: text-wrap balance on titles, pretty on paragraphs), section heads in small caps with a hairline running out. */
 .sheet a { color: var(--link); text-decoration: underline; text-decoration-color: var(--rubric-soft); text-decoration-thickness: 1px;
   text-underline-offset: 3px; }
@@ -7,7 +7,7 @@
 .sheet p, .sheet li, .sheet .sub, .sheet .mt { text-wrap: pretty; hyphens: manual; }
 
 .display, .sheet h1 { margin: 0; font: 400 var(--fs-3xl)/1.08 var(--display); color: var(--ink); letter-spacing: 0.005em; }
-.sheet > h1, .sheet > .titled h1, .lhead h1 { padding-bottom: 10px; margin-bottom: var(--s3); border-bottom: 3px double var(--rubric); max-width: max-content; padding-right: var(--s5); }
+.sheet > h1, .sheet > .titled h1, .lhead h1 { margin-bottom: var(--s2); max-width: max-content; }   /* no rule under it (session 100, the user) */
 .lead { margin: 0 0 var(--s5); max-width: 68ch; font-size: var(--fs-lg); line-height: 1.5; color: var(--ink-2); }
 h2.sec { display: flex; align-items: baseline; gap: var(--s3); margin: var(--s6) 0 var(--s3); font: 400 var(--fs-sm)/1.2 var(--display);
   letter-spacing: 0.14em; text-transform: uppercase; color: var(--rubric); }

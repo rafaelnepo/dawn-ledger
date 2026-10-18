@@ -41,7 +41,7 @@ export async function professions(arg) {
     };
     const groups = GROUPS.map(([t, names]) => [t, d.professions.filter((p) => names.includes(p.name))]);
     page.innerHTML = `<h1 class="display">Professions</h1>
-      <p class="lead">Every craft, the gathering skills and the rogue’s: recipes, trainers, where recipes come from and the nodes in the world.${LOCAL ? " Open a craft for its journey, rank by rank, in this server’s game and in WoW Forever." : ""}</p>
+      <p class="lead">${LOCAL ? "Every craft and gathering skill, rank by rank: its recipes and trainers, here and in WoW Forever." : "Every craft and gathering skill: its recipes, its trainers and where each recipe comes from."}</p>
       <h2 class="sec">The professions</h2>
       <div class="filters">${viewToggle("professions")}</div>
       ${cards ? groups.map(([t, ps]) => `<h3 class="grp-h">${esc(t)}</h3><div class="ggrid pgrid">${ps.map(card).join("")}</div>`).join("")

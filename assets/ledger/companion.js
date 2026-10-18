@@ -17,7 +17,7 @@ export const C = {
   json: (url) => (cache[url] = cache[url] || getJson(ROOT + url).catch((e) => { delete cache[url]; throw e; })),
   levels: (lo, hi) => (lo === hi ? String(lo) : lo + "–" + hi),
   list: (xs) => (xs.length < 2 ? xs.join("") : xs.slice(0, -1).join(", ") + " and " + xs[xs.length - 1]),
-  state: { level: store.get("level", 0) },
+  state: { level: 0 },               // each page at its own level (session 100: the level box went with the bar over the books)
   character: () => null,
   journeyOn: () => false,            // "My journey" left with the character (session 98): every page is written
   found: () => false,
@@ -65,17 +65,8 @@ C.relevant = (kind, e, zone) => {
 };
 C.hint = () => "A page not yet written.";
 
-// the bar over a book: its crumbs and the level its pages are curated for (the level folds what is far from it)
-export function bar(el, crumbs, onChange) {
-  el.innerHTML = `<span class="crumbs">${crumbs || ""}</span><span class="spacer"></span>
-    <label class="levelctl">Level <input type="number" min="1" max="60" placeholder="auto" aria-label="Level the pages are curated for"></label>`;
-  const lvl = el.querySelector("input");
-  lvl.value = C.state.level || "";
-  lvl.addEventListener("change", () => { const v = Math.max(0, Math.min(60, parseInt(lvl.value, 10) || 0)); C.state.level = v; store.set("level", v); onChange && onChange(); });
-}
-
 // ---------- a book: an index of entries in folding groups on the left, the chosen entry's page on the right ----------
-// o = { sec, crumbs, title, lead, cls (the panel's own class), search (the index's search box's words, if it has one), groups: [{ title, count, folded, entries: [{ key, name, right, mark, sub }] }], chosen (a key),
+// o = { sec, title, lead, tabs (html under the lead: sister books), cls (the panel's own class), search (the index's search box's words, if it has one), groups: [{ title, count, folded, entries: [{ key, name, right, mark, sub }] }], chosen (a key),
 // page(key) -> html }. Each entry is a link (#/<sec>/<key>), so Back and a shared link find it again.
 const folded = {};
 let lastSec = null;
@@ -92,11 +83,10 @@ export function book(o) {
         return head + `<li class="entry${e === cur ? " on" : ""}"><a class="nm" href="${link(e)}"${e === cur ? ' aria-current="page"' : ""}>${C.esc(e.name)}${e.mark || ""}</a><span class="lv num">${e.right ?? ""}</span></li>`;
       }).join("")}</ul></div>`;
   }).join("");
-  sheet.innerHTML = `<div class="journey"><header class="bar"><div class="wrap"></div></header>
-    <section><div class="wrap"><h1 class="display">${o.title}</h1><p class="lead">${o.lead}</p></div></section>
+  sheet.innerHTML = `<div class="journey">
+    <section><div class="wrap"><h1 class="display">${o.title}</h1><p class="lead">${o.lead}</p>${o.tabs || ""}</div></section>
     <main class="wrap"><div class="panel book${o.cls ? " " + o.cls : ""}"><nav class="index" aria-label="${C.esc(o.title)}">${o.search ? `<input type="search" placeholder="${C.esc(o.search)}" aria-label="${C.esc(o.search)}">` : ""}${groups}</nav>
       <article class="page">${cur ? o.page(cur.key) : `<p class="note">Nothing here yet.</p>`}</article></div></main></div>`;
-  bar(sheet.querySelector(".bar .wrap"), o.crumbs, o.onLevel);
   sheet.querySelectorAll(".cat > button").forEach((b) => b.addEventListener("click", () => {
     const cat = b.parentElement; cat.classList.toggle("folded"); folded[cat.dataset.cat] = cat.classList.contains("folded");
   }));

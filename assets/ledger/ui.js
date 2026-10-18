@@ -1,6 +1,7 @@
 import { LOCAL } from "./build.js";
 import { esc, fmt, page, state, ROOT } from "./core.js";
 import { grid, viewOf, viewToggle, wireGrid, wireView } from "./kit/gallery.js";
+import { filterBar, filtered, readAddress, wireBar, writeAddress } from "./kit/filters.js";
 
 export function table(id, cols, groups, opts) {
   const st = (state[id] = state[id] || { sort: opts.sort || null, dir: opts.dir || 1 });
@@ -49,17 +50,17 @@ export const chips = (name, items, cur, all) =>
 export function wireChips(root, name, set) {
   root.querySelectorAll(`[data-chips="${name}"] .chip, [data-chips="${name}"] .fo`).forEach((b) => b.addEventListener("click", () => set(b.dataset.v)));
 }
-// ---------- a long list, paged: search, filters, checks, sorting over the whole list, a row that opens ----------
+// ---------- a long list: the faceted filter bar (kit/filters.js, session 100), the cards or the paged table, sorting, a row that opens ----------
+// o.facets: the filter bar's facets (icon toggles or dropdowns); o.filters (the older shape: dropdowns) still works
 export function listPage(o) {
+  const facets = o.facets || (o.filters || []).map((f) => Object.assign({ icons: false }, f));
   // a link from another page may have set a filter already (a zone's "The NPCs here"): the defaults fill the rest
   const st = (state[o.sec] = Object.assign({ q: "", page: 0, open: null, sort: null, dir: 1 }, state[o.sec] ? {} : o.defaults || {}, state[o.sec] || {}));
+  const fo = { rows: o.rows, text: o.text, facets, checks: o.checks || [], placeholder: o.placeholder, unit: o.unit };
+  readAddress(fo, st);   // a shared link's choices win
   const PER = 100;
-  const opt = (v, cur) => `<option value="${esc(v)}"${String(v) === String(cur) ? " selected" : ""}>${esc(v)}</option>`;
   const render = () => {
-    const q = st.q.toLowerCase();
-    let rows = o.rows.filter((r) => (!q || o.text(r).toLowerCase().includes(q)) &&
-      o.filters.every((f) => !st[f.k] || String(f.get(r)) === String(st[f.k]) || (Array.isArray(f.get(r)) && f.get(r).includes(st[f.k]))) &&
-      o.checks.every((c) => !st[c.k] || c.test(r)));
+    let rows = filtered(fo, st);
     if (st.sort) { const c = o.cols.find((x) => x[0] === st.sort); rows = rows.slice().sort((a, b) => { const x = c[3](a), y = c[3](b); return (x < y ? -1 : x > y ? 1 : 0) * st.dir; }); }
     // the visual view (session 99): every match as a card, drawn a batch at a time as you scroll; the table keeps its pages
     const cards = o.card && viewOf(o.sec) === "cards";
@@ -75,12 +76,11 @@ export function listPage(o) {
     h += "</tbody></table>";
     page.innerHTML = `<h1 class="display">${o.title}</h1><p class="lead">${o.lead}</p>${o.top || ""}
       <h2 class="sec">${o.listTitle}</h2>
-      <div class="filters"><input type="search" id="fq" placeholder="${o.placeholder}" value="${esc(st.q)}" aria-label="${o.placeholder}">
-        ${o.filters.map((f) => `<select data-f="${f.k}" aria-label="${f.label}"><option value="">${f.label}</option>${f.values.map((v) => opt(v, st[f.k])).join("")}</select>`).join("")}
-        ${o.checks.map((c) => `<label><input type="checkbox" data-c="${c.k}"${st[c.k] ? " checked" : ""}> ${c.label}</label>`).join("")}
-        <span>${fmt(rows.length)} ${o.unit}</span>${o.card ? viewToggle(o.sec) : ""}</div>
+      ${filterBar(Object.assign({ count: rows.length }, fo), st, o.card ? viewToggle(o.sec) : "")}
       ${cards ? grid("g" + o.sec, rows, o.card, { cls: o.gridCls }) : `<div class="panel">${h}</div>
       <div class="pager"><button id="pp"${st.page ? "" : " disabled"}>Back</button><span>Page ${st.page + 1} of ${pages}</span><button id="pn"${st.page < pages - 1 ? "" : " disabled"}>Next</button></div>`}`;
+    writeAddress(o.sec, fo, st);
+    wireBar(page, fo, st, render);
     if (o.card) wireView(page, o.sec, render);
     if (cards) wireGrid("g" + o.sec, rows, o.card);
     page.querySelectorAll(`#t${o.sec} th[data-sort]`).forEach((th) => th.addEventListener("click", () => {
@@ -91,11 +91,9 @@ export function listPage(o) {
     }));
     const qi = page.querySelector("#fq");
     qi.addEventListener("input", () => { st.q = qi.value; st.page = 0; render(); const i = page.querySelector("#fq"); i.focus(); i.setSelectionRange(i.value.length, i.value.length); });
-    page.querySelectorAll("select[data-f]").forEach((sel) => sel.addEventListener("change", () => { st[sel.dataset.f] = sel.value; st.page = 0; render(); }));
-    page.querySelectorAll("input[data-c]").forEach((cb) => cb.addEventListener("change", () => { st[cb.dataset.c] = cb.checked; st.page = 0; render(); }));
     if (cards) return;
-    page.querySelector("#pp").addEventListener("click", () => { st.page--; render(); window.scrollTo(0, page.querySelector(".filters").offsetTop - 60); });
-    page.querySelector("#pn").addEventListener("click", () => { st.page++; render(); window.scrollTo(0, page.querySelector(".filters").offsetTop - 60); });
+    page.querySelector("#pp").addEventListener("click", () => { st.page--; render(); window.scrollTo(0, page.querySelector(".fbar").offsetTop - 60); });
+    page.querySelector("#pn").addEventListener("click", () => { st.page++; render(); window.scrollTo(0, page.querySelector(".fbar").offsetTop - 60); });
   };
   render();
 }
@@ -121,7 +119,6 @@ export const NAV = [
   ["Factions", [["factions", "Factions"], ["pvp", "PvP and honor"]]],
 ];
 const HERE = location.pathname.split("/").pop();
-const TRADESKILL = /\/tradeskill\//.test(location.pathname);   // the Tradeskill DB's pages (session 96)
 export const SPA = (!HERE || HERE === "index.html") && !ROOT;   // the game's sections live in index.html's hash; the books are pages
 export const counts = {};
 // a section's icon left of its page's title (session 95, the user: "add icons to the titles of the pages"): the first h1 of root,
@@ -131,30 +128,24 @@ const TITLED = new Set(["trainers", "tradeskill", "dungeons", "festivals", "beas
 export function titleIcon(root, key) {
   const h = root && root.querySelector("h1");
   if (!h || !TITLED.has(key) || h.closest(".titled")) return;
-  // the user: the icon as tall as the title and its description together, the two flush left beside it
+  // the user: the icon beside the title and its description, the two flush left beside it
   const d = h.nextElementSibling && h.nextElementSibling.tagName === "P" ? h.nextElementSibling : null;
   const box = document.createElement("div");
   box.className = "titled";
   h.before(box);
   box.innerHTML = `<img class="hic" src="${ROOT}assets/ledger/icons/${key}.png" alt="" aria-hidden="true"><div class="ttl"></div>`;
-  const tt = box.lastChild, img = box.firstChild;
+  const tt = box.lastChild;
   tt.append(h);
-  if (d) tt.append(d);
-  const fit = () => { img.style.height = Math.min(180, tt.offsetHeight) + "px"; };
-  fit();
-  new ResizeObserver(fit).observe(tt);
+  if (d) tt.append(d);   // the icon one size everywhere, the description two lines (shell.css, session 100)
 }   // a section's number beside its name (the Review's waiting ones); main.js fills it once
 export function nav(cur) {
   const pre = SPA ? "" : ROOT + "index.html";
-  // the book this page is: the Tradeskill DB's pages, a journal by its ?j= (the gathering ones under Gathering), a land's page under Zones
-  const j = new URLSearchParams(location.search).get("j");
-  const mine = TRADESKILL ? "tradeskill/index.html" : HERE === "journal.html" ? `journal.html?j=${j === "beasts" ? "beasts" : "herbs"}` : HERE;
-  const here = !SPA && HERE === "zone.html" ? "zones" : cur;
+  const mine = HERE, here = cur;   // every book a section since session 99, their old pages gone in session 100
   // each section's own icon (session 95: our ring icons, docs/specs/ring-icon-style.md; tools/asset-extract/ring_icons.py archive)
   const icon = (k) => `<img class="nic" src="${ROOT}assets/ledger/icons/${k}.png" alt="" aria-hidden="true">`;
   const link = ([k, t, ic]) => k[0] === "@"
     ? `<a href="${ROOT}${k.slice(1)}"${!SPA && mine === k.slice(1) ? ' aria-current="page"' : ""}><span class="ni">${icon(ic)}<span>${t}</span></span></a>`
-    : `<a href="${pre}#/${k}"${here === k && (SPA || HERE === "zone.html") ? ' aria-current="page"' : ""}><span class="ni">${icon(k)}<span>${t}</span></span>${counts[k] ? `<span class="nc${k === "review" ? " hot" : ""}">${counts[k]}</span>` : ""}</a>`;
+    : `<a href="${pre}#/${k}"${here === k && SPA ? ' aria-current="page"' : ""}><span class="ni">${icon(k)}<span>${t}</span></span>${counts[k] ? `<span class="nc${k === "review" ? " hot" : ""}">${counts[k]}</span>` : ""}</a>`;
   document.getElementById("nav").innerHTML = NAV.map(([h, xs]) => {
     const shown = xs.filter(([k]) => LOCAL || (k[0] !== "@" && !LOCAL_ONLY.has(k)));   // the books stay on this Mac: the public copy lists the sections only
     return shown.length ? `<div class="ngroup"><div class="nh">${h}</div>${shown.map(link).join("")}</div>` : "";

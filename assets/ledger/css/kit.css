@@ -95,3 +95,86 @@ i.coin.g { background: var(--coin-g); } i.coin.s { background: var(--coin-s); } 
 .pgrid { grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); }
 .icard.pcard { padding: var(--s3); }
 .icard.pcard .in { font: 400 var(--fs-lg)/1.2 var(--display); }
+
+/* ---------- a creature in 3D (session 100, kit/model3d.js): its picture on a dark stage, the 3D button to turn it ---------- */
+.m3d { position: relative; overflow: hidden; border-radius: var(--radius); isolation: isolate;
+  background: radial-gradient(ellipse at 50% 64%, #3a3226 0%, #1b1712 58%, #0b0a08 100%); }
+.m3d.card { aspect-ratio: 4 / 3; }
+.m3d.page { width: min(100%, 520px); aspect-ratio: 13 / 10; margin: 0 0 var(--s4); }
+.m3d img.shot, .m3d canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.m3d img.shot { object-fit: contain; animation: m3din 200ms var(--ease); }
+.m3d.live img.shot { visibility: hidden; }
+.m3d canvas { cursor: grab; touch-action: none; } .m3d canvas:active { cursor: grabbing; }
+.m3dmsg { position: absolute; inset: auto 0 42% 0; text-align: center; font-size: var(--fs-xs); color: rgba(255, 240, 210, 0.5); }
+.m3d:not(.drawn):not(.none)::after { content: ""; position: absolute; left: 50%; top: 50%; width: 22px; height: 22px; margin: -11px;
+  border: 2px solid rgba(255, 240, 210, 0.16); border-top-color: rgba(255, 209, 0, 0.6); border-radius: 50%; animation: m3dspin 900ms linear infinite; }
+.m3d .b3d { position: absolute; right: 8px; bottom: 8px; z-index: 2; font: 400 var(--fs-xs)/1 var(--display); letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--leather, #2a1d12); background: var(--gold-soft, #f8d74a); border: 0; border-radius: 999px; padding: 6px 11px; cursor: pointer; opacity: 0.88;
+  transition: opacity 140ms var(--ease), background-color 140ms var(--ease); }
+.m3d .b3d:hover, .m3d .b3d:focus-visible, .m3d .b3d[aria-pressed="true"] { opacity: 1; background: var(--gold, #ffd100); }
+.m3d .b3d:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.m3d .hint, .journey .card .m3d .hint { position: absolute; font-style: normal; line-height: 1.2; left: 10px; bottom: 11px; z-index: 2; font-size: 11px; color: rgba(255, 240, 210, 0.62); pointer-events: none; }
+.m3dhold { position: fixed; left: -4000px; top: 0; width: 220px; height: 165px; pointer-events: none; }
+.m3dhold canvas { width: 100%; height: 100%; display: block; }
+@keyframes m3din { from { opacity: 0; } }
+@keyframes m3dspin { to { transform: rotate(1turn); } }
+@media (prefers-reduced-motion: reduce) { .m3d img.shot { animation: none; } .m3d:not(.drawn):not(.none)::after { animation-duration: 3s; } }
+
+/* NPCs (session 100): a card a creature, its picture on top */
+.ngrid { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.ncard { display: flex; flex-direction: column; background: var(--paper-hi); border: 1px solid var(--ink-rule); border-radius: var(--radius); overflow: hidden; }
+.ncard .m3d { border-radius: 0; }
+.ncard .nb { display: block; padding: var(--s2) var(--s3) var(--s3); color: var(--ink); text-decoration: none; }
+.ncard .nb:hover .in, .ncard .nb:focus-visible .in { color: var(--rubric); }
+.ncard .in { display: block; font-weight: 600; font-size: var(--fs-sm); line-height: 1.25; overflow-wrap: anywhere; }
+.ncard .it { display: block; font-size: var(--fs-xs); color: var(--ink-2); }
+.ncard .is { display: block; margin-top: 3px; font-size: var(--fs-xs); color: var(--ink-3); line-height: 1.3; }
+/* its sounds: a row of quiet buttons under its picture, the one playing lit */
+.m3dsnd { display: flex; flex-wrap: wrap; gap: 6px; width: min(100%, 520px); margin: calc(var(--s4) * -0.5) 0 var(--s4); }
+.m3dsnd button { display: inline-flex; align-items: center; gap: 6px; font: 400 var(--fs-xs)/1 var(--display); letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--ink-2); background: var(--paper-hi); border: 1px solid var(--ink-rule-2); border-radius: 999px; padding: 6px 11px 6px 9px; cursor: pointer;
+  transition: background-color 140ms var(--ease), color 140ms var(--ease), border-color 140ms var(--ease); }
+.m3dsnd button:hover, .m3dsnd button:focus-visible { border-color: var(--rubric); color: var(--ink); }
+.m3dsnd button.on { background: var(--rubric); border-color: var(--rubric); color: var(--paper-hi); }
+.m3dsnd .spk { width: 9px; height: 10px; background: currentColor; opacity: 0.8;
+  clip-path: polygon(0 30%, 38% 30%, 100% 0, 100% 100%, 38% 70%, 0 70%); }
+@media (prefers-reduced-motion: reduce) { .m3dsnd button { transition: none; } }
+
+/* the Beast Journal's overview (session 100): its roles and families, each a gallery; a beast's page with its picture on top */
+.journey .bgch { font: 400 var(--fs-xl)/1.2 var(--display); color: var(--ink); margin: var(--s5) 0 var(--s2); }
+.journey .bgfam { display: flex; align-items: baseline; gap: 8px; font: 400 var(--fs-xs)/1 var(--display); letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--rubric); margin: var(--s4) 0 var(--s2); }
+.journey .bgfam .count { color: var(--ink-3); letter-spacing: 0; }
+.bgrid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+.journey .card .m3d.page { margin: 6px 0 var(--s3); }
+.journey .card .m3dsnd { margin: 0 0 var(--s3); }
+.journey .book .page { scroll-margin-top: 72px; }   /* clear of the fixed bar when a page is brought into view */
+
+/* ---------- the faceted filter bar (session 100, kit/filters.js): every value with what it would leave, the empty ones greyed ---------- */
+.fbar { margin: var(--s1) 0 var(--s4); font-size: var(--fs-sm); color: var(--ink-2); }
+.frow { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s3); align-items: center; }
+.frow input[type="search"] { width: 240px; }
+.fsum { margin-left: auto; display: inline-flex; align-items: center; gap: var(--s3); font-variant-numeric: lining-nums tabular-nums; }
+.fsum b { color: var(--ink); font-weight: 600; }
+.freset { background: none; border: 0; padding: 0; font: inherit; font-size: var(--fs-xs); color: var(--rubric); text-decoration: underline;
+  text-underline-offset: 3px; cursor: pointer; }
+.fgroups { display: flex; flex-wrap: wrap; gap: var(--s3) var(--s5); margin-top: var(--s3); padding-top: var(--s3); border-top: 1px solid var(--ink-rule); }
+.fg { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.fgl { font: 400 var(--fs-xs)/1 var(--display); letter-spacing: 0.1em; text-transform: uppercase; color: var(--rubric); }
+.fgb { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+.ft { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px 3px 4px; min-height: 30px; border: 1px solid var(--ink-rule-2);
+  border-radius: 999px; background: var(--paper-hi); color: var(--ink-2); font: inherit; font-size: var(--fs-xs); line-height: 1; cursor: pointer;
+  transition: background-color 140ms var(--ease), border-color 140ms var(--ease), color 140ms var(--ease), opacity 140ms var(--ease); }
+.ft img { width: 22px; height: 22px; object-fit: contain; flex: none; }
+.ft:not(:has(img)) { padding-left: 10px; }
+.ft .fn { color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.ft:hover:not(:disabled), .ft:focus-visible { border-color: var(--rubric); color: var(--ink); }
+.ft:focus-visible { outline: 2px solid var(--rubric); outline-offset: 1px; }
+.ft[aria-pressed="true"] { background: color-mix(in srgb, var(--rubric) 13%, var(--paper-hi)); border-color: var(--rubric); color: var(--ink); }
+.ft[aria-pressed="true"] .fn { color: var(--rubric); }
+.ft:disabled { opacity: 0.36; cursor: default; }
+.ft:disabled img { filter: grayscale(1); }
+.fsep { width: 1px; align-self: stretch; margin: 2px 6px; background: var(--ink-rule-2); }
+.fbar select option:disabled { color: #9a8f7c; }
+@media (max-width: 640px) { .frow input[type="search"] { width: 100%; } .fsum { margin-left: 0; } .fgroups { gap: var(--s3); } }
+@media (prefers-reduced-motion: reduce) { .ft { transition: none; } }

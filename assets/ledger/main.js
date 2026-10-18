@@ -1,6 +1,6 @@
 // The Ledger's entry (session 84: the one script split into modules). The router reads the hash (#/section/arg) and calls the
 // section's page; core.js holds the data and the shared marks, ui.js the components, cards.js its own parts.
-import { base, esc, load, page, state } from "./core.js";
+import { base, esc, hashPath, load, page, state } from "./core.js";
 import { home } from "./sections/home.js";
 import { items } from "./sections/items.js";
 import { npcs } from "./sections/npcs.js";
@@ -26,6 +26,7 @@ import { titleIcon, LOCAL_ONLY } from "./ui.js";
 import { leftBook } from "./companion.js";
 import { wireTips } from "./kit/tip.js";
 import { wireLive } from "./live.js";
+import { wire3d, teardown } from "./kit/model3d.js";
 
 // ---------- the router ----------
 // every page by its hash: #/section or #/section/arg; a page that keeps its scroll (Interface, back from a spec) returns "keep"
@@ -47,7 +48,8 @@ const ROUTES = {
 // this Mac, on the home page in the public copy
 const MOVED = { changes: "changes", change: "changes", review: "review", interface: "interface", spec: "interface", about: "about", plan: "plans" };   // the plan: session 96
 async function route() {
-  const h = decodeURIComponent(location.hash.replace(/^#\/?/, ""));
+  const h = hashPath();
+  teardown();   // the last page's 3D: its viewer and WebGL context given back (session 100)
   try {
     if (!base.changes) { const cd = await load("changes"); base.changes = new Map(cd.changes.map((c) => [c.id, c])); base.areas = Object.fromEntries(cd.areas); }
     const [sec, arg] = [h.split("/")[0], h.split("/").slice(1).join("/")];
@@ -70,7 +72,7 @@ const TAB_FIRST = { flightpaths: 0, races: 0, mounts: 0, itemsets: 0, factions: 
 const shortTitle = (t) => t.replace(/^What is easy to change, and what to leave$/, "What can change").replace(/^The rules (we changed )?for all (reputation|creatures)$/, "Rules for all")
   .replace(/\s*\(docs\/open-items\.md\)$/, "").replace(/^The /, "").replace(/^./, (c) => c.toUpperCase());
 function applyTabs() {
-  const sec = (location.hash.replace(/^#\/?/, "").split("/")[0]) || "";
+  const sec = hashPath().split("/")[0] || "";
   if (!(sec in TABBED) || page.querySelector(":scope > .ptabs")) return;
   const heads = [...page.querySelectorAll(":scope > h2.sec")];
   if (heads.length < 2) return;
@@ -92,11 +94,12 @@ function applyTabs() {
   bar.addEventListener("click", (e) => { const a = e.target.closest("[data-tab]"); if (!a) return; e.preventDefault(); show(+a.dataset.tab); });
   show(cur);
 }
-new MutationObserver(() => { publicPass(page); applyTabs(); tails(page); foldFilters(page); titleIcon(page, decodeURIComponent(location.hash.replace(/^#\/?/, "")).split("/")[0]); }).observe(page, { childList: true });
+new MutationObserver(() => { publicPass(page); applyTabs(); tails(page); foldFilters(page); titleIcon(page, hashPath().split("/")[0]); }).observe(page, { childList: true });
 
 wireShell();
 wireFind();
 wireTips();      // the game's tooltips on anything with data-item (session 99)
 wireLive(route);   // the game's changes, offered as they are rebuilt (session 99)
+wire3d(page);      // creatures in 3D wherever a page puts a stage (session 100)
 window.addEventListener("hashchange", route);
 route();

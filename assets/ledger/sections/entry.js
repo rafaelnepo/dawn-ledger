@@ -1,6 +1,7 @@
 import { chgs, esc, fmt, load, money, page } from "../core.js";
 import { nav } from "../ui.js";
 import { itemData, setData, tipHtml } from "../kit/tip.js";
+import { stage, voices } from "../kit/model3d.js";
 
 // ---------- one entry's own page (session 84): #/item/<id>, #/npc/<id>, #/quest/<id>, a link to share and to land on from the search.
 // The same facts as the list's open row, then the changes of ours that touched it, a stamp each opening its card in the Console.
@@ -38,6 +39,7 @@ export async function npcPage(id) {
   const r = d.npcs.find((x) => String(x[0]) === id);
   if (!r) return missing("creature", id);
   page.innerHTML = head("npcs", "NPCs", r[1], "", r[2] ? `&lt;${esc(r[2])}&gt;` : "") +
+    stage(r[0], { size: "page", label: r[1] }) + voices(r[0]) +
     `<h2 class="sec">In the world</h2>` + facts([["Level", r[3] === r[4] ? r[3] : `${r[3]}–${r[4]}`], ["Rank", esc(r[5])], ["Type", esc(r[6])],
       ["Side", `<span class="side ${esc(r[7])}">${esc(r[7])}</span>`], ["Does", esc(r[8].join(", "))], ["Stands in", esc(r[9])], ["Spawns", r[10] || ""],
       ["Scripted", r[13] ? `${esc(r[13])}: better left alone` : ""], ["Its drops", `<a href="#/drops/c/${r[0]}">every drop and its chance</a>`], ["In the database", `creature ${r[0]}`]]) +

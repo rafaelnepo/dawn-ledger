@@ -1,4 +1,4 @@
-import { QUALITY, chgs, esc, fmt, load, money, uniq } from "../core.js";
+import { QUALITY, chgs, esc, fmt, load, money } from "../core.js";
 import { listPage, nav } from "../ui.js";
 import { icon } from "../kit/icon.js";
 
@@ -18,11 +18,15 @@ export async function items() {
     lead: `Every item on this server: where it comes from, what it costs, and which the client shows from our copy, marked <span class="badge">hotfix</span>.`,
     rows: d.items, key: (r) => r[0], text: (r) => r[1], card,
     defaults: { has: true },
-    filters: [{ k: "quality", label: "Every quality", values: QUALITY, get: (r) => QUALITY[r[2]] },
-      { k: "cls", label: "Every kind", values: uniq(d.items.map((r) => r[5])), get: (r) => r[5] },
-      { k: "slot", label: "Every slot", values: uniq(d.items.map((r) => SLOT[r[16]] || "")), get: (r) => SLOT[r[16]] || "" }],
-    checks: [{ k: "has", label: "Has a source", test: (r) => r[9].some((n) => n) }, { k: "changed", label: "Changed only", test: (r) => r[10].length || r[11] },
-      { k: "hot", label: "Hotfixed", test: (r) => r[11] }],
+    // the filter bar (session 100, kit/filters.js): the qualities in their colors; the items no one can get hidden at first (the user)
+    facets: [
+      { k: "quality", label: "Quality", icons: true, get: (r) => QUALITY[r[2]], order: QUALITY, wcls: (v) => "qn" + QUALITY.indexOf(v) },
+      { k: "cls", label: "Kind", all: "Every kind", get: (r) => r[5] },
+      { k: "slot", label: "Slot", all: "Every slot", get: (r) => SLOT[r[16]] || "" },
+    ],
+    checks: [{ k: "has", label: "Has a source", test: (r) => r[9].some((n) => n), title: "Can be had on this server: a drop, a vendor, a quest, a chest" },
+      { k: "changed", label: "Changed by us", test: (r) => r[10].length || r[11] },
+      { k: "hot", label: "Hotfixed", test: (r) => r[11], title: "The client shows our copy (a HermesProxy hotfix)" }],
     cols: [
       ["name", "Item", "nm", (r) => r[1], (r) => `<span class="iname">${icon(r[15], { q: r[2], size: "s", attrs: `data-item="${r[0]}"` })}<span><span class="qn${r[2] || 0}" data-item="${r[0]}">${esc(r[1])}</span><span class="sub">${esc(r[5])}${r[6] && r[6] !== r[5] ? " · " + esc(r[6]) : ""}</span></span></span>`],
       ["ilvl", "iLvl", "num", (r) => r[3], (r) => r[3]],

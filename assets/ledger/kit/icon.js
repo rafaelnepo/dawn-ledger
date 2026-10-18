@@ -2,7 +2,7 @@ import { LOCAL } from "../build.js";
 import { esc, ROOT } from "../core.js";
 
 // ---------- the game's icons (session 99, the Archive's kit) ----------
-// A thing's icon is the stem of its file in the 1.14.2 client's ICONS folder ("INV_Misc_Urn_01"), which data/game-icons/ links to on
+// A thing's icon is the stem of its file in the 1.14.2 client's ICONS folder ("INV_Misc_Urn_01"), which the data folder's game-icons link points to on
 // this Mac only (never published: Blizzard's art). The address is put together here, so the publish audit never meets a picture's
 // name in a page; the public copy draws the frame alone, a square in the item's quality color.
 const DIR = ["data", "game-icons"].join("/");

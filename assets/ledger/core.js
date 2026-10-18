@@ -9,6 +9,8 @@ export const load = (n) => cache[n] || (cache[n] = json(`${ROOT}data/ledger/${n}
 export const page = document.getElementById("page");
 export const fmt = (n) => (n == null ? "" : Number(n).toLocaleString("en-US"));
 export const state = {};   // each page's filters, kept while you move about
+// the address's page part: #/npcs/6 -> "npcs/6", its filters (?zone=…, kit/filters.js, session 100) left out
+export const hashPath = () => { const raw = location.hash.replace(/^#\/?/, ""), i = raw.indexOf("?"); return decodeURIComponent(i < 0 ? raw : raw.slice(0, i)); };
 
 export const SECTIONS = [["changes", "Changes"], ["review", "Review"], null, ["items", "Items"], ["npcs", "NPCs"], ["quests", "Quests"],
   ["zones", "Zones"], ["factions", "Factions"], ["chests", "Chests and boxes"], ["loot", "Loot"], ["professions", "Professions"],
