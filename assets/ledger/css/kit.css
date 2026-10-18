@@ -60,8 +60,11 @@ i.coin.g { background: var(--coin-g); } i.coin.s { background: var(--coin-s); } 
 @media (prefers-reduced-motion: reduce) { .icard { transition: none; } a.icard:hover { transform: none; } }
 
 /* ---------- an item set as the game lists it: a dark box with its pieces and bonuses, beside its pieces' icons ---------- */
-.setcards { display: grid; gap: var(--s4); grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); align-items: start; }
-.setcard { display: flex; flex-direction: column; gap: var(--s2); }
+.setcards { display: grid; gap: var(--s4); grid-template-columns: repeat(auto-fill, minmax(min(100%, 520px), 1fr)); align-items: start; }
+.setcard { display: grid; grid-template-columns: minmax(150px, 210px) minmax(0, 1fr); gap: var(--s3); padding: var(--s3); background: var(--paper-hi);
+  border: 1px solid var(--ink-rule); border-radius: var(--radius); }
+.setcard .setsrc, .setcard > .meta { grid-column: 1 / -1; }
+@media (max-width: 520px) { .setcard { grid-template-columns: 1fr; } }
 .setcard .seticons { display: flex; flex-wrap: wrap; gap: 4px; }
 .setcard .tbox { min-width: 0; }
 .setcard .tbox .tn { font-family: var(--display); letter-spacing: 0.02em; }
@@ -214,3 +217,29 @@ i.coin.g { background: var(--coin-g); } i.coin.s { background: var(--coin-s); } 
 .sheet a.equest:hover span:not(.note), .sheet a.egood:hover span:not(.note) { text-decoration: underline; text-underline-offset: 3px; }
 .elessons .elv { grid-column: 1 / -1; margin: var(--s3) 0 2px; }
 .elessons .elv:first-child { margin-top: 0; }
+.m3d.set { aspect-ratio: 3 / 4; }
+
+/* Item sets (session 100): the class landing's big buttons; a set worn by a race beside its tooltip; where each piece comes from */
+.bigpick { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: var(--s3); margin-bottom: var(--s5); }
+.sheet a.bigbtn, .bigbtn { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto; align-items: center; gap: 2px var(--s3);
+  min-height: 84px; padding: var(--s3) var(--s4); background: var(--paper-hi); border: 1px solid var(--ink-rule-2); border-radius: var(--radius);
+  color: var(--ink); text-decoration: none; box-shadow: var(--shadow-slip); transition: border-color 140ms var(--ease), transform 140ms var(--ease); }
+.bigbtn img { grid-row: span 2; width: 56px; height: 56px; object-fit: contain; }
+.bigbtn .bt { font: 400 var(--fs-xl)/1.1 var(--display); align-self: end; }
+.bigbtn .bn { font-size: var(--fs-xs); color: var(--ink-3); align-self: start; }
+.sheet a.bigbtn.any { grid-template-columns: 1fr; }
+.sheet a.bigbtn:hover, .sheet a.bigbtn:focus-visible { border-color: var(--rubric); transform: translateY(-1px); }
+@media (prefers-reduced-motion: reduce) { .bigbtn { transition: none; } a.bigbtn:hover { transform: none; } }
+.setback { display: flex; align-items: center; gap: 6px; } .setback img { width: 20px; height: 20px; vertical-align: -5px; margin-right: 4px; }
+.setshow { margin: calc(var(--s2) * -1) 0 var(--s4); }
+.setwear { position: relative; }
+.setrace { position: absolute; left: 8px; top: 8px; z-index: 2; display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px 2px 2px;
+  border-radius: 999px; background: rgba(12, 9, 6, 0.72); color: #e8dcc0; font-size: 11px; pointer-events: none; }
+.setrace img { width: 18px; height: 18px; border-radius: 50%; }
+.setsrc { list-style: none; margin: 0; padding: var(--s2) 0 0; border-top: 1px solid var(--ink-rule); display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 3px var(--s3); font-size: var(--fs-xs); }
+.setsrc li { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 6px; align-items: center; }
+.setsrc .gi { grid-row: span 2; }
+.setsrc a { font-weight: 600; overflow-wrap: anywhere; }
+.setsrc .ss { color: var(--ink-2); }
+.setsrc .pct { color: var(--rubric); font-variant-numeric: tabular-nums; }

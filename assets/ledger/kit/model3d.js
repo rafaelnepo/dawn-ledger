@@ -9,6 +9,7 @@ import { esc, ROOT } from "../core.js";
 // load on the first picture the cache lacks or the first 3D click, never on a page without a stage; every route tears it all down.
 //
 //   stage(creatureId, { size: "card" | "page", label })   the markup (nothing in the public copy)
+//   dress(itemIds, { race, sex, key, label })           a character wearing those items (a set on a race)
 //   wire3d(root)        watches root for stages (main.js, once): their pictures, their 3D buttons
 //   voices(creatureId)  the buttons for the sounds it makes (filled once its sounds are read; nothing for a silent one)
 //   teardown()          the viewer disposed, its WebGL context and caches given back (main.js, on every route)
@@ -20,9 +21,13 @@ export const stage = (id, o = {}) => (LOCAL && id ? `<div class="m3d ${o.size ||
   `<span class="m3dmsg" aria-hidden="true"></span>` +
   `<button type="button" class="b3d" aria-pressed="false" aria-label="Turn ${esc(o.label || "it")} in 3D" hidden>3D</button></div>` : "");
 
+// a set worn: dress(items, { race: "nightelf", sex: "female", key, label }) -> a stage with a character in those items
+export const dress = (items, o = {}) => (LOCAL && items.length ? `<div class="m3d ${o.size || "set"}" data-dress="${items.join(",")}" data-race="${esc(o.race || "human")}" ` +
+  `data-sex="${o.sex === "female" ? "female" : "male"}" data-key="${esc(o.key || items.join("-"))}">` +
+  `<span class="m3dmsg" aria-hidden="true"></span><button type="button" class="b3d" aria-pressed="false" aria-label="Turn ${esc(o.label || "it")} in 3D" hidden>3D</button></div>` : "");
 export const voices = (id) => (LOCAL && id ? `<div class="m3dsnd" data-cre="${id}" role="group" aria-label="Its sounds"></div>` : "");
 
-let VM = null, V = null, cv = null, holder = null, C = null, R = null, CBY = null, SND = null;
+let VM = null, V = null, cv = null, holder = null, C = null, R = null, CBY = null, SND = null, G = null;
 let io = null, mo = null, queue = [], busy = false, live = null, gen = 0;
 const urls = new Set();
 let lock = Promise.resolve();
@@ -65,6 +70,21 @@ async function show(c) {
   }
   if (!V.meshes || !V.meshes.length) throw new Error("no meshes");
 }
+// a character in a set's items (the Dressing Room's gear.json: each item's look, its slot by inventory type)
+async function showDress(el) {
+  if (!G) G = await fetch(DIR + "gear.json").then((r) => r.json());
+  if (!R) R = await fetch(DIR + "races.json").then((r) => r.json());
+  V.sections = R.sections;
+  const race = R.races.find((q) => q.key === `${el.dataset.race}-${el.dataset.sex}`) || R.races[0];
+  V.equipped = {};
+  for (const id of el.dataset.dress.split(",")) {
+    const it = G.items[id], look = it && it.d && G.looks[it.d], slot = it && VM.SLOT_OF[it.inv];
+    if (look && slot) V.equipped[slot] = { look, c: it.c, sc: it.sc };
+  }
+  await V.setCharacter(race, {}, {});
+  if (!V.meshes || !V.meshes.length) throw new Error("no meshes");
+}
+const subject = (el) => (el.dataset.dress ? () => showDress(el) : () => show(CBY.get(+el.dataset.cre)));
 const timeout = (p, ms) => Promise.race([p, new Promise((_, no) => setTimeout(() => no(new Error("timed out")), ms))]);
 function covered() {   // how much of the picture the model fills (the background is clear): 0..1 on a 64 x 48 copy
   const c = document.createElement("canvas"); c.width = 64; c.height = 48;
@@ -73,7 +93,7 @@ function covered() {   // how much of the picture the model fills (the backgroun
   for (let i = 3; i < px.length; i += 4) if (px[i] > 24) n++;
   return n / (64 * 48);
 }
-const key = (el) => new Request(`${location.origin}/_3d/${VER}/${el.classList.contains("page") ? "p" : "c"}${el.dataset.cre}`);
+const key = (el) => new Request(`${location.origin}/_3d/${VER}/${el.classList.contains("page") ? "p" : "c"}${el.dataset.key || el.dataset.cre}`);
 async function cached(el) {
   try { const c = await caches.open(CACHE), r = await c.match(key(el)); return r ? await r.blob() : null; } catch (e) { return null; }
 }
@@ -90,16 +110,18 @@ async function picture(el) {
   const blob = await cached(el);
   if (blob) return put(el, blob);
   const my = gen;
-  await data();
-  const c = CBY.get(+el.dataset.cre);
-  if (!c || !c.d.some((d) => C.disp[d])) return fail(el, "No model");
+  if (!el.dataset.dress) {
+    await data();
+    const c = CBY.get(+el.dataset.cre);
+    if (!c || !c.d.some((d) => C.disp[d])) return fail(el, "No model");
+  }
   try { await viewer(); } catch (e) { console.warn("3D viewer", e.message); return fail(el, "The viewer didn’t load"); }
   if (my !== gen) return;
   await exclusive(async () => {
     if (my !== gen || !el.isConnected) return;
     try {
       V.release();
-      await timeout(show(c), 15000);
+      await timeout(subject(el)(), 15000);
       const r = el.getBoundingClientRect();
       holder.style.width = Math.round(r.width || 220) + "px"; holder.style.height = Math.round(r.height || 160) + "px";
       V._resize();
@@ -133,11 +155,12 @@ async function goLive(el) {
   live = el;
   const b = el.querySelector(".b3d"); b.setAttribute("aria-pressed", "true"); b.textContent = "Close 3D";
   el.classList.add("live");
-  await data(); await viewer();
+  if (!el.dataset.dress) await data();
+  await viewer();
   await exclusive(async () => {
     if (live !== el) return;
     V.release();
-    try { await timeout(show(CBY.get(+el.dataset.cre)), 15000); } catch (e) { fail(el, "The model didn’t draw"); return stopLive(); }
+    try { await timeout(subject(el)(), 15000); } catch (e) { fail(el, "The model didn’t draw"); return stopLive(); }
     if (live !== el) return;
     el.prepend(cv); V._resize();
     V.yaw = 0.5; V.zoom = 1; V.panY = 0; V._place();
