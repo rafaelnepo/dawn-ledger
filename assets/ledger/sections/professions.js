@@ -1,5 +1,5 @@
 import { chgs, esc, fmt, load, page, ROOT } from "../core.js";
-import { table, wireTable, nav } from "../ui.js";
+import { ptabs, table, wireTable, nav } from "../ui.js";
 import { LOCAL } from "../build.js";
 import { icon } from "../kit/icon.js";
 import { viewOf, viewToggle, wireView } from "../kit/gallery.js";
@@ -11,7 +11,12 @@ import { viewOf, viewToggle, wireView } from "../kit/gallery.js";
 // crafts' pages are this Mac's (their data in tradeskill/data/, their icons Blizzard's); the public copy keeps the list.
 const CRAFT = { Alchemy: "alchemy", Blacksmithing: "blacksmithing", Enchanting: "enchanting", Engineering: "engineering", Leatherworking: "leatherworking",
   Tailoring: "tailoring", Cooking: "cooking", "First Aid": "first-aid", Mining: "mining" };
-const ELSEWHERE = { Herbalism: "#/gathering/herbs", Skinning: "#/gathering/skinning", Fishing: "#/gathering/fishing", Lockpicking: "#/lockpicking" };
+const ELSEWHERE = { Herbalism: "#/professions/herbalism", Skinning: "#/professions/skinning", Fishing: "#/professions/fishing", Lockpicking: "#/lockpicking" };
+// the one door to the crafts (session 100, the user): each profession's tabs: its recipes, its trainers, where it gathers
+const GATHER = { herbalism: ["herbs", "Herbalism"], skinning: ["skinning", "Skinning"], fishing: ["fishing", "Fishing"], mining: ["mining", "Mining"] };
+const NAME = Object.fromEntries([...Object.entries(CRAFT).map(([n, sl]) => [sl, n]), ...Object.entries(GATHER).map(([sl, [, n]]) => [sl, n])]);
+const tabsFor = (slug, cur) => ptabs("professions/" + slug, [...(CRAFT[NAME[slug]] ? [["recipes", "Recipes"]] : []), ...(GATHER[slug] ? [["world", slug === "mining" ? "The veins" : "In the world"]] : []),
+  ["trainers", "Trainers"]], cur);
 const ICON = { Alchemy: "Trade_Alchemy", Blacksmithing: "Trade_BlackSmithing", Enchanting: "Trade_Engraving", Engineering: "Trade_Engineering",
   Leatherworking: "Trade_LeatherWorking", Tailoring: "Trade_Tailoring", Herbalism: "Trade_Herbalism", Mining: "Trade_Mining", Skinning: "INV_Misc_Pelt_Wolf_01",
   Cooking: "INV_Misc_Food_15", "First Aid": "Spell_Holy_SealOfSacrifice", Fishing: "Trade_Fishing", Lockpicking: "Spell_Nature_MoonKey", Poisons: "Trade_BrewPoison" };
@@ -21,7 +26,22 @@ const href = (name) => (!LOCAL ? null : CRAFT[name] ? `#/professions/${CRAFT[nam
 
 export async function professions(arg) {
   nav("professions");
-  if (arg && LOCAL) return craftPage(arg);
+  if (arg && LOCAL) {
+    const [slug, sub, ...rest] = arg.split("/");
+    const crumbs = `<p class="crumbs"><a href="#/professions">Professions</a> · <span class="white">${esc(NAME[slug] || slug)}</span></p>`;
+    if (sub === "trainers") {
+      const { trainersOf } = await import("./trainers.js");
+      page.innerHTML = crumbs + `<h1 class="display">${esc(NAME[slug])}</h1><p class="lead">Where to learn ${esc(NAME[slug])}, rank by rank, and who teaches it.</p>` +
+        tabsFor(slug, "trainers") + (await trainersOf(NAME[slug]));
+      return;
+    }
+    if (GATHER[slug] && (sub === "world" || !CRAFT[NAME[slug]])) {   // the gathering journal, inside Professions
+      const { gatheringIn } = await import("./journal.js");
+      const key = sub === "world" ? (rest.length ? rest.join("/") : undefined) : (sub ? [sub, ...rest].join("/") : undefined);
+      return gatheringIn(GATHER[slug][0], key && decodeURIComponent(key), { sec: `professions/${slug}${CRAFT[NAME[slug]] ? "/world" : ""}`, nav: "professions", tabs: tabsFor(slug, "world") });
+    }
+    return craftPage(sub === "recipes" ? [slug, ...rest].join("/") : arg);
+  }
   const d = await load("professions");
   const render = () => {
     const cards = viewOf("professions") === "cards";
@@ -66,7 +86,7 @@ async function craftPage(arg) {
     page.innerHTML = `<p class="empty">This craft couldn’t be read (${esc(e.message)}). Build it with <code>python3 tradeskill-db/build/build.py</code>.</p>`;
     return;
   }
-  const back = `<p class="crumbs"><a href="#/professions">Professions</a> · <span class="white">${esc(data[slug].profession.name)}</span></p>`;
+  const back = `<p class="crumbs"><a href="#/professions">Professions</a> · <span class="white">${esc(data[slug].profession.name)}</span></p>${tabsFor(slug, "recipes")}`;
   if (a === "table") {
     page.innerHTML = `<div class="tsdb">${back}<div class="wrap"><header class="site"><a class="brand" href="#/professions/${slug}">the journey</a>
       <h1 id="title"></h1><span class="sub">Classic Era 1.14.2 (the local server) compared with WoW Forever (its own game files)</span></header>

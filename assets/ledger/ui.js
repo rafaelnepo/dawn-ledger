@@ -113,8 +113,7 @@ export const NAV = [
   ["Creatures", [["npcs", "NPCs"], ["beasts", "Beasts"], ["loot", "Loot"]]],   // the Drops inside Loot since session 100
   ["Items", [["items", "Items"], ["itemsets", "Item sets"], ["chests", "Chests and boxes"]]],
   ["Quests", [["quests", "Quests"], ["books", "Books"]]],
-  ["Crafts", [["professions", "Professions"], ["trainers", "Trainers"], ["gathering", "Gathering"],
-    ["lockpicking", "Lockpicking"]]],   // the Tradeskill DB: inside Professions since session 99
+  ["Crafts", [["professions", "Professions"], ["lockpicking", "Lockpicking"]]],   // the Tradeskill DB inside Professions since session 99, its Trainers and Gathering since 100
   ["Heroes", [["classes", "Classes"], ["races", "Races"], ["mounts", "Mounts"]]],
   ["Factions", [["factions", "Factions"], ["pvp", "PvP and honor"]]],
 ];
