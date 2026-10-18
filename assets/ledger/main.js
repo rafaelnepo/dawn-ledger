@@ -69,7 +69,7 @@ async function route() {
 // Each time a page draws, its sections (an h2.sec and what follows, up to the next) become tabs: one shows, the others wait.
 // The page's own code is untouched (its filters still find their elements); the tab chosen is kept per page. The list a page is
 // about opens first; the rules and "What is easy to change" come after it. PvP and Interface have their own tabs or filters.
-const TABBED = { flightpaths: 1, races: 1, mounts: 1, itemsets: 1, items: 1, npcs: 1, quests: 1, zones: 1, factions: 2, chests: 1, loot: 2, professions: 1 };
+const TABBED = { flightpaths: 1, races: 1, mounts: 1, itemsets: 1, items: 1, npcs: 1, quests: 1, factions: 2, chests: 1, loot: 2, professions: 1 };
 const TAB_FIRST = { flightpaths: 0, races: 0, mounts: 0, itemsets: 0, factions: 2, loot: 2, items: 1, npcs: 1, quests: 1, zones: 1, chests: 1, professions: 1 };
 const shortTitle = (t) => t.replace(/^What is easy to change, and what to leave$/, "What can change").replace(/^The rules (we changed )?for all (reputation|creatures)$/, "Rules for all")
   .replace(/\s*\(docs\/open-items\.md\)$/, "").replace(/^The /, "").replace(/^./, (c) => c.toUpperCase());

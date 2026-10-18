@@ -283,3 +283,51 @@ i.coin.g { background: var(--coin-g); } i.coin.s { background: var(--coin-s); } 
 .ibar i { display: block; height: 100%; background: var(--rubric); border-radius: 3px; }
 .ip { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink-2); }
 .idrop:has(> .note:last-child) { grid-template-columns: minmax(0, 1fr) auto; }
+
+/* ---------- Dungeons (session 100): the drawn map with its floors, the bosses as cards in 3D, the loot a class can't use greyed ---------- */
+.dmap { margin: var(--s3) 0 var(--s2); }
+.dmap img { display: block; width: 100%; height: auto; aspect-ratio: 1002 / 668; object-fit: contain; border-radius: var(--radius);
+  background: #0b0a08; box-shadow: 0 0 0 1px var(--ink-rule-2), var(--shadow-slip); }
+.dfloors { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px; }
+.dfloors button { font: 400 var(--fs-xs)/1 var(--display); letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-2); background: var(--paper-hi);
+  border: 1px solid var(--ink-rule-2); border-radius: 999px; padding: 6px 10px; cursor: pointer; }
+.dfloors button[aria-selected="true"] { background: var(--rubric); border-color: var(--rubric); color: var(--paper-hi); }
+.journey .card .dh { display: flex; align-items: baseline; gap: 8px; margin: var(--s4) 0 var(--s2); font: 400 var(--fs-xs)/1 var(--display); letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--rubric); }
+.dh .count { color: var(--ink-3); }
+.dcls { margin-bottom: var(--s3); }
+.bcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: var(--s3); }
+.bcard { display: flex; flex-direction: column; background: var(--paper-hi); border: 1px solid var(--ink-rule); border-radius: var(--radius); overflow: hidden; }
+.bcard .m3d { border-radius: 0; }
+.bct { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; padding: var(--s2) var(--s3) 2px; }
+.bcn { font-weight: 600; font-size: var(--fs-sm); }
+.blist { display: flex; flex-direction: column; gap: 1px; padding: 2px var(--s2) var(--s2); }
+.sheet a.bloot, .bloot { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 6px; padding: 3px 4px; border-radius: var(--radius);
+  font-size: var(--fs-xs); text-decoration: none; transition: opacity 140ms var(--ease); }
+.bloot:hover, .bloot:focus-visible { background: var(--paper); }
+.bloot.no { opacity: 0.32; filter: grayscale(0.8); }
+@media (prefers-reduced-motion: reduce) { .bloot { transition: none; } }
+
+/* ---------- a land's page (session 100): its map first, the layers as the game's icons, a pin to click for each person, task and find ---------- */
+.zatlas { margin: var(--s4) 0 var(--s5); }
+.zatlas .fg { margin-bottom: var(--s2); }
+.journey .map.zbig { aspect-ratio: 1002 / 668; box-shadow: 0 0 0 1px var(--ink-rule-2), var(--shadow-sheet); }
+.zpin { position: absolute; width: 22px; height: 22px; margin: -11px 0 0 -11px; padding: 0; border: 0; background: none; cursor: pointer; z-index: 2;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.8)); transition: transform 120ms var(--ease); }
+.zpin img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.zpin.k-gathering { width: 16px; height: 16px; margin: -8px 0 0 -8px; }
+.zpin:hover, .zpin:focus-visible { transform: scale(1.35); z-index: 3; outline: none; }
+.zpin > i { display: block; width: 8px; height: 8px; margin: 7px; border-radius: 50%; background: #ffd100; }
+@media (prefers-reduced-motion: reduce) { .zpin { transition: none; } }
+/* Zones (session 100): a card a land, its map above its name */
+.zcards { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: var(--s3); margin-bottom: var(--s4); }
+.sheet a.zcard, .zcard { display: flex; flex-direction: column; background: var(--paper-hi); border: 1px solid var(--ink-rule); border-radius: var(--radius); overflow: hidden;
+  color: var(--ink); text-decoration: none; transition: border-color 140ms var(--ease), transform 140ms var(--ease); }
+.sheet a.zcard:hover, .sheet a.zcard:focus-visible { border-color: var(--rubric); transform: translateY(-1px); }
+.zpic { display: block; aspect-ratio: 1002 / 668; background: #0b0a08 center / cover no-repeat; }
+.zpic.none { background: radial-gradient(ellipse at 50% 60%, #3a3226, #1b1712 70%); }
+.zt { display: flex; flex-direction: column; gap: 3px; padding: var(--s2) var(--s3) var(--s3); }
+.zn { font: 400 var(--fs-lg)/1.2 var(--display); }
+.zs { display: flex; align-items: center; gap: 5px; font-size: var(--fs-xs); color: var(--ink-2); } .zs img { width: 18px; height: 18px; }
+.zr { font-size: var(--fs-xs); color: var(--ink-3); }
+@media (prefers-reduced-motion: reduce) { .zcard { transition: none; } a.zcard:hover { transform: none; } }
