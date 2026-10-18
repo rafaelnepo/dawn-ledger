@@ -17,7 +17,7 @@ function list(id, rows, groups, cols, st) {
 export async function mounts() {
   nav("mounts");
   const d = await load("mounts");
-  const st = (state.mounts = Object.assign({ side: "", q: "", open: null }, state.mounts || {}));
+  const st = (state.mounts = Object.assign({ side: "", q: "", open: null, unused: false }, state.mounts || {}));
   const render = () => {
     const q = st.q.toLowerCase();
     const keep = (r) => (!st.side || r.side === st.side || r.side === "Both") && (!q || (r.name + " " + r.kind + " " + r.ways.flat().join(" ")).toLowerCase().includes(q));
@@ -54,14 +54,16 @@ export async function mounts() {
       <h2 class="sec">Mounts</h2>${filters}${ml.html}
       <h2 class="sec">Companions</h2>${filters}${cl.html}
       <h2 class="sec">Not in the game</h2>
-      <p class="note">Mounts and companions the database holds that nothing sells, drops or gives here.</p>
-      <div class="panel">${table("tunused", ucols, [["Mounts", d.unused.filter((u) => u[0] === "Mount")], ["Companions", d.unused.filter((u) => u[0] === "Companion")]], {})}</div>`;
+      <p class="note">Mounts and companions the database holds that nothing sells, drops or gives here (the user, session 100: behind a toggle).</p>
+      <p><button type="button" class="ft" id="munused" aria-pressed="${st.unused}"><span class="fw">${st.unused ? "Hide" : "Show"} the ${d.unused.length} no one can get</span></button></p>
+      ${st.unused ? `<div class="panel">${table("tunused", ucols, [["Mounts", d.unused.filter((u) => u[0] === "Mount")], ["Companions", d.unused.filter((u) => u[0] === "Companion")]], {})}</div>` : ""}`;
     wireChips(page, "mside", (v) => { st.side = v; render(); });
     page.querySelectorAll("input.xq").forEach((qi, n) => qi.addEventListener("input", () => {
       st.q = qi.value; render(); const i = page.querySelectorAll("input.xq")[n]; i.focus(); i.setSelectionRange(i.value.length, i.value.length);
     }));
     [["tmounts", ml], ["tcomp", cl]].forEach(([id, l]) => wireTable(id, render, l.ordered(), { click: (r) => { const k = id + r.id + r.name; st.open = st.open === k ? null : k; render(); } }));
-    wireTable("tunused", render, [], {});
+    if (st.unused) wireTable("tunused", render, [], {});
+    page.querySelector("#munused").addEventListener("click", () => { st.unused = !st.unused; render(); });
   };
   render();
 }
