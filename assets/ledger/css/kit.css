@@ -178,3 +178,39 @@ i.coin.g { background: var(--coin-g); } i.coin.s { background: var(--coin-s); } 
 .fbar select option:disabled { color: #9a8f7c; }
 @media (max-width: 640px) { .frow input[type="search"] { width: 100%; } .fsum { margin-left: 0; } .fgroups { gap: var(--s3); } }
 @media (prefers-reduced-motion: reduce) { .ft { transition: none; } }
+
+/* ---------- an NPC's own page (session 100): what it is at a glance, its picture beside its map, then what it offers ---------- */
+.ebadges { display: flex; flex-wrap: wrap; gap: 6px; margin: calc(var(--s2) * -1) 0 var(--s4); }
+.ebadge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 11px 3px 4px; min-height: 30px; border: 1px solid var(--ink-rule-2); border-radius: 999px;
+  background: var(--paper-hi); color: var(--ink); font-size: var(--fs-xs); text-decoration: none; transition: border-color 140ms var(--ease); }
+.ebadge img { width: 22px; height: 22px; object-fit: contain; }
+.ebadge:not(:has(img)) { padding-left: 11px; }
+.ebadge:hover, .ebadge:focus-visible { border-color: var(--rubric); }
+.etop { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--s4); align-items: start; margin-bottom: var(--s3); }
+.etop .m3d.page { width: 100%; }
+.emap { margin: 0; }
+.emapart { position: relative; width: 100%; aspect-ratio: 1002 / 668; background: var(--leather) center / 100% 100% no-repeat; border-radius: var(--radius);
+  box-shadow: 0 0 0 1px var(--ink-rule-2), var(--shadow-slip); overflow: hidden; }
+.emapart .pin { position: absolute; width: 9px; height: 9px; margin: -4.5px 0 0 -4.5px; border-radius: 50%; background: #ffd100;
+  box-shadow: 0 0 0 1.5px rgba(0, 0, 0, 0.75), 0 0 6px rgba(255, 209, 0, 0.7); }
+.emap figcaption { margin-top: 6px; font-size: var(--fs-sm); color: var(--ink-2); }
+.egoods { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 4px var(--s3); }
+.egood { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 5px 8px; border-radius: var(--radius);
+  color: var(--ink); text-decoration: none; font-size: var(--fs-sm); }
+.egood:hover, .egood:focus-visible { background: var(--paper-hi); }
+.elessons { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2px var(--s4); }
+.elesson { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: 8px; padding: 4px 6px; font-size: var(--fs-sm);
+  border-bottom: 1px solid var(--ink-rule); }
+.elesson .lc { min-width: 64px; text-align: right; }
+.equests { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--s4); }
+.eh { margin: 0 0 6px; font: 400 var(--fs-xs)/1 var(--display); letter-spacing: 0.1em; text-transform: uppercase; color: var(--rubric); }
+.equest { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 4px 6px; color: var(--ink);
+  text-decoration: none; font-size: var(--fs-sm); border-bottom: 1px solid var(--ink-rule); }
+.equest img { width: 20px; height: 20px; object-fit: contain; }
+.equest:hover, .equest:focus-visible { background: var(--paper-hi); }
+.emates { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); }
+@media (prefers-reduced-motion: reduce) { .ebadge { transition: none; } }
+.sheet a.ebadge, .sheet a.equest, .sheet a.egood { text-decoration: none; background-image: none; }
+.sheet a.equest:hover span:not(.note), .sheet a.egood:hover span:not(.note) { text-decoration: underline; text-underline-offset: 3px; }
+.elessons .elv { grid-column: 1 / -1; margin: var(--s3) 0 2px; }
+.elessons .elv:first-child { margin-top: 0; }
