@@ -431,3 +431,11 @@ i.coin.g { background: var(--coin-g); } i.coin.s { background: var(--coin-s); } 
 .smark em { position: absolute; top: 100%; left: 50%; transform: translateX(-50%); margin-top: 6px; white-space: nowrap; font-style: normal; font-size: 11px; color: var(--ink-2); }
 .sdot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5); margin-right: 6px; vertical-align: 1px; }
 @media (max-width: 640px) { .sbar b { font-size: 8px; } }
+/* Lockpicking (session 100): the skill ladder under the title */
+.lladder { list-style: none; margin: var(--s4) 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 4px; }
+.lladder a { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 6px 4px; border: 1px solid var(--ink-rule-2); border-radius: var(--radius);
+  background: var(--paper-hi); color: var(--ink); text-decoration: none; }
+.sheet .lladder a { text-decoration: none; }
+.lladder .lsk { font: 400 var(--fs-sm)/1 var(--display); } .lladder .lic { display: flex; gap: 2px; min-height: 20px; }
+.lladder li[aria-current="step"] a { border-color: var(--rubric); background: color-mix(in srgb, var(--rubric) 12%, var(--paper-hi)); }
+.lladder a:hover, .lladder a:focus-visible { border-color: var(--rubric); }

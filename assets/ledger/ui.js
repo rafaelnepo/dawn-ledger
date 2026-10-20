@@ -107,14 +107,14 @@ export const ptabs = (sec, list, cur) => `<nav class="ptabs" aria-label="Section
 // game's database only, the records of your adventure moved to the Adventurer's Journal (:8793). A section is [key, name] (its
 // page in index.html's hash) or ["@page.html", name, icon] (a book of its own, on this Mac only: it reads the local art and data).
 // the books brought into the one page (session 99): their data is this Mac's, so the public copy neither lists nor opens them
-export const LOCAL_ONLY = new Set(["trainers", "festivals", "dungeons", "lockpicking", "beasts", "gathering", "drops", "zone", "tradeskill"]);
+export const LOCAL_ONLY = new Set(["trainers", "festivals", "dungeons", "lockpicking", "beasts", "gathering", "drops", "zone", "tradeskill", "names"]);   // names: session 107 (some of Blizzard's own)
 export const NAV = [
   ["World", [["zones", "Zones"], ["dungeons", "Dungeons"], ["festivals", "Festivals"], ["flightpaths", "Flight paths"]]],
   ["Creatures", [["npcs", "NPCs"], ["beasts", "Beasts"], ["loot", "Loot"]]],   // the Drops inside Loot since session 100
   ["Items", [["items", "Items"], ["itemsets", "Item sets"], ["chests", "Chests and boxes"]]],
   ["Quests", [["quests", "Quests"], ["books", "Books"]]],
   ["Crafts", [["professions", "Professions"], ["lockpicking", "Lockpicking"]]],   // the Tradeskill DB inside Professions since session 99, its Trainers and Gathering since 100
-  ["Heroes", [["classes", "Classes"], ["races", "Races"], ["mounts", "Mounts"]]],
+  ["Heroes", [["classes", "Classes"], ["races", "Races"], ["names", "Names"], ["mounts", "Mounts"], ["pets", "Pets"]]],
   ["Factions", [["factions", "Factions"], ["pvp", "PvP and honor"]]],
 ];
 const HERE = location.pathname.split("/").pop();
@@ -123,7 +123,7 @@ export const counts = {};
 // a section's icon left of its page's title (session 95, the user: "add icons to the titles of the pages"): the first h1 of root,
 // once; a section without an icon (the home page, an entry's own page) keeps its title alone
 const TITLED = new Set(["trainers", "tradeskill", "dungeons", "festivals", "beasts", "gathering", "lockpicking", "drops", "zones", "items", "npcs",
-  "quests", "factions", "chests", "loot", "professions", "pvp", "flightpaths", "itemsets", "books", "classes", "races", "mounts"]);
+  "quests", "factions", "chests", "loot", "professions", "pvp", "flightpaths", "itemsets", "books", "classes", "races", "mounts", "pets"]);
 export function titleIcon(root, key) {
   const h = root && root.querySelector("h1");
   if (!h || !TITLED.has(key) || h.closest(".titled")) return;

@@ -15,6 +15,7 @@ import { flightpaths } from "./sections/flightpaths.js";
 import { races } from "./sections/races.js";
 import { classes } from "./sections/classes.js";
 import { mounts } from "./sections/mounts.js";
+import { pets } from "./sections/pets.js";
 import { itemsets } from "./sections/itemsets.js";
 import { books } from "./sections/books.js";
 import { soon, SOON_KEYS } from "./sections/soon.js";
@@ -35,11 +36,12 @@ const ROUTES = {
   items, npcs, quests, zones, factions, faction: factionPage, chests, professions,
   // Loot and the Drops in one (session 100): By creature on this Mac (the drops' data is its own), the rules everywhere
   loot: (a) => (a === "rules" || !LOCAL ? lootRules() : import("./sections/drops.js").then((m) => m.drops(a === "creatures" ? "" : a || ""))),
-  pvp, flightpaths, races, classes, mounts, itemsets, books, item: itemPage, npc: npcPage, quest: questPage,
+  pvp, flightpaths, races, classes, mounts, pets, itemsets, books, item: itemPage, npc: npcPage, quest: questPage,
   ...Object.fromEntries(SOON_KEYS.map((k) => [k, soon(k)])),   // the categories' new sections, still to be written (session 98)
   // the books, sections since session 99 (the plan's Milestone C): loaded the first time they're opened, this Mac only (LOCAL_ONLY)
   trainers: (a) => import("./sections/trainers.js").then((m) => m.trainers(a)),
   festivals: (a) => import("./sections/festivals.js").then((m) => m.festivals(a)),
+  names: () => import("./sections/names.js").then((m) => m.names()),   // session 107: this Mac's (LOCAL_ONLY)
   dungeons: (a) => import("./sections/dungeons.js").then((m) => m.dungeons(a)),
   lockpicking: (a) => import("./sections/lockpicking.js").then((m) => m.lockpicking(a)),
   beasts: (a) => import("./sections/journal.js").then((m) => m.beasts(a)),
@@ -71,8 +73,8 @@ async function route() {
 // Each time a page draws, its sections (an h2.sec and what follows, up to the next) become tabs: one shows, the others wait.
 // The page's own code is untouched (its filters still find their elements); the tab chosen is kept per page. The list a page is
 // about opens first; the rules and "What is easy to change" come after it. PvP and Interface have their own tabs or filters.
-const TABBED = { flightpaths: 1, races: 1, mounts: 1, itemsets: 1, items: 1, npcs: 1, quests: 1, factions: 2, chests: 1, professions: 1 };   // (books: one list since session 100)
-const TAB_FIRST = { flightpaths: 0, races: 0, mounts: 0, itemsets: 0, factions: 2, loot: 2, items: 1, npcs: 1, quests: 1, zones: 1, chests: 1, professions: 1 };
+const TABBED = { flightpaths: 1, races: 1, mounts: 1, pets: 1, itemsets: 1, items: 1, npcs: 1, quests: 1, factions: 2, chests: 1, professions: 1 };   // (books: one list since session 100)
+const TAB_FIRST = { flightpaths: 0, races: 0, mounts: 0, pets: 0, itemsets: 0, factions: 2, loot: 2, items: 1, npcs: 1, quests: 1, zones: 1, chests: 1, professions: 1 };
 const shortTitle = (t) => t.replace(/^What is easy to change, and what to leave$/, "What can change").replace(/^The rules (we changed )?for all (reputation|creatures)$/, "Rules for all")
   .replace(/\s*\(docs\/open-items\.md\)$/, "").replace(/^The /, "").replace(/^./, (c) => c.toUpperCase());
 function applyTabs() {
